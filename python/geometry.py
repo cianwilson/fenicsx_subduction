@@ -1,8 +1,107 @@
-
+import gmsh
 import numpy
 from scipy import interpolate as interp
 from scipy import integrate as integ
 from scipy import optimize as opt
+
+default_res = 50.0
+
+class GmshFile:
+  def __init__(self, modelname='model'):
+    self.pindex = 1
+    self.cindex = 1
+    self.sindex = 1
+    gmsh.initialize()
+    gmsh.model.add(modelname)
+
+  def __exit__(self, exc_type, exc_value, traceback):
+    gmsh.finalize()
+  
+  def addpoint(self, point):
+    if point.eid:
+      return
+    point.eid = self.pindex
+    self.pindex += 1
+    gmsh.model.geo.addPoint(point.x, point.y, point.z, point.res, point.eid)
+
+  def addcurve(self, curve):
+    if curve.eid:
+      return
+    curve.eid = self.cindex
+    self.cindex += 1
+    eids = []
+    for p in curve.points:
+      self.addpoint(p)
+      eids.append(p.eid)
+    if curve.type=="Line":
+      gmsh.model.geo.addLine(*eids, tag=curve.eid)
+
+  def addinterpcurve(self, interpcurve):
+    for curve in interpcurve.interpcurves: self.addcurve(curve)
+
+  def addsurface(self, surface):
+    if surface.eid:
+      return
+    surface.eid = self.sindex
+    self.sindex += 1
+    eids = []
+    for c, curve in enumerate(surface.curves):
+      self.addcurve(curve)
+      eids.append(surface.directions[c]*curve.eid)
+    gmsh.model.geo.addCurveLoop(eids, self.cindex)
+    gmsh.model.geo.addPlaneSurface([self.cindex], surface.eid)
+    self.cindex += 1
+
+  def synchronize(self):
+    gmsh.model.geo.synchronize()
+
+  #def addphysicalpoint(self, pid, points):
+  #  line = "Physical Point("+repr(pid)+") = {"
+  #  for p in range(len(points)-1):
+  #    line += repr(points[p].eid)+", "
+  #  line += repr(points[-1].eid)+"};"+os.linesep
+  #  self.lines.append(line)
+
+  def addphysicalline(self, pid, curves):
+    eids = [curve.eid for curve in curves]
+    gmsh.model.geo.addPhysicalGroup(1, eids, tag=pid)
+
+  def addphysicalsurface(self, pid, surfaces):
+    eids = [surface.eid for surface in surfaces]
+    gmsh.model.geo.addPhysicalGroup(2, eids, tag=pid)
+
+  #def addembed(self, surface, items):
+  #  line = items[0].type+" {"
+  #  for i in range(len(items)-1):
+  #    assert(items[i].type==items[0].type)
+  #    line += repr(items[i].eid)+", "
+  #  line += repr(items[-1].eid)+"} In Surface {"+repr(surface.eid)+"};"+os.linesep
+  #  self.lines.append(line) 
+
+  def addtransfinitecurve(self, curves, n):
+    for curve in curves:
+      if curve.eid is None: self.addcurve(curve)
+      gmsh.model.geo.mesh.setTransfiniteCurve(curve.eid, n)
+
+  #def addtransfinitesurface(self, surface, corners, direction):
+  #  if surface.eid is None:
+  #    self.addsurface(surface)
+  #  line = "Transfinite Surface {"+repr(surface.eid)+"} = {"
+  #  for c in range(len(corners)-1):
+  #    line += repr(corners[c].eid)+", "
+  #  line += repr(corners[-1].eid)+"} "+direction+";"+os.linesep
+  #  self.lines.append(line)
+
+  #def linebreak(self):
+  #  self.lines.append(os.linesep)
+
+  def write(self, filename):
+    self.synchronize()
+    gmsh.write(filename)
+
+  def mesh(self):
+    gmsh.model.mesh.generate(2)
+    return gmsh.model
 
 class ElementaryEntity:
   def __init__(self, name=None):
@@ -17,7 +116,7 @@ class PhysicalEntity:
     self.pid = pid
 
 class Point(ElementaryEntity, PhysicalEntity):
-  def __init__(self, coord, name=None, res=1.0):
+  def __init__(self, coord, name=None, res=None):
     self.type = "Point"
     self.x = coord[0]
     if len(coord) > 1: 
@@ -29,6 +128,7 @@ class Point(ElementaryEntity, PhysicalEntity):
     else:
       self.z = 0.0
     self.res = res
+    if res is None: self.res = default_res
     ElementaryEntity.__init__(self, name=name)
     PhysicalEntity.__init__(self)
 
@@ -77,11 +177,12 @@ class InterpolatedCubicSpline:
     self.controlpoints = [point for point in points]
     self.controlpoints.sort(key=lambda point: point.x)
     self.name = name
-    if pids is not None: 
-      assert(len(pids)==len(self.points)-1)
+    try:
+      assert(len(pids)==len(self.points))
       self.pids = pids
-    else:
-      self.pids = [None for i in range(len(self.points)-1)]
+    except TypeError:
+      self.pids = [pids]*len(self.points)
+    assert(self.pids[-1]==self.pids[-2])
     self.x = None
     self.y = None
     self.u = None
@@ -117,8 +218,14 @@ class InterpolatedCubicSpline:
     isort = numpy.argsort(self.x)
     points = numpy.asarray(self.points)[isort]
     self.points = points.tolist()
-    pids = numpy.asarray(self.pids)[[i for i in isort if i != (len(isort)-1)]]
-    self.pids = pids.tolist()
+    self.pids = [self.pids[i] for i in isort]
+    pid0 = self.pids[0]
+    # inheret pids from higher up points
+    for p in range(1,len(self.pids)):
+      if self.pids[p] is None:
+        self.pids[p] = pid0
+      else:
+        pid0 = self.pids[p]
     self.x = numpy.array([self.points[i].x for i in range(len(self.points))])
     self.y = numpy.array([self.points[i].y for i in range(len(self.points))])
     controlx = numpy.array([cp.x for cp in self.controlpoints])
@@ -129,6 +236,7 @@ class InterpolatedCubicSpline:
     u = numpy.asarray([0.0])
     u = numpy.append(u, [self.x2delu(self.x[i], x0=self.x[i-1]) for i in range(1,len(self.x))])
     self.u = numpy.cumsum(u)
+    self.updateinterp()
   
   def updateinterp(self):
     self.interpu = []
@@ -152,10 +260,10 @@ class InterpolatedCubicSpline:
         t = ts[i]
         self.interpu.append(self.u[p] + t*lengthfraction)
         npoint = Point(self(t*lengthfraction, x0=self.points[p].x), res=res[i-1])
-        self.interpcurves.append(Line([point, npoint], pid))
+        self.interpcurves.append(Line([point, npoint], pid=pid))
         point = npoint
       npoint = self.points[p+1]
-      self.interpcurves.append(Line([point, npoint], pid))
+      self.interpcurves.append(Line([point, npoint], pid=pid))
     self.interpu.append(self.u[p+1])
     self.interpu = numpy.asarray(self.interpu)
 
@@ -177,10 +285,9 @@ class InterpolatedCubicSpline:
         res0 = point.res
         u0   = self.u[p]
 
-  def updateinterpids(self, pid, point0, point1):
+  def updateids(self, pid, point0, point1):
     for curve in self.interpocurvesinterval(self.findpoint(point0), self.findpoint(point1)):
       curve.pid = pid
-
 
   #def copyinterp(self, spline):
   #  assert(len(self.points)==len(spline.points))
@@ -352,8 +459,7 @@ class Surface(ElementaryEntity, PhysicalEntity):
           self.directions.append(-1)
           break
       if i == len(ind)-1 and len(self.directions) == j:
-        print("Failed to complete line loop.")
-        sys.exit(1)
+        raise Exception("Failed to complete line loop.")
       self.curves.append(curves[ind[i]])
       i = ind.pop(i)
     ElementaryEntity.__init__(self, name=name)
@@ -376,24 +482,13 @@ class Geometry:
     self.curves  = []
     self.interpcurves  = []
     self.surfaces = []
-    self.pointcomments  = []
-    self.curvecomments  = []
-    self.interpcurvecomments  = []
-    self.surfacecomments = []
     self.pointembeds = {}
     self.lineembeds = {}
     self.transfinitecurves = {}
     self.transfinitesurfaces = {}
-    self.geofile = None
 
-  def addpoint(self, point, name=None, comment=None):
+  def addpoint(self, point, name=None):
     self.points.append(point)
-    self.pointcomments.append(comment)
-    if not comment:
-      if name:
-        self.pointcomments[-1] = name
-      elif point.name:
-        self.pointcomments[-1] = point.name
     if name:
       self.namedpoints[name] = point
     elif point.name:
@@ -404,14 +499,8 @@ class Geometry:
       else:
         self.physicalpoints[point.pid] = [point]
 
-  def addcurve(self, curve, name=None, comment=None):
+  def addcurve(self, curve, name=None):
     self.curves.append(curve)
-    self.curvecomments.append(comment)
-    if not comment:
-      if name:
-        self.curvecomments[-1] = name
-      elif curve.name:
-        self.curvecomments[-1] = curve.name
     if name:
       self.namedcurves[name] = curve
     elif curve.name:
@@ -422,39 +511,27 @@ class Geometry:
       else:
         self.physicalcurves[curve.pid] = [curve]
 
-  def addtransfinitecurve(self, curve, name=None, comment=None, n=2):
-    self.addcurve(curve, name, comment)
+  def addtransfinitecurve(self, curve, name=None, n=2):
+    self.addcurve(curve, name)
     if n in self.transfinitecurves:
       self.transfinitecurves[n].append(curve)
     else:
       self.transfinitecurves[n] = [curve]
 
-  def addtransfinitesurface(self, surface, corners, direction="Right", name=None, comment=None):
-    self.addsurface(surface, name, comment)
+  def addtransfinitesurface(self, surface, corners, direction="Right", name=None):
+    self.addsurface(surface, name)
     self.transfinitesurfaces[surface] = (corners, direction)
 
-  def addinterpcurve(self, interpcurve, name=None, comment=None):
+  def addinterpcurve(self, interpcurve, name=None):
     self.interpcurves.append(interpcurve)
-    self.interpcurvecomments.append(comment)
-    if not comment:
-      if name:
-        self.interpcurvecomments[-1] = name
-      elif interpcurve.name:
-        self.interpcurvecomments[-1] = interpcurve.name
     if name:
       self.namedinterpcurves[name] = interpcurve
     elif interpcurve.name:
       self.namedinterpcurves[interpcurve.name] = interpcurve
     for curve in interpcurve.interpcurves: self.addtransfinitecurve(curve)
 
-  def addsurface(self, surface, name=None, comment=None):
+  def addsurface(self, surface, name=None):
     self.surfaces.append(surface)
-    self.surfacecomments.append(comment)
-    if not comment:
-      if name:
-        self.surfacecomments[-1] = name
-      elif surface.name:
-        self.surfacecomments[-1] = surface.name
     if name:
       self.namedsurfaces[name] = surface
     elif surface.name:
@@ -479,49 +556,37 @@ class Geometry:
       else:
         self.lineembeds[surface] = [item]
 
-  def writegeofile(self, filename):
+  def gmshfile(self, modelname='model'):
     self.cleareid()
     
-    self.geofile = GeoFile()
-    for s in range(len(self.surfaces)):
-      surface = self.surfaces[s]
-      self.geofile.addsurface(surface, self.surfacecomments[s])
-    self.geofile.linebreak()
-    for c in range(len(self.curves)):
-      curve = self.curves[c]
-      self.geofile.addcurve(curve, self.curvecomments[c])
-    self.geofile.linebreak()
-    for p in range(len(self.points)):
-      point = self.points[p]
-      self.geofile.addpoint(point, self.pointcomments[p])
-    self.geofile.linebreak()
+    gmshfile = GmshFile(modelname=modelname)
+    for surface in self.surfaces:
+      gmshfile.addsurface(surface)
+    for curve in self.curves:
+      gmshfile.addcurve(curve)
+    for point in self.points:
+      gmshfile.addpoint(point)
 
-    for surface,items in iter(sorted(list(self.pointembeds.items()), key=lambda item: item[0].eid)):
-      self.geofile.addembed(surface,items)
-    for surface,items in iter(sorted(list(self.lineembeds.items()), key=lambda item: item[0].eid)):
-      self.geofile.addembed(surface,items)
-    self.geofile.linebreak()
+    #for surface,items in iter(sorted(list(self.pointembeds.items()), key=lambda item: item[0].eid)):
+    #  self.gmshfile.addembed(surface,items)
+    #for surface,items in iter(sorted(list(self.lineembeds.items()), key=lambda item: item[0].eid)):
+    #  self.gmshfile.addembed(surface,items)
 
     for n,curves in iter(sorted(self.transfinitecurves.items())):
-      self.geofile.addtransfinitecurve(curves,n)
-    self.geofile.linebreak()
-    for surface,corners in iter(sorted(list(self.transfinitesurfaces.items()), key=lambda item: item[0].eid)):
-      self.geofile.addtransfinitesurface(surface,corners[0],corners[1])
-    self.geofile.linebreak()
+      gmshfile.addtransfinitecurve(curves,n)
+    #for surface,corners in iter(sorted(list(self.transfinitesurfaces.items()), key=lambda item: item[0].eid)):
+    #  self.gmshfile.addtransfinitesurface(surface,corners[0],corners[1])
     
+    gmshfile.synchronize()
+
     for pid,surfaces in iter(sorted(self.physicalsurfaces.items())):
-      self.geofile.addphysicalsurface(pid,surfaces)
-    self.geofile.linebreak()
+      gmshfile.addphysicalsurface(pid,surfaces)
     for pid,curves in iter(sorted(self.physicalcurves.items())):
-      self.geofile.addphysicalline(pid,curves)
-    self.geofile.linebreak()
-    for pid,points in iter(sorted(self.physicalpoints.items())):
-      self.geofile.addphysicalpoint(pid,points)
-    self.geofile.linebreak()
+      gmshfile.addphysicalline(pid,curves)
+    #for pid,points in iter(sorted(self.physicalpoints.items())):
+    #  self.gmshfile.addphysicalpoint(pid,points)
 
-    self.geofile.produced_comment()
-
-    self.geofile.write(filename)
+    return gmshfile
 
   def pylabplot(self, lineres=100):
     import pylab
@@ -539,10 +604,15 @@ class Geometry:
     #    unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
     #    pylab.plot(curve(unew)[0], curve(unew)[1], 'k')
     #    #pylab.plot(curve.x, curve.y, '+k')
-    for curve in self.curves:
-      unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
-      pylab.plot(curve(unew)[0], curve(unew)[1])
-      pylab.plot(curve.x, curve.y, 'ok')
+    #for curve in self.curves:
+    #  unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
+    #  pylab.plot(curve(unew)[0], curve(unew)[1])
+    #  pylab.plot(curve.x, curve.y, 'ok')
+    for surface in self.surfaces:
+      for curve in surface.curves:
+        unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
+        pylab.plot(curve(unew)[0], curve(unew)[1])
+        pylab.plot(curve.x, curve.y, 'ok')
     #for point in self.points:
     #  pylab.plot(point.x, point.y, 'ok')
 
@@ -553,24 +623,47 @@ class Geometry:
     for point in self.points: point.cleareid()
   
 class SlabSpline(InterpolatedCubicSpline):
-  def __init__(self, xs, ys, name=None, pids=None, bctype='natural'):
+  def __init__(self, xs, ys, res=None, name=None, sid=None, bctype='natural'):
     assert(len(xs)==len(ys))
-    points = [Point((xs[i], ys[i])) for i in range(len(xs))]
-    super(SlabSpline, self).__init__(points, name=name, pids=pids, bctype=bctype)
+    try:
+      assert(len(res)==len(xs))
+    except TypeError:
+      res = [res]*len(xs)
+    points = [Point((xs[i], ys[i]), res=res[i]) for i in range(len(xs))]
+    super(SlabSpline, self).__init__(points, name=name, pids=sid, bctype=bctype)
+
+  def addpoint(self, depth, name, res=None, sid=None):
+    if depth < 0.0: depth = -depth
+    if depth < -self.y[0] or depth > -self.y[-1]:
+      raise Exception("Depth {} must be within range of slab depths ({}, {}).".format(depth, -self.y[0], -self.y[-1]))
+    point0 = self.findpointy(-depth)
+    if point0 is not None:
+      point0.name = name
+      if res is not None: point0.res = res
+      if sid is not None: self.pids[[i for i, p in enumerate(self.points) if p==point0][0]] = pid
+      self.updateinterp()
+    else:
+      point0 = Point(self.intersecty(-depth), name=name, res=res)
+      self.appendpoint(point0, pid=sid)
+    return point0
+
 
 class SubductionGeometry:
   slab_spline = None
 
   coast_distance      = 0.0 
   extra_width         = 0.0 
+
   slab_side_sid       = None 
   wedge_side_sid      = None
   slab_base_sid       = None
   wedge_base_sid      = None
   coast_sid           = None
   top_sid             = None
-  slab_rid             = None
-  wedge_rid            = None
+
+  slab_rid            = None
+  wedge_rid           = None
+
   coast_res           = None
   slab_side_base_res  = None
   wedge_side_top_res  = None
@@ -578,8 +671,9 @@ class SubductionGeometry:
 
   slab_side_lines   = []
   wedge_side_lines  = []
-  domain_base_lines = []
-  domain_top_lines  = []
+  wedge_base_lines  = []
+  slab_base_lines   = []
+  wedge_top_lines   = []
 
   crustal_layers    = {}
   crustal_lines     = []
@@ -590,6 +684,28 @@ class SubductionGeometry:
   wedge_surfaces = []
 
   def __init__(self, slab_spline, **kwargs):
+    """
+    Initialize the subduction geometry with the current values of:
+    * slab_spline:          SlabSpline object describing the slab
+    * coast_distance (>=0): distance from the trench that the coast is located,
+                            does nothing if ==0.0 and the trench is at 0.0 depth
+    * extra_width (>=0):    extra width of domain beyond the final slab point,
+                            does nothing if ==0.0
+    * slab_side_sid:        surface id of vertical side on slab side of domain
+    * wedge_side_sid:       surface id of vertical side on wedge side of domain
+    * slab_base_sid:        surface id of base of slab region of domain
+    * wedge_base_sid:       surface id of base of wedge region of domain,
+                            only used if extra_width > 0.0
+    * coast_sid:            surface id of line between trench and coast,
+                            only used if coast_distance > 0.0 or the slab trench is not at 0.0 depth
+    * top_sid:              surface id of top of the domain
+    * slab_rid:              region id of slab region
+    * wedge_rid:             region id of wedge region
+    * coast_res:            resolution of coast point
+    * slab_side_base_res:   resolution of base of slab vertical side
+    * wedge_side_top_res:   resolution of top of wedge vertical side
+    * wedge_side_base_res:  resoltuion of base of wedge vertical side
+    """
     self.slab_spline = slab_spline
     self.update(**kwargs)
 
@@ -640,11 +756,14 @@ class SubductionGeometry:
     if extra_width is not None: self.extra_width = abs(extra_width) if self.slab_left_right else -abs(extra_width)
 
     # reset the domain boundary lines
-    self.slab_side_lines   = []
-    self.wedge_side_lines  = []
-    self.domain_base_lines = []
-    self.domain_top_lines  = []
-    self.crustal_lines     = []
+    self.slab_side_lines  = []
+    self.wedge_side_lines = []
+    self.wedge_base_lines = []
+    self.slab_base_lines  = []
+    self.wedge_top_lines  = []
+    self.crustal_lines    = []
+    self.wedge_surfaces   = []
+    self.slab_surfaces    = []
     
     self.trench_x = slab_point_0.x
     self.trench_y = slab_point_0.y
@@ -671,91 +790,151 @@ class SubductionGeometry:
     
     # start on the lower lines
     # these go up to the slab base
-    self.domain_base_lines.append(Line([slab_side_base, slab_point_f], name="SlabBase", pid=self.slab_base_sid))
+    self.slab_base_lines.append(Line([slab_side_base, slab_point_f], name="SlabBase", pid=self.slab_base_sid))
     # but continue if extra width is > 0.0
     if self.extra_width > 0.0:
-      self.domain_base_lines.append(Line([slab_point_f, wedge_side_base], name="WedgeBase", pid=self.wedge_base_sid))
+      self.wedge_base_lines.append(Line([slab_point_f, wedge_side_base], name="WedgeBase", pid=self.wedge_base_sid))
 
     coast_point = slab_point_0
     if self.coast_distance > 0.0 or self.trench_y < 0.0:
       coast_point = Point([self.trench_x+self.coast_distance, 0.0], "WedgeTop::Coast", res=self.coast_res)
-      self.domain_top_lines.append(Line([slab_point_0, coast_point], name="WedgeCoast", pid=self.coast_sid))
-    self.domain_top_lines.append(Line([coast_point, wedge_side_top], "WedgeTop", pid=self.top_sid))
+      self.wedge_top_lines.append(Line([slab_point_0, coast_point], name="WedgeCoast", pid=self.coast_sid))
+    self.wedge_top_lines.append(Line([coast_point, wedge_side_top], "WedgeTop", pid=self.top_sid))
 
     self.sortlines()
 
     for name, layer_dict in  self.crustal_layers.items():
-      self.addcrustlayer(layer_dict["depth"], name, layer_dict["pid"], layer_dict["slab_res"], layer_dict["side_res"])
+      self._addcrustlayer(layer_dict["depth"], name, layer_dict["sid"], layer_dict["slab_res"], layer_dict["side_res"],
+                          layer_dict["slab_sid"], layer_dict["side_sid"])
 
     for name, point_dict in self.wedge_side_points.items():
-      self.addwedgesidepoint(point_dict["depth"], name, point_dict["line_name"], point_dict["res"])
+      self._addwedgesidepoint(point_dict["depth"], name, point_dict["line_name"], point_dict["res"], point_dict["sid"])
+
+    self.sortlines()
+    self._updatesurfaces()
 
   def sortlines(self):
     for lines in [self.slab_side_lines, self.wedge_side_lines, self.crustal_lines]:
       lines.sort(key=lambda line: line.y.min())
-    for lines in [self.domain_base_lines, self.domain_top_lines]:
+    for lines in [self.slab_base_lines, self.wedge_base_lines, self.wedge_top_lines]:
       lines.sort(key=lambda line: line.x[0])
 
-  def addcrustlayer(self, depth, name, pid=None, slab_res=1.0, side_res=1.0):
+  def _updatesurfaces(self):
+    self.wedge_surfaces = []
+    surface_lines = list(self.wedge_base_lines)
+    name = "Wedge"
+    rid = self.wedge_rid
+    sis = 0
+    slab_point_l = self.slab_spline.points[-1]
+    for cline in self.crustal_lines:
+      for sfs, sline in enumerate(self.wedge_side_lines): 
+        if sline.points[-1]==cline.points[-1]: break
+      surface_lines += self.wedge_side_lines[sis:sfs+1]
+      surface_lines.append(cline)
+      surface_lines += self.slab_spline.interpcurvesinterval(cline.points[0], slab_point_l)
+      self.wedge_surfaces.append(Surface(surface_lines, name=name, pid=rid))
+      surface_lines = list([cline])
+      name = cline.name
+      if self.crustal_layers[name]["rid"] is not None: rid = self.crustal_layers[name]["rid"]
+      sis = sfs+1
+      slab_point_l = cline.points[0]
+    for sfs, sline in enumerate(self.wedge_side_lines): 
+      if sline.points[-1]==self.wedge_top_lines[-1].points[-1]: break
+    surface_lines += self.wedge_side_lines[sis:sfs+1]
+    surface_lines += self.wedge_top_lines
+    surface_lines += self.slab_spline.interpcurvesinterval(self.slab_spline.points[0], slab_point_l)
+    self.wedge_surfaces.append(Surface(surface_lines, name=name, pid=rid))
+
+    self.slab_surfaces = []
+    surface_lines = list(self.slab_base_lines)
+    surface_lines += self.slab_spline.interpcurves
+    surface_lines += self.slab_side_lines
+    self.slab_surfaces.append(Surface(surface_lines, name="Slab", pid=self.slab_rid))
+
+  def addcrustlayer(self, depth, name, sid=None, rid=None, slab_res=None, side_res=None, slab_sid=None, side_sid=None):
+    """
+    Add a crustal layer to the subduction geometry.
+    """
+    self.crustal_layers[name] = {
+                                  "depth"    : depth,
+                                  "sid"      : sid,
+                                  "slab_res" : slab_res,
+                                  "side_res" : side_res,
+                                  "rid"      : rid,
+                                  "slab_sid" : slab_sid,
+                                  "side_sid" : side_sid,
+                                }
+    self.update()
+
+  def _addcrustlayer(self, depth, name, sid=None, slab_res=None, side_res=None, slab_sid=None, side_sid=None):
     """
     Add a crustal layer to the subduction geometry.
     """
     if depth < 0.0: depth = -depth
-    self.crustal_layers[name] = {
-                                  "depth"    : depth,
-                                  "pid"      : pid,
-                                  "slab_res" : slab_res,
-                                  "side_res" : side_res,
-                                }
-    point0 = self.addslabpoint(depth, "Slab::"+name, res=slab_res)
-    point1 = self.addwedgesidepoint(depth, "WedgeSide::"+name, line_name=name, res=side_res)
-    line = Line([point0, point1], name=name, pid=pid)
+    point0 = self.slab_spline.addpoint(depth, name, res=slab_res, sid=slab_sid)
+    point1 = self._addwedgesidepoint(depth, "WedgeSide::"+name, line_name=name, res=side_res, sid=side_sid)
+    line = Line([point0, point1], name=name, pid=sid)
     self.crustal_lines.append(line)
     self.sortlines()
     return line
 
-  def addslabpoint(self, depth, name, res=None):
-    if depth < 0.0: depth = -depth
-    if depth < -self.trench_y or depth > -self.domain_base_y:
-      raise Exception("Depth {} must be within range of slab depths ({}, {}).".format(depth, -self.trench_y, -self.domain_base_y))
-    point0 = self.slab_spline.findpointy(-depth)
-    if point0 is not None:
-      point0.name = name
-      if res is not None: point0.res  = res
-    else:
-      point0 = Point(self.slab_spline.intersecty(-depth), name=name, res=res)
-      self.slab_spline.appendpoint(point0)
-      self.slab_spline.updateinterp()
-    return point0
+  def addslabpoint(self, depth, name, res=None, sid=None):
+    self.slab_spline.addpoint(depth, name, res=res, sid=sid)
+    self.update()
 
-  def addwedgesidepoint(self, depth, name, line_name=None, res=None):
-    if depth < 0.0: depth = -depth
-    if line_name is None: line_name = name
+  def addwedgesidepoint(self, depth, name, line_name=None, res=None, sid=None):
     self.wedge_side_points[name] = {
                                      "depth" : depth,
                                      "res"   : res,
                                      "line_name" : line_name,
+                                     "sid"   : sid,
                                    }
+    self.update()
+
+  def _addwedgesidepoint(self, depth, name, line_name=None, res=None, sid=None):
+    if depth < 0.0: depth = -depth
+    if line_name is None: line_name = name
     sidepoints  = [line.points[0] for line in self.wedge_side_lines]
-    sidepoints += [self.wedge_side_lines[-1].points[1]]
-    points = [point for point in sidepoints if point.y==-depth]
+    points = [(i, point) for i, point in enumerate(sidepoints) if point.y==-depth]
     if len(points) > 0:
-      point = points[0]
+      i, point = points[0]
       if res is not None: point.res = res
+      if sid is not None: self.wedge_side_lines[i].pid = sid
     else:
       point = Point([self.wedge_side_x, -depth], name, res=res)
       for i, line in enumerate(self.wedge_side_lines):
         if line.y.min() <= -depth <= line.y.max(): break
       iymin = line.y.argmin()
-      self.wedge_side_lines[i] = Line([line.points[iymin], point], name=line.name)
-      self.wedge_side_lines.insert(i+1, Line([point, line.points[iymin-1]], name=line_name))
+      osid = line.pid
+      if sid is None: sid = osid
+      self.wedge_side_lines[i] = Line([line.points[iymin], point], name=line.name, pid=osid)
+      self.wedge_side_lines.insert(i+1, Line([point, line.points[iymin-1]], name=line_name, pid=sid))
       self.sortlines()
     return point
 
   def plot(self):
     geom = Geometry()
-    if self.slab_spline is not None: geom.addinterpcurve(self.slab_spline)
-    for lines in [self.slab_side_lines, self.wedge_side_lines, self.domain_base_lines, self.domain_top_lines, self.crustal_lines]:
+    for surfaces in [self.wedge_surfaces, self.slab_surfaces]:
+      for surface in surfaces:
+        geom.addsurface(surface)
+    geom.pylabplot()
+
+  def gmshfile(self):
+    geom = Geometry()
+    geom.addinterpcurve(self.slab_spline)
+    for lines in [self.slab_side_lines, self.wedge_side_lines, self.slab_base_lines, \
+                  self.wedge_base_lines, self.wedge_top_lines, self.crustal_lines]:
       for line in lines:
         geom.addcurve(line)
-    geom.pylabplot()
+    for surfaces in [self.wedge_surfaces, self.slab_surfaces]:
+      for surface in surfaces:
+        geom.addsurface(surface)
+    return geom.gmshfile()
+
+  def writegeofile(self, filename):
+    gmshfile = self.gmshfile()
+    gmshfile.write(filename)
+
+  def generategmshmesh(self):
+    gmshfile = self.gmshfile()
+    return gmshfile.mesh()
