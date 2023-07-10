@@ -100,8 +100,11 @@ class GmshFile:
     gmsh.write(filename)
 
   def mesh(self):
+    from dolfinx.io import gmshio
+    from mpi4py import MPI
+    self.synchronize()
     gmsh.model.mesh.generate(2)
-    return gmsh.model
+    return gmshio.model_to_mesh(gmsh.model, MPI.COMM_WORLD, 0, gdim=2)
 
 class ElementaryEntity:
   def __init__(self, name=None):
@@ -613,6 +616,7 @@ class Geometry:
         unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
         pylab.plot(curve(unew)[0], curve(unew)[1])
         pylab.plot(curve.x, curve.y, 'ok')
+    pylab.gca().set_aspect('equal', 'datalim')
     #for point in self.points:
     #  pylab.plot(point.x, point.y, 'ok')
 
@@ -935,6 +939,6 @@ class SubductionGeometry:
     gmshfile = self.gmshfile()
     gmshfile.write(filename)
 
-  def generategmshmesh(self):
+  def generatemesh(self):
     gmshfile = self.gmshfile()
     return gmshfile.mesh()
