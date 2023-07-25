@@ -644,7 +644,7 @@ class SlabSpline(InterpolatedCubicSpline):
     if point0 is not None:
       point0.name = name
       if res is not None: point0.res = res
-      if sid is not None: self.pids[[i for i, p in enumerate(self.points) if p==point0][0]] = pid
+      if sid is not None: self.pids[[i for i, p in enumerate(self.points) if p==point0][0]] = sid
       self.updateinterp()
     else:
       point0 = Point(self.intersecty(-depth), name=name, res=res)
