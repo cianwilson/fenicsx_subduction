@@ -181,11 +181,10 @@ class InterpolatedCubicSpline:
     self.controlpoints.sort(key=lambda point: point.x)
     self.name = name
     try:
-      assert(len(pids)==len(self.points))
+      assert(len(pids)==len(self.points)-1)
       self.pids = pids
     except TypeError:
-      self.pids = [pids]*len(self.points)
-    assert(self.pids[-1]==self.pids[-2])
+      self.pids = [pids]*(len(self.points)-1)
     self.x = None
     self.y = None
     self.u = None
@@ -221,10 +220,12 @@ class InterpolatedCubicSpline:
     isort = numpy.argsort(self.x)
     points = numpy.asarray(self.points)[isort]
     self.points = points.tolist()
-    self.pids = [self.pids[i] for i in isort]
-    pid0 = self.pids[0]
-    # inheret pids from higher up points
-    for p in range(1,len(self.pids)):
+    self.pids = [self.pids[i-1] for i in isort if i != 0]
+    # this loop searches for the first pid that isn't None in reverse
+    for pid0 in reversed(self.pids):
+      if pid0 is not None: break
+    # inheret pids from lower neighbors
+    for p in range(len(self.pids)-1,-1,-1):
       if self.pids[p] is None:
         self.pids[p] = pid0
       else:
@@ -644,7 +645,9 @@ class SlabSpline(InterpolatedCubicSpline):
     if point0 is not None:
       point0.name = name
       if res is not None: point0.res = res
-      if sid is not None: self.pids[[i for i, p in enumerate(self.points) if p==point0][0]] = sid
+      if sid is not None:
+        i0 = [i for i, p in enumerate(self.points) if p==point0][0]
+        if i0 > 0: self.pids[i0-1] = sid
       self.updateinterp()
     else:
       point0 = Point(self.intersecty(-depth), name=name, res=res)
