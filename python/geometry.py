@@ -592,7 +592,7 @@ class Geometry:
 
     return gmshfile
 
-  def pylabplot(self, lineres=100):
+  def pylabplot(self, curvelabels=False, surfacelabels=False, lineres=100):
     import pylab
     #for interpcurve in self.interpcurves:
     #  unew = numpy.arange(interpcurve.u[0], interpcurve.u[-1]+((interpcurve.u[-1]-interpcurve.u[0])/(2.*lineres)), 1./lineres)
@@ -617,6 +617,12 @@ class Geometry:
         unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
         pylab.plot(curve(unew)[0], curve(unew)[1])
         pylab.plot(curve.x, curve.y, 'ok')
+        if curvelabels and curve.pid is not None: 
+          pylab.annotate(repr(curve.pid), (sum(curve.x)/len(curve.x), sum(curve.y)/len(curve.y)), color='b')
+      if surfacelabels and surface.pid is not None:
+        labelx = sum([curve.x.min() for curve in surface.curves])/len(surface.curves)
+        labely = sum([curve.y.min() for curve in surface.curves])/len(surface.curves)
+        pylab.annotate(repr(surface.pid), (labelx, labely), color='k')
     pylab.gca().set_aspect('equal', 'datalim')
     #for point in self.points:
     #  pylab.plot(point.x, point.y, 'ok')
@@ -684,6 +690,9 @@ class SubductionGeometry:
 
   crustal_layers    = {}
   crustal_lines     = []
+
+  wedge_dividers    = {}
+  wedge_lines       = []
 
   wedge_side_points = {}
 
@@ -769,6 +778,7 @@ class SubductionGeometry:
     self.slab_base_lines  = []
     self.wedge_top_lines  = []
     self.crustal_lines    = []
+    self.wedge_lines      = []
     self.wedge_surfaces   = []
     self.slab_surfaces    = []
     
@@ -817,13 +827,18 @@ class SubductionGeometry:
     for name, point_dict in self.wedge_side_points.items():
       self._addwedgesidepoint(point_dict["depth"], name, point_dict["line_name"], point_dict["res"], point_dict["sid"])
 
-    self.sortlines()
+    for name, divider_dict in self.wedge_dividers.items():
+      self._addwedgedivider(divider_dict["depth"], name, divider_dict["sid"], divider_dict["slab_res"], divider_dict["top_res"],
+                            divider_dict["slab_sid"], divider_dict["top_sid"])
+
     self._updatesurfaces()
 
   def sortlines(self):
-    for lines in [self.slab_side_lines, self.wedge_side_lines, self.crustal_lines]:
+    for lines in [self.slab_side_lines, self.wedge_side_lines]:
       lines.sort(key=lambda line: line.y.min())
-    for lines in [self.slab_base_lines, self.wedge_base_lines, self.wedge_top_lines]:
+    self.crustal_lines.sort(key=lambda lines: lines[0].y.min())
+    for lines in [self.slab_base_lines, self.wedge_base_lines, self.wedge_top_lines, self.wedge_lines] \
+                  +self.crustal_lines:
       lines.sort(key=lambda line: line.x[0])
 
   def _updatesurfaces(self):
@@ -833,18 +848,29 @@ class SubductionGeometry:
     rid = self.wedge_rid
     sis = 0
     slab_point_l = self.slab_spline.points[-1]
-    for cline in self.crustal_lines:
+    # loop over the crustal lines
+    for cis, clines in enumerate(self.crustal_lines):
       for sfs, sline in enumerate(self.wedge_side_lines): 
-        if sline.points[-1]==cline.points[-1]: break
+        if sline.points[-1]==clines[-1].points[-1]: break
       surface_lines += self.wedge_side_lines[sis:sfs+1]
-      surface_lines.append(cline)
-      surface_lines += self.slab_spline.interpcurvesinterval(cline.points[0], slab_point_l)
-      self.wedge_surfaces.append(Surface(surface_lines, name=name, pid=rid))
-      surface_lines = list([cline])
-      name = cline.name
-      if self.crustal_layers[name]["rid"] is not None: rid = self.crustal_layers[name]["rid"]
       sis = sfs+1
-      slab_point_l = cline.points[0]
+      for ci, cline in enumerate(clines[:0:-1]):
+        surface_lines.append(cline)
+        wline = self.wedge_lines[-1-ci]
+        surface_lines.append(wline)
+        surface_lines += self.slab_spline.interpcurvesinterval(wline.points[0], slab_point_l)
+        self.wedge_surfaces.append(Surface(surface_lines, name=name, pid=rid))
+        surface_lines = list([wline])
+        name = wline.name
+        if self.wedge_dividers[name]["rid"] is not None: rid = self.wedge_dividers[name]["rid"]
+        slab_point_l = wline.points[0]
+      surface_lines.append(clines[0])
+      surface_lines += self.slab_spline.interpcurvesinterval(clines[0].points[0], slab_point_l)
+      self.wedge_surfaces.append(Surface(surface_lines, name=name, pid=rid))
+      surface_lines = list(clines)
+      name = clines[-1].name
+      if self.crustal_layers[name]["rid"] is not None: rid = self.crustal_layers[name]["rid"]
+      slab_point_l = clines[0].points[0]
     for sfs, sline in enumerate(self.wedge_side_lines): 
       if sline.points[-1]==self.wedge_top_lines[-1].points[-1]: break
     surface_lines += self.wedge_side_lines[sis:sfs+1]
@@ -881,13 +907,61 @@ class SubductionGeometry:
     point0 = self.slab_spline.addpoint(depth, name, res=slab_res, sid=slab_sid)
     point1 = self._addwedgesidepoint(depth, "WedgeSide::"+name, line_name=name, res=side_res, sid=side_sid)
     line = Line([point0, point1], name=name, pid=sid)
-    self.crustal_lines.append(line)
+    self.crustal_lines.append([line])
+    self.sortlines()
+    return line
+
+  def addwedgedivider(self, depth, name, sid=None, rid=None, slab_res=None, top_res=None, slab_sid=None, top_sid=None):
+    """
+    Add a wedge divider to the subduction geometry.
+    """
+    self.wedge_dividers[name] = {
+                                  "depth"    : depth,
+                                  "sid"      : sid,
+                                  "slab_res" : slab_res,
+                                  "top_res"  : top_res,
+                                  "rid"      : rid,
+                                  "slab_sid" : slab_sid,
+                                  "top_sid"  : top_sid,
+                                }
+    self.update()
+          
+  def _addwedgedivider(self, depth, name, sid=None, slab_res=None, top_res=None, slab_sid=None, top_sid=None):
+    """
+    Add a wedge divider to the subduction geometry.
+    """
+    if depth < 0.0: depth = -depth
+    point0 = self.slab_spline.addpoint(depth, name, res=slab_res, sid=slab_sid)
+    point1 = self._addcrustbasepoint(point0.x, "WedgeTop::"+name, line_name=name, res=top_res, sid=top_sid)
+    line = Line([point0, point1], name=name, pid=sid)
+    self.wedge_lines.append(line)
     self.sortlines()
     return line
 
   def addslabpoint(self, depth, name, res=None, sid=None):
     self.slab_spline.addpoint(depth, name, res=res, sid=sid)
     self.update()
+
+  def _addcrustbasepoint(self, x, name, line_name=None, res=None, sid=None):
+    if line_name is None: line_name = name
+    basepoints  = [line.points[0] for line in self.crustal_lines[0]]
+    points = [(i, point) for i, point in enumerate(basepoints) if point.x==x]
+    if len(points) > 0:
+      i, point = points[0]
+      if res is not None: point.res = res
+      if sid is not None: self.crustal_lines[0][i].pid = sid
+    else:
+      for i, line in enumerate(self.crustal_lines[0]):
+        if line.x.min() <= x <= line.x.max(): break
+      ixmin = line.x.argmin()
+      osid = line.pid
+      if sid is None: sid = osid
+      depth = -line.points[0].y
+      point = Point([x, -depth], line.name+"::"+name, res=res)
+      self.crustal_lines[0][i] = Line([line.points[ixmin], point], name=line_name, pid=sid)
+      self.crustal_lines[0].insert(i+1, Line([point, line.points[ixmin-1]], name=line.name, pid=osid))
+      self.sortlines()
+    return point
 
   def addwedgesidepoint(self, depth, name, line_name=None, res=None, sid=None):
     self.wedge_side_points[name] = {
@@ -919,18 +993,19 @@ class SubductionGeometry:
       self.sortlines()
     return point
 
-  def plot(self):
+  def plot(self, label_sids=False, label_rids=False):
     geom = Geometry()
     for surfaces in [self.wedge_surfaces, self.slab_surfaces]:
       for surface in surfaces:
         geom.addsurface(surface)
-    geom.pylabplot()
+    geom.pylabplot(curvelabels=label_sids, surfacelabels=label_rids)
 
   def gmshfile(self):
     geom = Geometry()
     geom.addinterpcurve(self.slab_spline)
     for lines in [self.slab_side_lines, self.wedge_side_lines, self.slab_base_lines, \
-                  self.wedge_base_lines, self.wedge_top_lines, self.crustal_lines]:
+                  self.wedge_base_lines, self.wedge_top_lines, self.wedge_lines] \
+                 + self.crustal_lines:
       for line in lines:
         geom.addcurve(line)
     for surfaces in [self.wedge_surfaces, self.slab_surfaces]:
