@@ -1,0 +1,8 @@
+format: jb-book
+root: notebooks/index
+parts:
+  - caption: Geometry
+    chapters:
+      - file: notebooks/BenchmarkGeometry
+      - file: notebooks/DataExample
+      - file: notebooks/ExampleGeometry

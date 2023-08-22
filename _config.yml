@@ -1,0 +1,62 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: FEniCSx Subduction
+author: Cian Wilson
+#logo: fenics_logo.png
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+  execute_notebooks: force
+
+  # Set timeout for any example to 20 minutes
+  timeout: 1800
+
+# Information about where the book exists on the web
+repository:
+  url: https://github.com/cianwilson/fenicsx_subduction # Online location of your book
+  path_to_book: book # Optional path to your book, relative to the repository root
+  branch: wedge_dividers_book # Which branch of the repository should be used when creating links (optional)
+
+# Add a bibtex file so that we can create citations
+bibtex_bibfiles:
+  - references.bib
+
+launch_buttons:
+  notebook_interface: "jupyterlab"
+  binderhub_url: "https://mybinder.org"
+
+sphinx:
+  config:
+    html_last_updated_fmt: "%b %d, %Y"
+    suppress_warnings: ["mystnb.unknown_mime_type"]
+parse:
+  myst_enable_extensions:
+    - "amsmath"
+    - "colon_fence"
+    - "deflist"
+    - "dollarmath"
+    - "html_admonition"
+    - "html_image"
+    - "linkify"
+    - "replacements"
+    - "smartquotes"
+    - "substitution"
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+html:
+  use_issues_button: true
+  use_repository_button: true
+  use_edit_page_button: true
+
+#  extra_footer: |
+#    <div>
+#        This webpage is an adaptation of <a href=https://www.springer.com/gp/book/9783319524610>The FEniCS tutorial</a> and
+#        is distributed under the terms of the      <a href=http://creativecommons.org/licenses/by/4.0/>Creative Commons Attribution 4.0 International License  </a>
+#        which permits use, duplication, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source,
+#        provide a link to the Creative Commons license and indicate if changes were made.
+#    </div>
+
+exclude_patterns: [README.md]
