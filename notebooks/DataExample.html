@@ -1,0 +1,892 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Data Example Geometry &#8212; FEniCSx Subduction</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/DataExample';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example Geometry" href="ExampleGeometry.html" />
+    <link rel="prev" title="Benchmark Geometry" href="BenchmarkGeometry.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">FEniCSx Subduction</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    FEniCS-X Subduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Geometry</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="BenchmarkGeometry.html">Benchmark Geometry</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Example Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ExampleGeometry.html">Example Geometry</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/cianwilson/fenicsx_subduction/wedge_dividers_book?urlpath=lab/tree/book/notebooks/DataExample.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onBinder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction/edit/wedge_dividers_book/book/notebooks/DataExample.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction/issues/new?title=Issue%20on%20page%20%2Fnotebooks/DataExample.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/DataExample.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Data Example Geometry</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#this-is-where-you-can-switch-between-subduction-zones">This is where you can switch between subduction zones!!</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="data-example-geometry">
+<h1>Data Example Geometry<a class="headerlink" href="#data-example-geometry" title="Permalink to this heading">#</a></h1>
+<p>Define some filenames</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">data_filename</span>   <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;all_sz.json&quot;</span><span class="p">)</span>
+<span class="n">params_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;default_params.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Load the subduction zone parameters</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">szparams</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The “minimum” resolution, used to scale resolutions throughout the mesh.  The current default of 10.0km is way too high for a real subduction zone model but helps to keep this test notebook fast and readable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">minres</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="c1"># km</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Load the default parameters</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">params_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">default_params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>List the available subduction zones that we’ve just loaded from the json file</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available subduction zones:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">szparams</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Available subduction zones:
+01_Alaska_Peninsula
+02_Alaska
+03_British_Columbia
+04_Cascadia
+05_Mexico
+06_GuatElSal
+07_Nicaragua
+08_Costa_Rica
+09_Colombia_Ecuador
+10_N_Peru_Gap
+11_C_Peru_Gap
+12_Peru
+13_N_Chile
+14_NC_Chile
+15_C_Chile_Gap
+16_C_Chile
+17_SC_Chile
+18_S_Chile
+19_N_Antilles
+20_S_Antilles
+21_Scotia
+22_Aegean
+23_N_Sumatra
+24_C_Sumatra
+25_S_Sumatra
+26_Sunda_Strait
+27_Java
+28_Bali_Lombok
+29_W_Banda_Sea
+30_E_Banda_Sea
+31_New_Britain
+32_Solomon
+33_N_Vanuatu
+34_S_Vanuatu
+35_Tonga
+36_Kermadec
+37_New_Zealand
+38_S_Philippines
+39_N_Philippines
+40_S_Marianas
+41_N_Marianas
+42_Bonin
+43_Izu
+44_Kyushu
+45_Ryukyu
+46_Nankai
+47_C_Honshu
+48_N_Honshu
+49_Hokkaido
+50_S_Kurile
+51_N_Kurile
+52_Kamchatka
+53_W_Aleutians
+54_C_Aleutians
+55_E_Aleutians
+56_Calabria
+</pre></div>
+</div>
+</div>
+</div>
+<section id="this-is-where-you-can-switch-between-subduction-zones">
+<h2>This is where you can switch between subduction zones!!<a class="headerlink" href="#this-is-where-you-can-switch-between-subduction-zones" title="Permalink to this heading">#</a></h2>
+<p>Choose a subduction zone from the list on the first line of the following cell to load the geometrical parameters from the dictionary</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">szname</span> <span class="o">=</span> <span class="s2">&quot;07_Nicaragua&quot;</span>  <span class="c1"># change this to switch subduction zones</span>
+<span class="n">szdata</span> <span class="o">=</span> <span class="n">szparams</span><span class="p">[</span><span class="n">szname</span><span class="p">]</span>
+<span class="n">coast_distance</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltaxcoast&#39;</span><span class="p">]</span>
+<span class="n">extra_width</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltaxwidth&#39;</span><span class="p">]</span>
+<span class="n">lc_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltazmoho&#39;</span><span class="p">]</span>
+<span class="n">uc_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltazuc&#39;</span><span class="p">]</span>
+<span class="n">io_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltazoutflow&#39;</span><span class="p">]</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;trench&#39;</span><span class="p">]]</span><span class="o">+</span><span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;slabpoints&#39;</span><span class="p">])</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">*</span><span class="n">minres</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_depth2&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">3</span><span class="o">*</span><span class="n">minres</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Load the geometry module so we can build a mesh based on the above parameters</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">))</span>
+<span class="kn">import</span> <span class="nn">geometry</span> <span class="k">as</span> <span class="nn">geo</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Define the slab spline</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># set up the surface ids for the slab depending on depth</span>
+<span class="n">sids</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">lc_depth</span><span class="p">:</span> 
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;fault_sid&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_depth1&#39;</span><span class="p">]:</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_sid&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_depth2&#39;</span><span class="p">]:</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_sid&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_sid&#39;</span><span class="p">]</span>
+    <span class="n">sids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sid</span><span class="p">)</span>
+<span class="n">sids</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[13, 13, 1, 14, 14, 14, 1, 1]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># set up the slab spline</span>
+<span class="n">slab</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">SlabSpline</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="n">res</span><span class="p">,</span> <span class="n">sid</span><span class="o">=</span><span class="n">sids</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Slab&quot;</span><span class="p">)</span>
+<span class="c1"># adding the coupling depths may or may not be necessary</span>
+<span class="c1"># depending on if they were included in the slab spline data already or not</span>
+<span class="c1"># the slab class should ignore them if they aren&#39;t necessary</span>
+<span class="n">slab</span><span class="o">.</span><span class="n">addpoint</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;partial_coupling_depth&#39;</span><span class="p">],</span> <span class="s2">&quot;Slab::PartialCouplingDepth&quot;</span><span class="p">,</span> 
+              <span class="n">res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;partial_coupling_depth_res_fact&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
+              <span class="n">sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_sid&#39;</span><span class="p">])</span>
+<span class="n">slab</span><span class="o">.</span><span class="n">addpoint</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;full_coupling_depth&#39;</span><span class="p">],</span> <span class="s2">&quot;Slab::FullCouplingDepth&quot;</span><span class="p">,</span> 
+              <span class="n">res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;full_coupling_depth_res_fact&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
+              <span class="n">sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_sid&#39;</span><span class="p">])</span>
+<span class="c1"># add the slab detector point</span>
+<span class="n">slab</span><span class="o">.</span><span class="n">addpoint</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_det_depth&quot;</span><span class="p">],</span> <span class="s2">&quot;Slab::DetectorPoint&quot;</span><span class="p">,</span> 
+              <span class="n">res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;full_coupling_depth_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+              <span class="n">sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_sid&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;geometry.Point at 0x1588abe80&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Define the subduction geometry, including crustal layers and plot</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">geom</span> <span class="o">=</span> <span class="n">geo</span><span class="o">.</span><span class="n">SubductionGeometry</span><span class="p">(</span><span class="n">slab</span><span class="p">,</span> <span class="o">**</span><span class="n">default_params</span><span class="p">,</span> 
+                              <span class="n">wedge_side_top_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;wedge_side_top_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                              <span class="n">wedge_side_base_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;wedge_side_base_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                              <span class="n">slab_side_base_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_side_base_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                              <span class="n">coast_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;coast_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                              <span class="n">coast_distance</span><span class="o">=</span><span class="n">coast_distance</span><span class="p">,</span> <span class="n">extra_width</span><span class="o">=</span><span class="n">extra_width</span><span class="p">)</span>
+<span class="c1"># add a lower crust</span>
+<span class="n">geom</span><span class="o">.</span><span class="n">addcrustlayer</span><span class="p">(</span><span class="n">lc_depth</span><span class="p">,</span> <span class="s2">&quot;LowerCrust&quot;</span><span class="p">,</span> 
+                   <span class="n">sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;lc_base_sid&quot;</span><span class="p">],</span> <span class="n">rid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;lc_rid&quot;</span><span class="p">],</span>
+                   <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;lc_slab_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                   <span class="n">side_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;lc_side_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                   <span class="n">slab_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;fault_sid&quot;</span><span class="p">],</span>
+                   <span class="n">side_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;lc_side_sid&quot;</span><span class="p">])</span>
+<span class="c1"># oceanic subduction zones don&#39;t define an upper crust</span>
+<span class="k">if</span> <span class="n">uc_depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">geom</span><span class="o">.</span><span class="n">addcrustlayer</span><span class="p">(</span><span class="n">uc_depth</span><span class="p">,</span> <span class="s2">&quot;UpperCrust&quot;</span><span class="p">,</span> 
+                       <span class="n">sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;uc_base_sid&quot;</span><span class="p">],</span> <span class="n">rid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;uc_rid&quot;</span><span class="p">],</span>
+                       <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;uc_slab_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                       <span class="n">side_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;uc_side_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                       <span class="n">slab_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;fault_sid&quot;</span><span class="p">],</span>
+                       <span class="n">side_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;uc_side_sid&quot;</span><span class="p">])</span>
+<span class="c1"># add the pre-defined in-out point</span>
+<span class="n">geom</span><span class="o">.</span><span class="n">addwedgesidepoint</span><span class="p">(</span><span class="n">io_depth</span><span class="p">,</span> <span class="s2">&quot;WedgeSide::InOut&quot;</span><span class="p">,</span> <span class="n">line_name</span><span class="o">=</span><span class="s2">&quot;UpperWedgeSide&quot;</span><span class="p">,</span> 
+                       <span class="n">res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;io_depth_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
+                       <span class="n">sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;upper_wedge_side_sid&quot;</span><span class="p">])</span>
+<span class="c1"># add wedge dividers for the diagnostics</span>
+<span class="n">geom</span><span class="o">.</span><span class="n">addwedgedivider</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_depth1&quot;</span><span class="p">],</span> <span class="s2">&quot;ColdCorner&quot;</span><span class="p">,</span> 
+                     <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res2_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
+                     <span class="n">top_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res2_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                     <span class="n">rid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;wedge_rid&quot;</span><span class="p">],</span> 
+                     <span class="n">slab_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_sid&quot;</span><span class="p">])</span>
+<span class="c1"># add wedge dividers for the diagnostics</span>
+<span class="n">geom</span><span class="o">.</span><span class="n">addwedgedivider</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_depth2&quot;</span><span class="p">],</span> <span class="s2">&quot;WedgeFocused&quot;</span><span class="p">,</span> 
+                     <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res1_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
+                     <span class="n">top_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res1_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+                     <span class="n">rid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;wedge_diag_rid&quot;</span><span class="p">],</span> 
+                     <span class="n">slab_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_sid&quot;</span><span class="p">])</span>
+<span class="n">geom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label_sids</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label_rids</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#geom.writegeofile(szname+&quot;.geo_unrolled&quot;)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/abe6e98e5544760a994129485db6f2a6493e7b12f3974ce8f521d2f08efa74b0.png" src="../_images/abe6e98e5544760a994129485db6f2a6493e7b12f3974ce8f521d2f08efa74b0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mesh</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="n">ft</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">generatemesh</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 20%] Meshing curve 7 (Line)
+Info    : [ 20%] Meshing curve 8 (Line)
+Info    : [ 20%] Meshing curve 9 (Line)
+Info    : [ 20%] Meshing curve 10 (Line)
+Info    : [ 20%] Meshing curve 11 (Line)
+Info    : [ 30%] Meshing curve 12 (Line)
+Info    : [ 30%] Meshing curve 14 (Line)
+Info    : [ 30%] Meshing curve 15 (Line)
+Info    : [ 30%] Meshing curve 16 (Line)
+Info    : [ 30%] Meshing curve 17 (Line)
+Info    : [ 40%] Meshing curve 18 (Line)
+Info    : [ 40%] Meshing curve 19 (Line)
+Info    : [ 40%] Meshing curve 20 (Line)
+Info    : [ 40%] Meshing curve 21 (Line)
+Info    : [ 40%] Meshing curve 22 (Line)
+Info    : [ 50%] Meshing curve 23 (Line)
+Info    : [ 50%] Meshing curve 24 (Line)
+Info    : [ 50%] Meshing curve 25 (Line)
+Info    : [ 50%] Meshing curve 27 (Line)
+Info    : [ 50%] Meshing curve 28 (Line)
+Info    : [ 60%] Meshing curve 29 (Line)
+Info    : [ 60%] Meshing curve 30 (Line)
+Info    : [ 60%] Meshing curve 31 (Line)
+Info    : [ 60%] Meshing curve 32 (Line)
+Info    : [ 60%] Meshing curve 33 (Line)
+Info    : [ 70%] Meshing curve 34 (Line)
+Info    : [ 70%] Meshing curve 35 (Line)
+Info    : [ 70%] Meshing curve 36 (Line)
+Info    : [ 70%] Meshing curve 38 (Line)
+Info    : [ 70%] Meshing curve 39 (Line)
+Info    : [ 80%] Meshing curve 40 (Line)
+Info    : [ 80%] Meshing curve 41 (Line)
+Info    : [ 80%] Meshing curve 42 (Line)
+Info    : [ 80%] Meshing curve 43 (Line)
+Info    : [ 80%] Meshing curve 44 (Line)
+Info    : [ 90%] Meshing curve 46 (Line)
+Info    : [ 90%] Meshing curve 47 (Line)
+Info    : [ 90%] Meshing curve 48 (Line)
+Info    : [ 90%] Meshing curve 49 (Line)
+Info    : [ 90%] Meshing curve 50 (Line)
+Info    : [100%] Meshing curve 51 (Line)
+Info    : [100%] Meshing curve 52 (Line)
+Info    : [100%] Meshing curve 54 (Line)
+Info    : [100%] Meshing curve 55 (Line)
+Info    : Done meshing 1D (Wall 0.00435425s, CPU 0.004463s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.00491121s, CPU 0.004851s)
+Info    : 363 nodes 850 elements
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyvista</span>
+<span class="n">pyvista</span><span class="o">.</span><span class="n">start_xvfb</span><span class="p">()</span>
+<span class="kn">from</span> <span class="nn">dolfinx.plot</span> <span class="kn">import</span> <span class="n">create_vtk_mesh</span>
+<span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">create_vtk_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">pyvista</span><span class="o">.</span><span class="n">UnstructuredGrid</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">num_local_cells</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">index_map</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">size_local</span>
+<span class="c1"># grid.cell_data[&quot;Marker&quot;] = ct.values[ct.indices&lt;num_local_cells]</span>
+<span class="c1"># grid.set_active_scalars(&quot;Marker&quot;)</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="n">pyvista</span><span class="o">.</span><span class="n">Plotter</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="p">[</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">])</span>
+<span class="n">p</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">show_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">view_xy</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:py.warnings:/Users/cwilson/anaconda3/envs/fenicsx-env/lib/python3.10/site-packages/pyvista/jupyter/notebook.py:58: UserWarning: Failed to use notebook backend: 
+
+Your build of VTK does not have the proper web modules enabled.
+These modules are typically enabled by default with the
+`-DVTK_GROUP_ENABLE_Web:STRING=WANT` build flag.
+
+Conda users: This is a known issue with the conda-forge VTK feedstock.
+See https://github.com/conda-forge/vtk-feedstock/pull/258
+
+
+Falling back to a static output.
+  warnings.warn(
+</pre></div>
+</div>
+<img alt="../_images/8348426cef592fc064e6949533a5ffa6be2323afd973a8518d610e04b3bb5efb.png" src="../_images/8348426cef592fc064e6949533a5ffa6be2323afd973a8518d610e04b3bb5efb.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="BenchmarkGeometry.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Benchmark Geometry</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ExampleGeometry.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Example Geometry</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#this-is-where-you-can-switch-between-subduction-zones">This is where you can switch between subduction zones!!</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Cian Wilson
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="last-updated">
+  Last updated on Aug 22, 2023.
+  <br/>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
