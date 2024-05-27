@@ -1,8 +1,16 @@
 format: jb-book
 root: notebooks/index
 parts:
-  - caption: Geometry
+  - caption: Introduction
+    chapters:
+      - file: readme
+  - caption: Background
+    chapters:
+      - file: notebooks/Poisson1D
+      - file: notebooks/Poisson2D
+  - caption: Subduction
     chapters:
       - file: notebooks/BenchmarkGeometry
+      - file: notebooks/SubductionBenchmark
       - file: notebooks/DataExample
       - file: notebooks/ExampleGeometry
