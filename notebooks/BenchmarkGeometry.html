@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Benchmark Geometry &#8212; FEniCSx Subduction</title>
   
@@ -19,55 +18,53 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/BenchmarkGeometry';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Data Example Geometry" href="DataExample.html" />
-    <link rel="prev" title="FEniCS-X Subduction" href="index.html" />
+    <link rel="next" title="&lt;no title&gt;" href="SubductionBenchmark.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="Poisson2D.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="May 27, 2024"/>
   </head>
   
   
@@ -75,7 +72,15 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
   
   <input type="checkbox"
           class="sidebar-toggle"
@@ -110,11 +115,14 @@ const thebe_selector_output = ".output, .cell_output"
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -129,6 +137,7 @@ const thebe_selector_output = ".output, .cell_output"
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
   
 
 <a class="navbar-brand logo" href="index.html">
@@ -137,20 +146,36 @@ const thebe_selector_output = ".output, .cell_output"
   
   
   
+  
     <p class="title logo__title">FEniCSx Subduction</p>
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
                 <a class="reference internal" href="index.html">
-                    FEniCS-X Subduction
+                    FEniCSx Subduction
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Geometry</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Subduction</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Benchmark Geometry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DataExample.html">Data Example Geometry</a></li>
@@ -356,20 +381,22 @@ const thebe_selector_output = ".output, .cell_output"
 </button>
 
 
+
 <script>
 document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
   </button>
 `);
 </script>
 
+
 <script>
 document.write(`
   <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
   </button>
 `);
 </script>
@@ -396,10 +423,10 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="benchmark-geometry">
-<h1>Benchmark Geometry<a class="headerlink" href="#benchmark-geometry" title="Permalink to this heading">#</a></h1>
+<h1>Benchmark Geometry<a class="headerlink" href="#benchmark-geometry" title="Link to this heading">#</a></h1>
 <p>Set up the PYTHONPATH so it can find the python modules we’ll be using.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -499,9 +526,9 @@ document.write(`
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/cwilson/anaconda3/envs/fenicsx-env/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py:177: RuntimeWarning: The iteration is not making good progress, as measured by the 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/root/shared/repos/github/cianwilson/fenicsx_subduction/notebooks/../python/geometry.py:213: RuntimeWarning: The iteration is not making good progress, as measured by the 
   improvement from the last ten iterations.
-  warnings.warn(msg, RuntimeWarning)
+  return opt.fsolve(lambda x: self.x2delu(x, x0=x0)-delu, x0, fprime=lambda x: [self.du(x)])[0]
 </pre></div>
 </div>
 </div>
@@ -551,7 +578,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/fc657e95661b9d0e24ecd370199d54eee0c26d98e41f2cc0084417bceeba16c7.png" src="../_images/fc657e95661b9d0e24ecd370199d54eee0c26d98e41f2cc0084417bceeba16c7.png" />
+<img alt="../_images/92325a0cba38d240f8c9340a76593f18ed295440a3b8c2474e28dd44d38314c6.png" src="../_images/92325a0cba38d240f8c9340a76593f18ed295440a3b8c2474e28dd44d38314c6.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -568,12 +595,12 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/cwilson/anaconda3/envs/fenicsx-env/lib/python3.10/site-packages/scipy/optimize/_minpack_py.py:177: RuntimeWarning: The iteration is not making good progress, as measured by the 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/root/shared/repos/github/cianwilson/fenicsx_subduction/notebooks/../python/geometry.py:213: RuntimeWarning: The iteration is not making good progress, as measured by the 
   improvement from the last ten iterations.
-  warnings.warn(msg, RuntimeWarning)
+  return opt.fsolve(lambda x: self.x2delu(x, x0=x0)-delu, x0, fprime=lambda x: [self.du(x)])[0]
 </pre></div>
 </div>
-<img alt="../_images/0c3fe5b1b0503fd6a8e9bce44a544fd9df26a67e5fe13d2fce8df980c5d58e2c.png" src="../_images/0c3fe5b1b0503fd6a8e9bce44a544fd9df26a67e5fe13d2fce8df980c5d58e2c.png" />
+<img alt="../_images/8fa164a63ab204910bdd53e0959d0110301d59affc79881f9f66484e5b6a7157.png" src="../_images/8fa164a63ab204910bdd53e0959d0110301d59affc79881f9f66484e5b6a7157.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -589,7 +616,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4deb4dca2ec3bb747167b8fac108cdbf43f2f8bff5c1ec381f1922ba1b9d6ca8.png" src="../_images/4deb4dca2ec3bb747167b8fac108cdbf43f2f8bff5c1ec381f1922ba1b9d6ca8.png" />
+<img alt="../_images/e3b31ea88efcf3ee5134ecda8c429a1a2cdc12d379e8eba8b0b71b0ca090d2a0.png" src="../_images/e3b31ea88efcf3ee5134ecda8c429a1a2cdc12d379e8eba8b0b71b0ca090d2a0.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -603,7 +630,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/15d202ee364f737d3f24c18969a421fd08d8925a54c4460895f15b9b9d833b8f.png" src="../_images/15d202ee364f737d3f24c18969a421fd08d8925a54c4460895f15b9b9d833b8f.png" />
+<img alt="../_images/ce8aa60f2f91741c92fffb2d4112ca4acd348e8990d97b5d4abcfd595e2d7316.png" src="../_images/ce8aa60f2f91741c92fffb2d4112ca4acd348e8990d97b5d4abcfd595e2d7316.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -619,7 +646,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0cd26d5ed4c3caf667bed6f801c47734276cfe1f6f2695768700f5a56845a7a4.png" src="../_images/0cd26d5ed4c3caf667bed6f801c47734276cfe1f6f2695768700f5a56845a7a4.png" />
+<img alt="../_images/256b38157956c3c5e01507ed020c3b638a3a21ebecc6a077742f179f2b4536f6.png" src="../_images/256b38157956c3c5e01507ed020c3b638a3a21ebecc6a077742f179f2b4536f6.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -635,7 +662,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c9ba874e49995385ab9c9502eef7605f5bd1e4c7c8e79519fadea1ceeb44b4f3.png" src="../_images/c9ba874e49995385ab9c9502eef7605f5bd1e4c7c8e79519fadea1ceeb44b4f3.png" />
+<img alt="../_images/9578ca69b90018c84078052589704399a98c7ba60b90dafc371bc341f12f383d.png" src="../_images/9578ca69b90018c84078052589704399a98c7ba60b90dafc371bc341f12f383d.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -645,7 +672,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3703ca2fb4f76e5619ebb5feb416ad5fee30c78bdffa097879418bc1048d6cf6.png" src="../_images/3703ca2fb4f76e5619ebb5feb416ad5fee30c78bdffa097879418bc1048d6cf6.png" />
+<img alt="../_images/efb452f6335e9f00c8e17cd1afe8ae8bd385c93c934a809a336398c332128b8e.png" src="../_images/efb452f6335e9f00c8e17cd1afe8ae8bd385c93c934a809a336398c332128b8e.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -718,7 +745,7 @@ Info    : [100%] Meshing curve 55 (Line)
 Info    : [100%] Meshing curve 56 (Line)
 Info    : [100%] Meshing curve 58 (Line)
 Info    : [100%] Meshing curve 59 (Line)
-Info    : Done meshing 1D (Wall 0.00486242s, CPU 0.004949s)
+Info    : Done meshing 1D (Wall 0.0110608s, CPU 0.008432s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -726,7 +753,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.00611121s, CPU 0.006038s)
+Info    : Done meshing 2D (Wall 0.0722482s, CPU 0.026254s)
 Info    : 455 nodes 1063 elements
 </pre></div>
 </div>
@@ -738,8 +765,8 @@ Info    : 455 nodes 1063 elements
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pyvista</span>
 <span class="n">pyvista</span><span class="o">.</span><span class="n">start_xvfb</span><span class="p">()</span>
-<span class="kn">from</span> <span class="nn">dolfinx.plot</span> <span class="kn">import</span> <span class="n">create_vtk_mesh</span>
-<span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">create_vtk_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">dolfinx.plot</span> <span class="kn">import</span> <span class="n">vtk_mesh</span>
+<span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">vtk_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 <span class="n">grid</span> <span class="o">=</span> <span class="n">pyvista</span><span class="o">.</span><span class="n">UnstructuredGrid</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="n">num_local_cells</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">index_map</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">size_local</span>
 <span class="n">grid</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="s2">&quot;Marker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ct</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">ct</span><span class="o">.</span><span class="n">indices</span><span class="o">&lt;</span><span class="n">num_local_cells</span><span class="p">]</span>
@@ -753,21 +780,7 @@ Info    : 455 nodes 1063 elements
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:py.warnings:/Users/cwilson/anaconda3/envs/fenicsx-env/lib/python3.10/site-packages/pyvista/jupyter/notebook.py:58: UserWarning: Failed to use notebook backend: 
-
-Your build of VTK does not have the proper web modules enabled.
-These modules are typically enabled by default with the
-`-DVTK_GROUP_ENABLE_Web:STRING=WANT` build flag.
-
-Conda users: This is a known issue with the conda-forge VTK feedstock.
-See https://github.com/conda-forge/vtk-feedstock/pull/258
-
-
-Falling back to a static output.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/54c7b733f23f504c383269508b103ae856132c2fa62e6f26b09787d9f9a07cc1.png" src="../_images/54c7b733f23f504c383269508b103ae856132c2fa62e6f26b09787d9f9a07cc1.png" />
+<img alt="../_images/478cf16ff8936d5ad38afa252a089d1f85973069f773489670b4b16cd43f1ac5.png" src="../_images/478cf16ff8936d5ad38afa252a089d1f85973069f773489670b4b16cd43f1ac5.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -781,8 +794,8 @@ Falling back to a static output.
         <span class="n">cft</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
 <span class="kn">import</span> <span class="nn">pyvista</span>
 <span class="n">pyvista</span><span class="o">.</span><span class="n">start_xvfb</span><span class="p">()</span>
-<span class="kn">from</span> <span class="nn">dolfinx.plot</span> <span class="kn">import</span> <span class="n">create_vtk_mesh</span>
-<span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">create_vtk_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">dolfinx.plot</span> <span class="kn">import</span> <span class="n">vtk_mesh</span>
+<span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">vtk_mesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 <span class="n">grid</span> <span class="o">=</span> <span class="n">pyvista</span><span class="o">.</span><span class="n">UnstructuredGrid</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">cell_types</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="n">grid</span><span class="o">.</span><span class="n">cell_data</span><span class="p">[</span><span class="s2">&quot;Marker&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cft</span>
 <span class="n">grid</span><span class="o">.</span><span class="n">set_active_scalars</span><span class="p">(</span><span class="s2">&quot;Marker&quot;</span><span class="p">)</span>
@@ -795,21 +808,7 @@ Falling back to a static output.
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING:py.warnings:/Users/cwilson/anaconda3/envs/fenicsx-env/lib/python3.10/site-packages/pyvista/jupyter/notebook.py:58: UserWarning: Failed to use notebook backend: 
-
-Your build of VTK does not have the proper web modules enabled.
-These modules are typically enabled by default with the
-`-DVTK_GROUP_ENABLE_Web:STRING=WANT` build flag.
-
-Conda users: This is a known issue with the conda-forge VTK feedstock.
-See https://github.com/conda-forge/vtk-feedstock/pull/258
-
-
-Falling back to a static output.
-  warnings.warn(
-</pre></div>
-</div>
-<img alt="../_images/8d48ebea2919bf83c2aa4a092e0745e5ab8848f95079864ae69e0afbec1cf174.png" src="../_images/8d48ebea2919bf83c2aa4a092e0745e5ab8848f95079864ae69e0afbec1cf174.png" />
+<img alt="../_images/939c5e7205d545e82cb5f239c69c0babf251c58a1a1723e2223998943b265f63.png" src="../_images/939c5e7205d545e82cb5f239c69c0babf251c58a1a1723e2223998943b265f63.png" />
 </div>
 </div>
 </section>
@@ -839,39 +838,37 @@ Falling back to a static output.
 
               
               
-                <footer class="bd-footer-article">
+              
+              
+                <footer class="prev-next-footer">
                   
-<div class="footer-article-items footer-article__inner">
-  
-    <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="Poisson2D.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">FEniCS-X Subduction</p>
+        <p class="prev-next-title">&lt;no title&gt;</p>
       </div>
     </a>
     <a class="right-next"
-       href="DataExample.html"
+       href="SubductionBenchmark.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Data Example Geometry</p>
+        <p class="prev-next-title">&lt;no title&gt;</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
-</div></div>
-  
 </div>
-
                 </footer>
               
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"></div>
               
             
           </div>
@@ -889,9 +886,10 @@ By Cian Wilson
   
   <div class="footer-item">
     
+
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -900,7 +898,7 @@ By Cian Wilson
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Aug 22, 2023.
+  Last updated on May 27, 2024.
   <br/>
 </p>
   </div>
@@ -918,8 +916,8 @@ By Cian Wilson
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
