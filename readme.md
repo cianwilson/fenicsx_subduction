@@ -24,9 +24,13 @@ To use the notebooks in this tutorial with DOLFINx on your own computer, you sho
 This image can also be used as a normal docker container by adding:
 
 ```bash
-  docker run -it --rm -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+  docker run -it --rm -p <local port>:8888 --workdir /root/shared -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+```
+and then to start jupyter lab from within the docker container:
+```bash
+  jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --allow-root
 ```
 
-## Acknoweldgements
+## Acknowledgments
 
 This Jupyter Book is based on the [FEniCSx Tutorial](https://jsdokken.com/dolfinx-tutorial/) by [Jørgen S. Dokken](https://jsdokken.com/). 
