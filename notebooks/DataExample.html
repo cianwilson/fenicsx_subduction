@@ -561,14 +561,13 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">szname</span> <span class="o">=</span> <span class="s2">&quot;07_Nicaragua&quot;</span>  <span class="c1"># change this to switch subduction zones</span>
 <span class="n">szdata</span> <span class="o">=</span> <span class="n">szparams</span><span class="p">[</span><span class="n">szname</span><span class="p">]</span>
-<span class="n">coast_distance</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltaxcoast&#39;</span><span class="p">]</span>
-<span class="n">extra_width</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltaxwidth&#39;</span><span class="p">]</span>
-<span class="n">lc_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltazmoho&#39;</span><span class="p">]</span>
-<span class="n">uc_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltazuc&#39;</span><span class="p">]</span>
-<span class="n">io_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;deltazoutflow&#39;</span><span class="p">]</span>
-<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;trench&#39;</span><span class="p">]]</span><span class="o">+</span><span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;slabpoints&#39;</span><span class="p">])</span>
-<span class="n">xs</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">ys</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">coast_distance</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;coast_distance&#39;</span><span class="p">]</span>
+<span class="n">extra_width</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;extra_width&#39;</span><span class="p">]</span>
+<span class="n">lc_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;lc_depth&#39;</span><span class="p">]</span>
+<span class="n">uc_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;uc_depth&#39;</span><span class="p">]</span>
+<span class="n">io_depth</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;io_depth&#39;</span><span class="p">]</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;ys&#39;</span><span class="p">]</span>
 <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">*</span><span class="n">minres</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag2_depth&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">3</span><span class="o">*</span><span class="n">minres</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -630,7 +629,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;geometry.Point at 0x7fc5341ab010&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;geometry.Point at 0x7efcc874ffa0&gt;
 </pre></div>
 </div>
 </div>
@@ -742,7 +741,7 @@ Info    : [100%] Meshing curve 51 (Line)
 Info    : [100%] Meshing curve 52 (Line)
 Info    : [100%] Meshing curve 54 (Line)
 Info    : [100%] Meshing curve 55 (Line)
-Info    : Done meshing 1D (Wall 0.0120258s, CPU 0.009631s)
+Info    : Done meshing 1D (Wall 0.00930468s, CPU 0.010051s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -750,7 +749,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0161171s, CPU 0.016125s)
+Info    : Done meshing 2D (Wall 0.00981662s, CPU 0.009237s)
 Info    : 363 nodes 850 elements
 </pre></div>
 </div>
