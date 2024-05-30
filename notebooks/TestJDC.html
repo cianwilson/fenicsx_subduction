@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>FEniCSx Subduction &#8212; FEniCSx Subduction</title>
+    <title>&lt;no title&gt; &#8212; FEniCSx Subduction</title>
   
   
   
@@ -57,10 +57,9 @@
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/TestJDC';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Overview" href="../readme.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
     <meta name="docbuild:last-update" content="May 30, 2024"/>
@@ -141,7 +140,7 @@
 
   
 
-<a class="navbar-brand logo" href="#">
+<a class="navbar-brand logo" href="index.html">
   
   
   
@@ -166,8 +165,8 @@
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
-            <li class="toctree-l1 current active">
-                <a class="reference internal" href="#">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
                     FEniCSx Subduction
                 </a>
             </li>
@@ -238,7 +237,7 @@
       
       
       
-      <li><a href="https://mybinder.org/v2/gh/cianwilson/fenicsx_subduction/main?urlpath=lab/tree/./notebooks/index.ipynb" target="_blank"
+      <li><a href="https://mybinder.org/v2/gh/cianwilson/fenicsx_subduction/main?urlpath=lab/tree/./notebooks/TestJDC.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch onBinder"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -286,7 +285,7 @@
       
       
       
-      <li><a href="https://github.com/cianwilson/fenicsx_subduction/edit/main/./notebooks/index.ipynb" target="_blank"
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction/edit/main/./notebooks/TestJDC.ipynb" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -303,7 +302,7 @@
       
       
       
-      <li><a href="https://github.com/cianwilson/fenicsx_subduction/issues/new?title=Issue%20on%20page%20%2Fnotebooks/index.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction/issues/new?title=Issue%20on%20page%20%2Fnotebooks/TestJDC.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -333,7 +332,7 @@
       
       
       
-      <li><a href="../_sources/notebooks/index.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/TestJDC.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -404,7 +403,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -415,11 +416,19 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>FEniCSx Subduction</h1>
+    <h1><no title></h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="simple visible nav section-nav flex-column">
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -429,32 +438,154 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="fenicsx-subduction">
-<h1>FEniCSx Subduction<a class="headerlink" href="#fenicsx-subduction" title="Link to this heading">#</a></h1>
-<p>Author: Kidus Teshome, Cian Wilson, Nathan Sime</p>
-<p>Comments and corrections to this webpage should be submitted to the issue tracker by going to the relevant page in the tutorial, then click the <img alt="git" src="../_images/git.png" />-symbol in the top right corner and “open issue”.</p>
-<p><strong>Interactive tutorials</strong></p>
-<p>As this book has been published as a <a class="reference external" href="https://jupyterbook.org/">Jupyter Book</a>, we provide interactive notebooks that can be run in the browser. To start such a notebook click the <img alt="Binder symbol" src="../_images/binder.png" />-symbol in the top right corner of the relevant tutorial.</p>
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jdc</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dolfinx</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DOLFINx version: </span><span class="si">{</span><span class="n">dolfinx</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2"> based on GIT commit: </span><span class="si">{</span><span class="n">dolfinx</span><span class="o">.</span><span class="n">git_commit_hash</span><span class="si">}</span><span class="s2"> of https://github.com/FEniCS/dolfinx/&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">dog</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">noise</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">noise</span>
+
+
+<span class="n">rover</span> <span class="o">=</span> <span class="n">dog</span><span class="p">(</span><span class="s1">&#39;Rover&#39;</span><span class="p">,</span> <span class="s1">&#39;ruff&#39;</span><span class="p">)</span>
+<span class="n">spot</span> <span class="o">=</span> <span class="n">dog</span><span class="p">(</span><span class="s1">&#39;Spot&#39;</span><span class="p">,</span> <span class="s1">&#39;woof&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="k">add_to</span> dog
+def bark(self, times=1):
+    saying = (&#39;%s &#39; % self.noise) * times
+    print(&quot;%s says: %s&quot; % (self.name, saying))
+
+def bark2(self, times=1):
+    saying = (&#39;%s &#39; % self.noise) * times
+    print(&quot;%s says: %s&quot; % (self.name, saying))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rover</span><span class="o">.</span><span class="n">bark</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">spot</span><span class="o">.</span><span class="n">bark</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DOLFINx version: 0.8.0 based on GIT commit: 5a20e2ba3907c1f108cb0af45931f46e32250351 of https://github.com/FEniCS/dolfinx/
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rover says: ruff 
+Spot says: woof woof 
 </pre></div>
 </div>
 </div>
 </div>
-<div class="toctree-wrapper compound">
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="k">add_to</span> spot
+def sit(self):
+    print(&#39;%s is now sitting&#39; % self.name)
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
 </div>
-<div class="toctree-wrapper compound">
 </div>
-</section>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spot</span><span class="o">.</span><span class="n">sit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Spot is now sitting
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">rover</span><span class="o">.</span><span class="n">sit</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> doesn&#39;t know that trick&quot;</span> <span class="o">%</span> <span class="n">rover</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rover doesn&#39;t know that trick
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="k">add_to</span> spot
+def rollover(self):
+    print(&quot;%s rolled over&quot; % self.name)
+
+def highfive(self):
+    print(&quot;%s is trying to high five you&quot; % self.name)
+
+def domytaxes(self):
+    print(&quot;%s is just showing off now&quot; % self.name)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spot</span><span class="o">.</span><span class="n">rollover</span><span class="p">()</span>
+<span class="n">spot</span><span class="o">.</span><span class="n">highfive</span><span class="p">()</span>
+<span class="n">spot</span><span class="o">.</span><span class="n">domytaxes</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Spot rolled over
+Spot is trying to high five you
+Spot is just showing off now
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="k">add_to</span> dog
+def race(func):
+    def wrapper(self):
+        import time
+        t1 = time.time()
+        func(self)
+        t2 = time.time()
+        print(&quot;A new record time, %s finished in: &quot; % self.name + str((t2 - t1)) + &quot; seconds!\n&quot;)
+    return wrapper
+
+@race
+def race_course(self):
+    print(&quot;%s finished the course.&quot; % self.name)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">spot</span><span class="o">.</span><span class="n">race_course</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Spot finished the course.
+A new record time, Spot finished in: 8.440017700195312e-05 seconds!
+</pre></div>
+</div>
+</div>
+</div>
 
     <script type="text/x-thebe-config">
     {
@@ -486,15 +617,6 @@ document.write(`
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
-    <a class="right-next"
-       href="../readme.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Overview</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -502,7 +624,20 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"></div>
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="simple visible nav section-nav flex-column">
+</ul>
+
+  </nav></div>
+
+</div></div>
               
             
           </div>

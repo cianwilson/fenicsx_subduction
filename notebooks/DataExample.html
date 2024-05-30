@@ -60,11 +60,9 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/DataExample';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Example Geometry" href="ExampleGeometry.html" />
-    <link rel="prev" title="Subduction Zone Benchmark" href="SubductionBenchmark.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 28, 2024"/>
+    <meta name="docbuild:last-update" content="May 30, 2024"/>
   </head>
   
   
@@ -124,6 +122,8 @@
       
       
       
+        
+      
       <div class="bd-sidebar-primary bd-sidebar">
         
 
@@ -181,11 +181,8 @@
 <li class="toctree-l1"><a class="reference internal" href="Poisson2D.html">Poisson Example 2D</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Subduction</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="BenchmarkGeometry.html">Benchmark Geometry</a></li>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="SubductionBenchmark.html">Subduction Zone Benchmark</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Example Geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ExampleGeometry.html">Example Geometry</a></li>
 </ul>
 
     </div>
@@ -572,7 +569,7 @@ document.write(`
 <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;trench&#39;</span><span class="p">]]</span><span class="o">+</span><span class="n">szdata</span><span class="p">[</span><span class="s1">&#39;slabpoints&#39;</span><span class="p">])</span>
 <span class="n">xs</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">ys</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">*</span><span class="n">minres</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_depth2&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">3</span><span class="o">*</span><span class="n">minres</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
+<span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">*</span><span class="n">minres</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag2_depth&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">3</span><span class="o">*</span><span class="n">minres</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -595,9 +592,9 @@ document.write(`
 <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
     <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">lc_depth</span><span class="p">:</span> 
         <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;fault_sid&#39;</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_depth1&#39;</span><span class="p">]:</span>
+    <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag1_depth&#39;</span><span class="p">]:</span>
         <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_sid&#39;</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_depth2&#39;</span><span class="p">]:</span>
+    <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag2_depth&#39;</span><span class="p">]:</span>
         <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_diag_sid&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sid</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">[</span><span class="s1">&#39;slab_sid&#39;</span><span class="p">]</span>
@@ -633,7 +630,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;geometry.Point at 0x7f2ba48470d0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;geometry.Point at 0x7fc5341ab010&gt;
 </pre></div>
 </div>
 </div>
@@ -667,15 +664,15 @@ document.write(`
                        <span class="n">res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;io_depth_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
                        <span class="n">sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;upper_wedge_side_sid&quot;</span><span class="p">])</span>
 <span class="c1"># add wedge dividers for the diagnostics</span>
-<span class="n">geom</span><span class="o">.</span><span class="n">addwedgedivider</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_depth1&quot;</span><span class="p">],</span> <span class="s2">&quot;ColdCorner&quot;</span><span class="p">,</span> 
-                     <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res2_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
-                     <span class="n">top_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res2_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+<span class="n">geom</span><span class="o">.</span><span class="n">addwedgedivider</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag1_depth&quot;</span><span class="p">],</span> <span class="s2">&quot;ColdCorner&quot;</span><span class="p">,</span> 
+                     <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag2_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
+                     <span class="n">top_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag2_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
                      <span class="n">rid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;wedge_rid&quot;</span><span class="p">],</span> 
                      <span class="n">slab_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_sid&quot;</span><span class="p">])</span>
 <span class="c1"># add wedge dividers for the diagnostics</span>
-<span class="n">geom</span><span class="o">.</span><span class="n">addwedgedivider</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_depth2&quot;</span><span class="p">],</span> <span class="s2">&quot;WedgeFocused&quot;</span><span class="p">,</span> 
-                     <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res1_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
-                     <span class="n">top_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_res1_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
+<span class="n">geom</span><span class="o">.</span><span class="n">addwedgedivider</span><span class="p">(</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag2_depth&quot;</span><span class="p">],</span> <span class="s2">&quot;WedgeFocused&quot;</span><span class="p">,</span> 
+                     <span class="n">slab_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag1_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span> 
+                     <span class="n">top_res</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag1_res_fact&quot;</span><span class="p">]</span><span class="o">*</span><span class="n">minres</span><span class="p">,</span>
                      <span class="n">rid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;wedge_diag_rid&quot;</span><span class="p">],</span> 
                      <span class="n">slab_sid</span><span class="o">=</span><span class="n">default_params</span><span class="p">[</span><span class="s2">&quot;slab_diag_sid&quot;</span><span class="p">])</span>
 <span class="n">geom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">label_sids</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">label_rids</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -745,7 +742,7 @@ Info    : [100%] Meshing curve 51 (Line)
 Info    : [100%] Meshing curve 52 (Line)
 Info    : [100%] Meshing curve 54 (Line)
 Info    : [100%] Meshing curve 55 (Line)
-Info    : Done meshing 1D (Wall 0.0116502s, CPU 0.011696s)
+Info    : Done meshing 1D (Wall 0.0120258s, CPU 0.009631s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -753,7 +750,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0126063s, CPU 0.012526s)
+Info    : Done meshing 2D (Wall 0.0161171s, CPU 0.016125s)
 Info    : 363 nodes 850 elements
 </pre></div>
 </div>
@@ -814,24 +811,6 @@ Info    : 363 nodes 850 elements
                 <footer class="prev-next-footer">
                   
 <div class="prev-next-area">
-    <a class="left-prev"
-       href="SubductionBenchmark.html"
-       title="previous page">
-      <i class="fa-solid fa-angle-left"></i>
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Subduction Zone Benchmark</p>
-      </div>
-    </a>
-    <a class="right-next"
-       href="ExampleGeometry.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Example Geometry</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
-    </a>
 </div>
                 </footer>
               
@@ -882,7 +861,7 @@ By Cian Wilson
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 28, 2024.
+  Last updated on May 30, 2024.
   <br/>
 </p>
   </div>

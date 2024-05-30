@@ -1,36 +1,45 @@
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+  File "/usr/lib/python3/dist-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
     executenb(
-  File "/usr/local/lib/python3.11/site-packages/nbclient/client.py", line 1305, in execute
+  File "/usr/local/lib/python3.10/dist-packages/nbclient/client.py", line 1314, in execute
     return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/jupyter_core/utils/__init__.py", line 166, in wrapped
+  File "/usr/local/lib/python3.10/dist-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
     return loop.run_until_complete(inner)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/Cellar/python@3.11/3.11.5/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 653, in run_until_complete
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
     return future.result()
-           ^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/site-packages/nbclient/client.py", line 705, in async_execute
+  File "/usr/local/lib/python3.10/dist-packages/nbclient/client.py", line 709, in async_execute
     await self.async_execute_cell(
-  File "/usr/local/lib/python3.11/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+  File "/usr/local/lib/python3.10/dist-packages/nbclient/client.py", line 1062, in async_execute_cell
     await self._check_raise_for_error(cell, cell_index, exec_reply)
-  File "/usr/local/lib/python3.11/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+  File "/usr/local/lib/python3.10/dist-packages/nbclient/client.py", line 918, in _check_raise_for_error
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-import geometry as geo
+coast_distance = 0
+extra_width = 0
+lc_depth = 40
+uc_depth = 15
+io_depth = 139
+xs = [0.0, 140.0, 240.0, 400.0]
+ys = [0.0, -70.0, -120.0, -200.0]
+res = [1*minres if y >= -default_params["slab_diag_depth2"] else 3*minres for y in ys]
+res
 ------------------
 
 
 [0;31m---------------------------------------------------------------------------[0m
-[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-Cell [0;32mIn[3], line 1[0m
-[0;32m----> 1[0m [38;5;28;01mimport[39;00m [38;5;21;01mgeometry[39;00m [38;5;28;01mas[39;00m [38;5;21;01mgeo[39;00m
+[0;31mKeyError[0m                                  Traceback (most recent call last)
+Cell [0;32mIn[6], line 8[0m
+[1;32m      6[0m xs [38;5;241m=[39m [[38;5;241m0.0[39m, [38;5;241m140.0[39m, [38;5;241m240.0[39m, [38;5;241m400.0[39m]
+[1;32m      7[0m ys [38;5;241m=[39m [[38;5;241m0.0[39m, [38;5;241m-[39m[38;5;241m70.0[39m, [38;5;241m-[39m[38;5;241m120.0[39m, [38;5;241m-[39m[38;5;241m200.0[39m]
+[0;32m----> 8[0m res [38;5;241m=[39m [[38;5;241m1[39m[38;5;241m*[39mminres [38;5;28;01mif[39;00m y [38;5;241m>[39m[38;5;241m=[39m [38;5;241m-[39mdefault_params[[38;5;124m"[39m[38;5;124mslab_diag_depth2[39m[38;5;124m"[39m] [38;5;28;01melse[39;00m [38;5;241m3[39m[38;5;241m*[39mminres [38;5;28;01mfor[39;00m y [38;5;129;01min[39;00m ys]
+[1;32m      9[0m res
 
-File [0;32m~/docker_shared/repos/github/cianwilson/fenicsx_subduction/notebooks/../python/geometry.py:1[0m
-[0;32m----> 1[0m [38;5;28;01mimport[39;00m [38;5;21;01mgmsh[39;00m
-[1;32m      2[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m
-[1;32m      3[0m [38;5;28;01mfrom[39;00m [38;5;21;01mscipy[39;00m [38;5;28;01mimport[39;00m interpolate [38;5;28;01mas[39;00m interp
+Cell [0;32mIn[6], line 8[0m, in [0;36m<listcomp>[0;34m(.0)[0m
+[1;32m      6[0m xs [38;5;241m=[39m [[38;5;241m0.0[39m, [38;5;241m140.0[39m, [38;5;241m240.0[39m, [38;5;241m400.0[39m]
+[1;32m      7[0m ys [38;5;241m=[39m [[38;5;241m0.0[39m, [38;5;241m-[39m[38;5;241m70.0[39m, [38;5;241m-[39m[38;5;241m120.0[39m, [38;5;241m-[39m[38;5;241m200.0[39m]
+[0;32m----> 8[0m res [38;5;241m=[39m [[38;5;241m1[39m[38;5;241m*[39mminres [38;5;28;01mif[39;00m y [38;5;241m>[39m[38;5;241m=[39m [38;5;241m-[39m[43mdefault_params[49m[43m[[49m[38;5;124;43m"[39;49m[38;5;124;43mslab_diag_depth2[39;49m[38;5;124;43m"[39;49m[43m][49m [38;5;28;01melse[39;00m [38;5;241m3[39m[38;5;241m*[39mminres [38;5;28;01mfor[39;00m y [38;5;129;01min[39;00m ys]
+[1;32m      9[0m res
 
-[0;31mModuleNotFoundError[0m: No module named 'gmsh'
+[0;31mKeyError[0m: 'slab_diag_depth2'
 
