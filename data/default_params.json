@@ -21,8 +21,8 @@
     "slab_det_depth":        100.0,
     "partial_coupling_depth": 80.0,
     "full_coupling_depth":    82.5,
-    "slab_diag_depth1":       70.0,
-    "slab_diag_depth2":      120.0,
+    "slab_diag1_depth":       70.0,
+    "slab_diag2_depth":      120.0,
     "partial_coupling_depth_res_fact": 1.0,
     "full_coupling_depth_res_fact":    1.0,
     "io_depth_res_fact":               4.0,
@@ -34,6 +34,6 @@
     "uc_slab_res_fact":                1.0,
     "wedge_side_top_res_fact":         4.0,
     "wedge_side_base_res_fact":        4.0,
-    "slab_diag_res1_fact":             1.0,
-    "slab_diag_res2_fact":             1.0
+    "slab_diag1_res_fact":             1.0,
+    "slab_diag2_res_fact":             1.0
 }

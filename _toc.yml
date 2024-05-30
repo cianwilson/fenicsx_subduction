@@ -10,7 +10,4 @@ parts:
       - file: notebooks/Poisson2D
   - caption: Subduction
     chapters:
-      - file: notebooks/BenchmarkGeometry
       - file: notebooks/SubductionBenchmark
-      - file: notebooks/DataExample
-      - file: notebooks/ExampleGeometry
