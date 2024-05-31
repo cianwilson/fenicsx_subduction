@@ -3,7 +3,10 @@ import dolfinx as df
 import pyvista as pv
 import numpy as np
 
-pv.start_xvfb()
+try:
+    pv.start_xvfb()
+except OSError:
+    pass
 
 Myr_to_s = lambda a: a*1.e6*365.25*24*60*60
 nondim_to_K = lambda T: T + 273.15
