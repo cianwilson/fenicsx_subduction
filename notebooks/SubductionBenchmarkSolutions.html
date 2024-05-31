@@ -1,0 +1,2244 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Subduction Benchmark Examples &#8212; FEniCSx Subduction</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/SubductionBenchmarkSolutions';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="May 31, 2024"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">FEniCSx Subduction</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="index.html">
+                    FEniCSx Subduction
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Overview</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Poisson1D.html">Poisson Example 1D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Poisson2D.html">Poisson Example 2D</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Subduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="SubductionBenchmark.html">Subduction Zone Benchmark</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://mybinder.org/v2/gh/cianwilson/fenicsx_subduction/main?urlpath=lab/tree/./notebooks/SubductionBenchmarkSolutions.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onBinder"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_binder.svg">
+  </span>
+<span class="btn__text-container">Binder</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction/edit/main/./notebooks/SubductionBenchmarkSolutions.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/cianwilson/fenicsx_subduction/issues/new?title=Issue%20on%20page%20%2Fnotebooks/SubductionBenchmarkSolutions.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/SubductionBenchmarkSolutions.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Subduction Benchmark Examples</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load">Load</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-resolution">Higher Resolution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1">Case 1</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#global-suite">Global Suite</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alaska-peninsula-dislocation-creep-low-res">Alaska Peninsula (dislocation creep, low res)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n-antilles-dislocation-creep-low-res">N Antilles (dislocation creep, low res)</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="subduction-benchmark-examples">
+<h1>Subduction Benchmark Examples<a class="headerlink" href="#subduction-benchmark-examples" title="Link to this heading">#</a></h1>
+<section id="load">
+<h2>Load<a class="headerlink" href="#load" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">run</span> SubductionBenchmark.ipynb
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Key                                 Value     
+---------------------------------------------
+slab_sid                            1         
+slab_side_sid                       2         
+wedge_side_sid                      3         
+upper_wedge_side_sid                4         
+lc_side_sid                         5         
+uc_side_sid                         6         
+slab_base_sid                       7         
+wedge_base_sid                      8         
+lc_base_sid                         9         
+uc_base_sid                         10        
+coast_sid                           11        
+top_sid                             12        
+fault_sid                           13        
+slab_diag_sid                       14        
+slab_rid                            1         
+wedge_rid                           2         
+lc_rid                              3         
+uc_rid                              4         
+wedge_diag_rid                      5         
+slab_det_depth                      100.0     
+partial_coupling_depth              80.0      
+full_coupling_depth                 82.5      
+slab_diag1_depth                    70.0      
+slab_diag2_depth                    120.0     
+partial_coupling_depth_res_fact     1.0       
+full_coupling_depth_res_fact        1.0       
+io_depth_res_fact                   4.0       
+coast_res_fact                      1.0       
+lc_side_res_fact                    2.0       
+lc_slab_res_fact                    1.0       
+slab_side_base_res_fact             8.0       
+uc_side_res_fact                    2.0       
+uc_slab_res_fact                    1.0       
+wedge_side_top_res_fact             4.0       
+wedge_side_base_res_fact            4.0       
+slab_diag1_res_fact                 1.0       
+slab_diag2_res_fact                 1.0       
+</pre></div>
+</div>
+<img alt="../_images/eb3f4077e477a4715defed3ebeeb3debdcc5ead08fbef46f6874f5ffd5162551.png" src="../_images/eb3f4077e477a4715defed3ebeeb3debdcc5ead08fbef46f6874f5ffd5162551.png" />
+<img alt="../_images/63c495a3d3e8f1c04d44b053d66104161e4d448e36131681748ed5c5bb40592d.png" src="../_images/63c495a3d3e8f1c04d44b053d66104161e4d448e36131681748ed5c5bb40592d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 10%] Meshing curve 10 (Line)
+Info    : [ 20%] Meshing curve 11 (Line)
+Info    : [ 20%] Meshing curve 12 (Line)
+Info    : [ 20%] Meshing curve 13 (Line)
+Info    : [ 20%] Meshing curve 14 (Line)
+Info    : [ 20%] Meshing curve 15 (Line)
+Info    : [ 20%] Meshing curve 16 (Line)
+Info    : [ 20%] Meshing curve 17 (Line)
+Info    : [ 20%] Meshing curve 18 (Line)
+Info    : [ 20%] Meshing curve 19 (Line)
+Info    : [ 30%] Meshing curve 20 (Line)
+Info    : [ 30%] Meshing curve 21 (Line)
+Info    : [ 30%] Meshing curve 22 (Line)
+Info    : [ 30%] Meshing curve 23 (Line)
+Info    : [ 30%] Meshing curve 24 (Line)
+Info    : [ 30%] Meshing curve 25 (Line)
+Info    : [ 30%] Meshing curve 27 (Line)
+Info    : [ 30%] Meshing curve 28 (Line)
+Info    : [ 30%] Meshing curve 29 (Line)
+Info    : [ 40%] Meshing curve 30 (Line)
+Info    : [ 40%] Meshing curve 31 (Line)
+Info    : [ 40%] Meshing curve 32 (Line)
+Info    : [ 40%] Meshing curve 33 (Line)
+Info    : [ 40%] Meshing curve 34 (Line)
+Info    : [ 40%] Meshing curve 35 (Line)
+Info    : [ 40%] Meshing curve 36 (Line)
+Info    : [ 40%] Meshing curve 37 (Line)
+Info    : [ 40%] Meshing curve 38 (Line)
+Info    : [ 50%] Meshing curve 39 (Line)
+Info    : [ 50%] Meshing curve 40 (Line)
+Info    : [ 50%] Meshing curve 41 (Line)
+Info    : [ 50%] Meshing curve 42 (Line)
+Info    : [ 50%] Meshing curve 43 (Line)
+Info    : [ 50%] Meshing curve 44 (Line)
+Info    : [ 50%] Meshing curve 45 (Line)
+Info    : [ 50%] Meshing curve 46 (Line)
+Info    : [ 50%] Meshing curve 47 (Line)
+Info    : [ 60%] Meshing curve 48 (Line)
+Info    : [ 60%] Meshing curve 49 (Line)
+Info    : [ 60%] Meshing curve 50 (Line)
+Info    : [ 60%] Meshing curve 51 (Line)
+Info    : [ 60%] Meshing curve 52 (Line)
+Info    : [ 60%] Meshing curve 54 (Line)
+Info    : [ 60%] Meshing curve 55 (Line)
+Info    : [ 60%] Meshing curve 56 (Line)
+Info    : [ 60%] Meshing curve 57 (Line)
+Info    : [ 70%] Meshing curve 58 (Line)
+Info    : [ 70%] Meshing curve 59 (Line)
+Info    : [ 70%] Meshing curve 60 (Line)
+Info    : [ 70%] Meshing curve 61 (Line)
+Info    : [ 70%] Meshing curve 62 (Line)
+Info    : [ 70%] Meshing curve 63 (Line)
+Info    : [ 70%] Meshing curve 64 (Line)
+Info    : [ 70%] Meshing curve 65 (Line)
+Info    : [ 70%] Meshing curve 66 (Line)
+Info    : [ 80%] Meshing curve 67 (Line)
+Info    : [ 80%] Meshing curve 68 (Line)
+Info    : [ 80%] Meshing curve 70 (Line)
+Info    : [ 80%] Meshing curve 71 (Line)
+Info    : [ 80%] Meshing curve 72 (Line)
+Info    : [ 80%] Meshing curve 73 (Line)
+Info    : [ 80%] Meshing curve 74 (Line)
+Info    : [ 80%] Meshing curve 75 (Line)
+Info    : [ 80%] Meshing curve 76 (Line)
+Info    : [ 90%] Meshing curve 77 (Line)
+Info    : [ 90%] Meshing curve 78 (Line)
+Info    : [ 90%] Meshing curve 79 (Line)
+Info    : [ 90%] Meshing curve 80 (Line)
+Info    : [ 90%] Meshing curve 81 (Line)
+Info    : [ 90%] Meshing curve 82 (Line)
+Info    : [ 90%] Meshing curve 83 (Line)
+Info    : [ 90%] Meshing curve 85 (Line)
+Info    : [ 90%] Meshing curve 86 (Line)
+Info    : [100%] Meshing curve 87 (Line)
+Info    : [100%] Meshing curve 88 (Line)
+Info    : [100%] Meshing curve 89 (Line)
+Info    : [100%] Meshing curve 90 (Line)
+Info    : [100%] Meshing curve 91 (Line)
+Info    : [100%] Meshing curve 92 (Line)
+Info    : [100%] Meshing curve 93 (Line)
+Info    : [100%] Meshing curve 95 (Line)
+Info    : [100%] Meshing curve 96 (Line)
+Info    : Done meshing 1D (Wall 0.0209407s, CPU 0.021733s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0447968s, CPU 0.044553s)
+Info    : 1474 nodes 3239 elements
+</pre></div>
+</div>
+<img alt="../_images/594bcc8639c4364603a4bb076f915931512b3720ce8038ef232cd3b625d90222.png" src="../_images/594bcc8639c4364603a4bb076f915931512b3720ce8038ef232cd3b625d90222.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 10%] Meshing curve 10 (Line)
+Info    : [ 20%] Meshing curve 11 (Line)
+Info    : [ 20%] Meshing curve 12 (Line)
+Info    : [ 20%] Meshing curve 13 (Line)
+Info    : [ 20%] Meshing curve 14 (Line)
+Info    : [ 20%] Meshing curve 15 (Line)
+Info    : [ 20%] Meshing curve 16 (Line)
+Info    : [ 20%] Meshing curve 17 (Line)
+Info    : [ 20%] Meshing curve 18 (Line)
+Info    : [ 20%] Meshing curve 19 (Line)
+Info    : [ 30%] Meshing curve 20 (Line)
+Info    : [ 30%] Meshing curve 21 (Line)
+Info    : [ 30%] Meshing curve 22 (Line)
+Info    : [ 30%] Meshing curve 23 (Line)
+Info    : [ 30%] Meshing curve 24 (Line)
+Info    : [ 30%] Meshing curve 25 (Line)
+Info    : [ 30%] Meshing curve 27 (Line)
+Info    : [ 30%] Meshing curve 28 (Line)
+Info    : [ 30%] Meshing curve 29 (Line)
+Info    : [ 40%] Meshing curve 30 (Line)
+Info    : [ 40%] Meshing curve 31 (Line)
+Info    : [ 40%] Meshing curve 32 (Line)
+Info    : [ 40%] Meshing curve 33 (Line)
+Info    : [ 40%] Meshing curve 34 (Line)
+Info    : [ 40%] Meshing curve 35 (Line)
+Info    : [ 40%] Meshing curve 36 (Line)
+Info    : [ 40%] Meshing curve 37 (Line)
+Info    : [ 40%] Meshing curve 38 (Line)
+Info    : [ 50%] Meshing curve 39 (Line)
+Info    : [ 50%] Meshing curve 40 (Line)
+Info    : [ 50%] Meshing curve 41 (Line)
+Info    : [ 50%] Meshing curve 42 (Line)
+Info    : [ 50%] Meshing curve 43 (Line)
+Info    : [ 50%] Meshing curve 44 (Line)
+Info    : [ 50%] Meshing curve 45 (Line)
+Info    : [ 50%] Meshing curve 46 (Line)
+Info    : [ 50%] Meshing curve 47 (Line)
+Info    : [ 60%] Meshing curve 48 (Line)
+Info    : [ 60%] Meshing curve 49 (Line)
+Info    : [ 60%] Meshing curve 50 (Line)
+Info    : [ 60%] Meshing curve 51 (Line)
+Info    : [ 60%] Meshing curve 52 (Line)
+Info    : [ 60%] Meshing curve 54 (Line)
+Info    : [ 60%] Meshing curve 55 (Line)
+Info    : [ 60%] Meshing curve 56 (Line)
+Info    : [ 60%] Meshing curve 57 (Line)
+Info    : [ 70%] Meshing curve 58 (Line)
+Info    : [ 70%] Meshing curve 59 (Line)
+Info    : [ 70%] Meshing curve 60 (Line)
+Info    : [ 70%] Meshing curve 61 (Line)
+Info    : [ 70%] Meshing curve 62 (Line)
+Info    : [ 70%] Meshing curve 63 (Line)
+Info    : [ 70%] Meshing curve 64 (Line)
+Info    : [ 70%] Meshing curve 65 (Line)
+Info    : [ 70%] Meshing curve 66 (Line)
+Info    : [ 80%] Meshing curve 67 (Line)
+Info    : [ 80%] Meshing curve 68 (Line)
+Info    : [ 80%] Meshing curve 70 (Line)
+Info    : [ 80%] Meshing curve 71 (Line)
+Info    : [ 80%] Meshing curve 72 (Line)
+Info    : [ 80%] Meshing curve 73 (Line)
+Info    : [ 80%] Meshing curve 74 (Line)
+Info    : [ 80%] Meshing curve 75 (Line)
+Info    : [ 80%] Meshing curve 76 (Line)
+Info    : [ 90%] Meshing curve 77 (Line)
+Info    : [ 90%] Meshing curve 78 (Line)
+Info    : [ 90%] Meshing curve 79 (Line)
+Info    : [ 90%] Meshing curve 80 (Line)
+Info    : [ 90%] Meshing curve 81 (Line)
+Info    : [ 90%] Meshing curve 82 (Line)
+Info    : [ 90%] Meshing curve 83 (Line)
+Info    : [ 90%] Meshing curve 85 (Line)
+Info    : [ 90%] Meshing curve 86 (Line)
+Info    : [100%] Meshing curve 87 (Line)
+Info    : [100%] Meshing curve 88 (Line)
+Info    : [100%] Meshing curve 89 (Line)
+Info    : [100%] Meshing curve 90 (Line)
+Info    : [100%] Meshing curve 91 (Line)
+Info    : [100%] Meshing curve 92 (Line)
+Info    : [100%] Meshing curve 93 (Line)
+Info    : [100%] Meshing curve 95 (Line)
+Info    : [100%] Meshing curve 96 (Line)
+Info    : Done meshing 1D (Wall 0.0136405s, CPU 0.012861s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0351579s, CPU 0.033845s)
+Info    : 1474 nodes 3239 elements
+</pre></div>
+</div>
+<img alt="../_images/1266b414ca0c88955eb40818b1b14b7aedb27e40efaeed109395b43b18e7d2c0.png" src="../_images/1266b414ca0c88955eb40818b1b14b7aedb27e40efaeed109395b43b18e7d2c0.png" />
+<img alt="../_images/1d0b8fed2c1f271183da17e65f01c862ea27eee418cad7a93f0f49d4712b1761.png" src="../_images/1d0b8fed2c1f271183da17e65f01c862ea27eee418cad7a93f0f49d4712b1761.png" />
+<img alt="../_images/e0fd528df102c69044b6e3b6807774e79b7f9cdd41ee2e6b8521ba99a4516ee1.png" src="../_images/e0fd528df102c69044b6e3b6807774e79b7f9cdd41ee2e6b8521ba99a4516ee1.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 10%] Meshing curve 10 (Line)
+Info    : [ 20%] Meshing curve 11 (Line)
+Info    : [ 20%] Meshing curve 12 (Line)
+Info    : [ 20%] Meshing curve 13 (Line)
+Info    : [ 20%] Meshing curve 14 (Line)
+Info    : [ 20%] Meshing curve 15 (Line)
+Info    : [ 20%] Meshing curve 16 (Line)
+Info    : [ 20%] Meshing curve 17 (Line)
+Info    : [ 20%] Meshing curve 18 (Line)
+Info    : [ 20%] Meshing curve 19 (Line)
+Info    : [ 30%] Meshing curve 20 (Line)
+Info    : [ 30%] Meshing curve 21 (Line)
+Info    : [ 30%] Meshing curve 22 (Line)
+Info    : [ 30%] Meshing curve 23 (Line)
+Info    : [ 30%] Meshing curve 24 (Line)
+Info    : [ 30%] Meshing curve 25 (Line)
+Info    : [ 30%] Meshing curve 27 (Line)
+Info    : [ 30%] Meshing curve 28 (Line)
+Info    : [ 30%] Meshing curve 29 (Line)
+Info    : [ 40%] Meshing curve 30 (Line)
+Info    : [ 40%] Meshing curve 31 (Line)
+Info    : [ 40%] Meshing curve 32 (Line)
+Info    : [ 40%] Meshing curve 33 (Line)
+Info    : [ 40%] Meshing curve 34 (Line)
+Info    : [ 40%] Meshing curve 35 (Line)
+Info    : [ 40%] Meshing curve 36 (Line)
+Info    : [ 40%] Meshing curve 37 (Line)
+Info    : [ 40%] Meshing curve 38 (Line)
+Info    : [ 50%] Meshing curve 39 (Line)
+Info    : [ 50%] Meshing curve 40 (Line)
+Info    : [ 50%] Meshing curve 41 (Line)
+Info    : [ 50%] Meshing curve 42 (Line)
+Info    : [ 50%] Meshing curve 43 (Line)
+Info    : [ 50%] Meshing curve 44 (Line)
+Info    : [ 50%] Meshing curve 45 (Line)
+Info    : [ 50%] Meshing curve 46 (Line)
+Info    : [ 50%] Meshing curve 47 (Line)
+Info    : [ 60%] Meshing curve 48 (Line)
+Info    : [ 60%] Meshing curve 49 (Line)
+Info    : [ 60%] Meshing curve 50 (Line)
+Info    : [ 60%] Meshing curve 51 (Line)
+Info    : [ 60%] Meshing curve 52 (Line)
+Info    : [ 60%] Meshing curve 54 (Line)
+Info    : [ 60%] Meshing curve 55 (Line)
+Info    : [ 60%] Meshing curve 56 (Line)
+Info    : [ 60%] Meshing curve 57 (Line)
+Info    : [ 70%] Meshing curve 58 (Line)
+Info    : [ 70%] Meshing curve 59 (Line)
+Info    : [ 70%] Meshing curve 60 (Line)
+Info    : [ 70%] Meshing curve 61 (Line)
+Info    : [ 70%] Meshing curve 62 (Line)
+Info    : [ 70%] Meshing curve 63 (Line)
+Info    : [ 70%] Meshing curve 64 (Line)
+Info    : [ 70%] Meshing curve 65 (Line)
+Info    : [ 70%] Meshing curve 66 (Line)
+Info    : [ 80%] Meshing curve 67 (Line)
+Info    : [ 80%] Meshing curve 68 (Line)
+Info    : [ 80%] Meshing curve 70 (Line)
+Info    : [ 80%] Meshing curve 71 (Line)
+Info    : [ 80%] Meshing curve 72 (Line)
+Info    : [ 80%] Meshing curve 73 (Line)
+Info    : [ 80%] Meshing curve 74 (Line)
+Info    : [ 80%] Meshing curve 75 (Line)
+Info    : [ 80%] Meshing curve 76 (Line)
+Info    : [ 90%] Meshing curve 77 (Line)
+Info    : [ 90%] Meshing curve 78 (Line)
+Info    : [ 90%] Meshing curve 79 (Line)
+Info    : [ 90%] Meshing curve 80 (Line)
+Info    : [ 90%] Meshing curve 81 (Line)
+Info    : [ 90%] Meshing curve 82 (Line)
+Info    : [ 90%] Meshing curve 83 (Line)
+Info    : [ 90%] Meshing curve 85 (Line)
+Info    : [ 90%] Meshing curve 86 (Line)
+Info    : [100%] Meshing curve 87 (Line)
+Info    : [100%] Meshing curve 88 (Line)
+Info    : [100%] Meshing curve 89 (Line)
+Info    : [100%] Meshing curve 90 (Line)
+Info    : [100%] Meshing curve 91 (Line)
+Info    : [100%] Meshing curve 92 (Line)
+Info    : [100%] Meshing curve 93 (Line)
+Info    : [100%] Meshing curve 95 (Line)
+Info    : [100%] Meshing curve 96 (Line)
+Info    : Done meshing 1D (Wall 0.0211262s, CPU 0.018851s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0557701s, CPU 0.054732s)
+Info    : 1474 nodes 3239 elements
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_(200,-100) = 517.17 deg C
+T_slab = 451.95 deg C
+T_wedge = 927.02 deg C
+V_rms,w = 34.64 mm/yr
+
+resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw       
+5            5812         517.1668     451.9452     927.0205     34.6379     
+</pre></div>
+</div>
+<img alt="../_images/7f6070876bd542ef72ce67d49d738591fab84b5c062d3a8784fee5251cd1be03.png" src="../_images/7f6070876bd542ef72ce67d49d738591fab84b5c062d3a8784fee5251cd1be03.png" />
+<img alt="../_images/1fc6df4c30ba325d74a68bc5d4d863a9b0286e7c6de8bcbd4ea7cf88cc1f87bd.png" src="../_images/1fc6df4c30ba325d74a68bc5d4d863a9b0286e7c6de8bcbd4ea7cf88cc1f87bd.png" />
+<img alt="../_images/5d0764f917939160fa6885dce3f6f74850c69a0b84871d2ba51898bdac30c8f4.png" src="../_images/5d0764f917939160fa6885dce3f6f74850c69a0b84871d2ba51898bdac30c8f4.png" />
+<img alt="../_images/9ac32bf40fb60250686f5a78c1cfed9288bde641b4fecb9578fa428d54334e53.png" src="../_images/9ac32bf40fb60250686f5a78c1cfed9288bde641b4fecb9578fa428d54334e53.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 10%] Meshing curve 10 (Line)
+Info    : [ 20%] Meshing curve 11 (Line)
+Info    : [ 20%] Meshing curve 12 (Line)
+Info    : [ 20%] Meshing curve 13 (Line)
+Info    : [ 20%] Meshing curve 14 (Line)
+Info    : [ 20%] Meshing curve 15 (Line)
+Info    : [ 20%] Meshing curve 16 (Line)
+Info    : [ 20%] Meshing curve 17 (Line)
+Info    : [ 20%] Meshing curve 18 (Line)
+Info    : [ 20%] Meshing curve 19 (Line)
+Info    : [ 30%] Meshing curve 20 (Line)
+Info    : [ 30%] Meshing curve 21 (Line)
+Info    : [ 30%] Meshing curve 22 (Line)
+Info    : [ 30%] Meshing curve 23 (Line)
+Info    : [ 30%] Meshing curve 24 (Line)
+Info    : [ 30%] Meshing curve 25 (Line)
+Info    : [ 30%] Meshing curve 27 (Line)
+Info    : [ 30%] Meshing curve 28 (Line)
+Info    : [ 30%] Meshing curve 29 (Line)
+Info    : [ 40%] Meshing curve 30 (Line)
+Info    : [ 40%] Meshing curve 31 (Line)
+Info    : [ 40%] Meshing curve 32 (Line)
+Info    : [ 40%] Meshing curve 33 (Line)
+Info    : [ 40%] Meshing curve 34 (Line)
+Info    : [ 40%] Meshing curve 35 (Line)
+Info    : [ 40%] Meshing curve 36 (Line)
+Info    : [ 40%] Meshing curve 37 (Line)
+Info    : [ 40%] Meshing curve 38 (Line)
+Info    : [ 50%] Meshing curve 39 (Line)
+Info    : [ 50%] Meshing curve 40 (Line)
+Info    : [ 50%] Meshing curve 41 (Line)
+Info    : [ 50%] Meshing curve 42 (Line)
+Info    : [ 50%] Meshing curve 43 (Line)
+Info    : [ 50%] Meshing curve 44 (Line)
+Info    : [ 50%] Meshing curve 45 (Line)
+Info    : [ 50%] Meshing curve 46 (Line)
+Info    : [ 50%] Meshing curve 47 (Line)
+Info    : [ 60%] Meshing curve 48 (Line)
+Info    : [ 60%] Meshing curve 49 (Line)
+Info    : [ 60%] Meshing curve 50 (Line)
+Info    : [ 60%] Meshing curve 51 (Line)
+Info    : [ 60%] Meshing curve 52 (Line)
+Info    : [ 60%] Meshing curve 54 (Line)
+Info    : [ 60%] Meshing curve 55 (Line)
+Info    : [ 60%] Meshing curve 56 (Line)
+Info    : [ 60%] Meshing curve 57 (Line)
+Info    : [ 70%] Meshing curve 58 (Line)
+Info    : [ 70%] Meshing curve 59 (Line)
+Info    : [ 70%] Meshing curve 60 (Line)
+Info    : [ 70%] Meshing curve 61 (Line)
+Info    : [ 70%] Meshing curve 62 (Line)
+Info    : [ 70%] Meshing curve 63 (Line)
+Info    : [ 70%] Meshing curve 64 (Line)
+Info    : [ 70%] Meshing curve 65 (Line)
+Info    : [ 70%] Meshing curve 66 (Line)
+Info    : [ 80%] Meshing curve 67 (Line)
+Info    : [ 80%] Meshing curve 68 (Line)
+Info    : [ 80%] Meshing curve 70 (Line)
+Info    : [ 80%] Meshing curve 71 (Line)
+Info    : [ 80%] Meshing curve 72 (Line)
+Info    : [ 80%] Meshing curve 73 (Line)
+Info    : [ 80%] Meshing curve 74 (Line)
+Info    : [ 80%] Meshing curve 75 (Line)
+Info    : [ 80%] Meshing curve 76 (Line)
+Info    : [ 90%] Meshing curve 77 (Line)
+Info    : [ 90%] Meshing curve 78 (Line)
+Info    : [ 90%] Meshing curve 79 (Line)
+Info    : [ 90%] Meshing curve 80 (Line)
+Info    : [ 90%] Meshing curve 81 (Line)
+Info    : [ 90%] Meshing curve 82 (Line)
+Info    : [ 90%] Meshing curve 83 (Line)
+Info    : [ 90%] Meshing curve 85 (Line)
+Info    : [ 90%] Meshing curve 86 (Line)
+Info    : [100%] Meshing curve 87 (Line)
+Info    : [100%] Meshing curve 88 (Line)
+Info    : [100%] Meshing curve 89 (Line)
+Info    : [100%] Meshing curve 90 (Line)
+Info    : [100%] Meshing curve 91 (Line)
+Info    : [100%] Meshing curve 92 (Line)
+Info    : [100%] Meshing curve 93 (Line)
+Info    : [100%] Meshing curve 95 (Line)
+Info    : [100%] Meshing curve 96 (Line)
+Info    : Done meshing 1D (Wall 0.0140112s, CPU 0.014613s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0392157s, CPU 0.039958s)
+Info    : 1485 nodes 3261 elements
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Solving steady state flow with dislocation creep rheology...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iteration   Residual     Relative Residual
+------------------------------------------
+0           14039.3      1           
+1           1161.26      0.0827153   
+2           256.735      0.0182869   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3           103.968      0.0074055   
+4           48.9798      0.00348877  
+5           26.4549      0.00188435  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           16.1772      0.00115228  
+7           10.7653      0.0007668   
+8           7.60442      0.000541653 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9           5.59295      0.000398379 
+10          4.21471      0.000300209 
+11          3.22359      0.000229612 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          2.4908       0.000177416 
+13          1.93954      0.000138151 
+14          1.51997      0.000108266 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>15          1.19783      8.53198e-05 
+16          0.948679     6.75732e-05 
+17          0.754764     5.37609e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.602991     4.29503e-05 
+19          0.483598     3.44461e-05 
+20          0.389239     2.7725e-05  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21          0.314337     2.23898e-05 
+22          0.254634     1.81372e-05 
+23          0.206858     1.47342e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24          0.168483     1.20008e-05 
+25          0.13755      9.79752e-06 
+26          0.112533     8.01558e-06 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>27          0.0922379    6.56999e-06 
+28          0.0757272    5.39395e-06 
+29          0.0622606    4.43474e-06 
+T_(200,-100) = 679.02 deg C
+T_slab = 568.56 deg C
+T_wedge = 941.66 deg C
+V_rms,w = 41.96 mm/yr
+
+resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw       
+5            5856         679.0166     568.5575     941.6615     41.9561     
+</pre></div>
+</div>
+<img alt="../_images/da079a69fa4579ae474b741876975dc9fefcd0234cd0e18cc13758f999aca56f.png" src="../_images/da079a69fa4579ae474b741876975dc9fefcd0234cd0e18cc13758f999aca56f.png" />
+<img alt="../_images/61f6894482f8fa07d40c411e6f0c123034c83906554965e60c75a43f3fe40590.png" src="../_images/61f6894482f8fa07d40c411e6f0c123034c83906554965e60c75a43f3fe40590.png" />
+<img alt="../_images/7bd9d0621d2d9f07af6b00b6e1145123493f3b335f7b59c2a6d7efbf8e10d044.png" src="../_images/7bd9d0621d2d9f07af6b00b6e1145123493f3b335f7b59c2a6d7efbf8e10d044.png" />
+<img alt="../_images/62e288084be0fa7863b9d76a723cba72c379354fa05f2f7ce5cb6a6d22b6f1df.png" src="../_images/62e288084be0fa7863b9d76a723cba72c379354fa05f2f7ce5cb6a6d22b6f1df.png" />
+<img alt="../_images/14e2b2b982f647232793a6468f10bfe105cb02ae7b7c442275060ff0b767dbf1.png" src="../_images/14e2b2b982f647232793a6468f10bfe105cb02ae7b7c442275060ff0b767dbf1.png" />
+</div>
+</div>
+</section>
+<section id="higher-resolution">
+<h2>Higher Resolution<a class="headerlink" href="#higher-resolution" title="Link to this heading">#</a></h2>
+<section id="case-1">
+<h3>Case 1<a class="headerlink" href="#case-1" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resscale2</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">slab_resscale2</span> <span class="o">=</span> <span class="n">create_slab</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">resscale2</span><span class="p">,</span> <span class="n">lc_depth</span><span class="p">)</span>
+<span class="n">geom_resscale2</span> <span class="o">=</span> <span class="n">create_sz_geometry</span><span class="p">(</span><span class="n">slab_resscale2</span><span class="p">,</span> <span class="n">resscale2</span><span class="p">,</span> <span class="n">sztype</span><span class="p">,</span> <span class="n">io_depth_1</span><span class="p">,</span> <span class="n">extra_width</span><span class="p">,</span> 
+                           <span class="n">coast_distance</span><span class="p">,</span> <span class="n">lc_depth</span><span class="p">,</span> <span class="n">uc_depth</span><span class="p">)</span>
+<span class="n">sz_resscale2</span> <span class="o">=</span> <span class="n">SubductionProblem</span><span class="p">(</span><span class="n">geom_resscale2</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">Vs</span><span class="o">=</span><span class="n">Vs</span><span class="p">,</span> <span class="n">sztype</span><span class="o">=</span><span class="n">sztype</span><span class="p">,</span> <span class="n">qs</span><span class="o">=</span><span class="n">qs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Solving steady state flow with isoviscous rheology...&quot;</span><span class="p">)</span>
+<span class="n">sz_resscale2</span><span class="o">.</span><span class="n">solve_steadystate_isoviscous</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 10%] Meshing curve 10 (Line)
+Info    : [ 10%] Meshing curve 11 (Line)
+Info    : [ 10%] Meshing curve 12 (Line)
+Info    : [ 10%] Meshing curve 13 (Line)
+Info    : [ 10%] Meshing curve 14 (Line)
+Info    : [ 10%] Meshing curve 15 (Line)
+Info    : [ 10%] Meshing curve 16 (Line)
+Info    : [ 10%] Meshing curve 17 (Line)
+Info    : [ 10%] Meshing curve 18 (Line)
+Info    : [ 10%] Meshing curve 19 (Line)
+Info    : [ 10%] Meshing curve 20 (Line)
+Info    : [ 10%] Meshing curve 21 (Line)
+Info    : [ 20%] Meshing curve 22 (Line)
+Info    : [ 20%] Meshing curve 23 (Line)
+Info    : [ 20%] Meshing curve 24 (Line)
+Info    : [ 20%] Meshing curve 25 (Line)
+Info    : [ 20%] Meshing curve 26 (Line)
+Info    : [ 20%] Meshing curve 27 (Line)
+Info    : [ 20%] Meshing curve 28 (Line)
+Info    : [ 20%] Meshing curve 29 (Line)
+Info    : [ 20%] Meshing curve 30 (Line)
+Info    : [ 20%] Meshing curve 31 (Line)
+Info    : [ 20%] Meshing curve 32 (Line)
+Info    : [ 20%] Meshing curve 33 (Line)
+Info    : [ 20%] Meshing curve 34 (Line)
+Info    : [ 20%] Meshing curve 35 (Line)
+Info    : [ 20%] Meshing curve 36 (Line)
+Info    : [ 20%] Meshing curve 37 (Line)
+Info    : [ 20%] Meshing curve 38 (Line)
+Info    : [ 20%] Meshing curve 39 (Line)
+Info    : [ 20%] Meshing curve 40 (Line)
+Info    : [ 20%] Meshing curve 41 (Line)
+Info    : [ 30%] Meshing curve 42 (Line)
+Info    : [ 30%] Meshing curve 43 (Line)
+Info    : [ 30%] Meshing curve 44 (Line)
+Info    : [ 30%] Meshing curve 45 (Line)
+Info    : [ 30%] Meshing curve 46 (Line)
+Info    : [ 30%] Meshing curve 47 (Line)
+Info    : [ 30%] Meshing curve 48 (Line)
+Info    : [ 30%] Meshing curve 49 (Line)
+Info    : [ 30%] Meshing curve 50 (Line)
+Info    : [ 30%] Meshing curve 51 (Line)
+Info    : [ 30%] Meshing curve 52 (Line)
+Info    : [ 30%] Meshing curve 53 (Line)
+Info    : [ 30%] Meshing curve 54 (Line)
+Info    : [ 30%] Meshing curve 56 (Line)
+Info    : [ 30%] Meshing curve 57 (Line)
+Info    : [ 30%] Meshing curve 58 (Line)
+Info    : [ 30%] Meshing curve 59 (Line)
+Info    : [ 30%] Meshing curve 60 (Line)
+Info    : [ 30%] Meshing curve 61 (Line)
+Info    : [ 30%] Meshing curve 62 (Line)
+Info    : [ 40%] Meshing curve 63 (Line)
+Info    : [ 40%] Meshing curve 64 (Line)
+Info    : [ 40%] Meshing curve 65 (Line)
+Info    : [ 40%] Meshing curve 66 (Line)
+Info    : [ 40%] Meshing curve 67 (Line)
+Info    : [ 40%] Meshing curve 68 (Line)
+Info    : [ 40%] Meshing curve 69 (Line)
+Info    : [ 40%] Meshing curve 70 (Line)
+Info    : [ 40%] Meshing curve 71 (Line)
+Info    : [ 40%] Meshing curve 72 (Line)
+Info    : [ 40%] Meshing curve 73 (Line)
+Info    : [ 40%] Meshing curve 74 (Line)
+Info    : [ 40%] Meshing curve 75 (Line)
+Info    : [ 40%] Meshing curve 76 (Line)
+Info    : [ 40%] Meshing curve 77 (Line)
+Info    : [ 40%] Meshing curve 78 (Line)
+Info    : [ 40%] Meshing curve 79 (Line)
+Info    : [ 40%] Meshing curve 80 (Line)
+Info    : [ 40%] Meshing curve 81 (Line)
+Info    : [ 40%] Meshing curve 82 (Line)
+Info    : [ 50%] Meshing curve 83 (Line)
+Info    : [ 50%] Meshing curve 84 (Line)
+Info    : [ 50%] Meshing curve 85 (Line)
+Info    : [ 50%] Meshing curve 86 (Line)
+Info    : [ 50%] Meshing curve 87 (Line)
+Info    : [ 50%] Meshing curve 88 (Line)
+Info    : [ 50%] Meshing curve 89 (Line)
+Info    : [ 50%] Meshing curve 90 (Line)
+Info    : [ 50%] Meshing curve 91 (Line)
+Info    : [ 50%] Meshing curve 92 (Line)
+Info    : [ 50%] Meshing curve 93 (Line)
+Info    : [ 50%] Meshing curve 94 (Line)
+Info    : [ 50%] Meshing curve 95 (Line)
+Info    : [ 50%] Meshing curve 96 (Line)
+Info    : [ 50%] Meshing curve 97 (Line)
+Info    : [ 50%] Meshing curve 98 (Line)
+Info    : [ 50%] Meshing curve 99 (Line)
+Info    : [ 50%] Meshing curve 100 (Line)
+Info    : [ 50%] Meshing curve 101 (Line)
+Info    : [ 50%] Meshing curve 102 (Line)
+Info    : [ 60%] Meshing curve 103 (Line)
+Info    : [ 60%] Meshing curve 104 (Line)
+Info    : [ 60%] Meshing curve 105 (Line)
+Info    : [ 60%] Meshing curve 106 (Line)
+Info    : [ 60%] Meshing curve 107 (Line)
+Info    : [ 60%] Meshing curve 108 (Line)
+Info    : [ 60%] Meshing curve 109 (Line)
+Info    : [ 60%] Meshing curve 110 (Line)
+Info    : [ 60%] Meshing curve 111 (Line)
+Info    : [ 60%] Meshing curve 112 (Line)
+Info    : [ 60%] Meshing curve 113 (Line)
+Info    : [ 60%] Meshing curve 114 (Line)
+Info    : [ 60%] Meshing curve 115 (Line)
+Info    : [ 60%] Meshing curve 117 (Line)
+Info    : [ 60%] Meshing curve 118 (Line)
+Info    : [ 60%] Meshing curve 119 (Line)
+Info    : [ 60%] Meshing curve 120 (Line)
+Info    : [ 60%] Meshing curve 121 (Line)
+Info    : [ 60%] Meshing curve 122 (Line)
+Info    : [ 60%] Meshing curve 123 (Line)
+Info    : [ 70%] Meshing curve 124 (Line)
+Info    : [ 70%] Meshing curve 125 (Line)
+Info    : [ 70%] Meshing curve 126 (Line)
+Info    : [ 70%] Meshing curve 127 (Line)
+Info    : [ 70%] Meshing curve 128 (Line)
+Info    : [ 70%] Meshing curve 129 (Line)
+Info    : [ 70%] Meshing curve 130 (Line)
+Info    : [ 70%] Meshing curve 131 (Line)
+Info    : [ 70%] Meshing curve 132 (Line)
+Info    : [ 70%] Meshing curve 133 (Line)
+Info    : [ 70%] Meshing curve 134 (Line)
+Info    : [ 70%] Meshing curve 135 (Line)
+Info    : [ 70%] Meshing curve 136 (Line)
+Info    : [ 70%] Meshing curve 137 (Line)
+Info    : [ 70%] Meshing curve 138 (Line)
+Info    : [ 70%] Meshing curve 139 (Line)
+Info    : [ 70%] Meshing curve 140 (Line)
+Info    : [ 70%] Meshing curve 141 (Line)
+Info    : [ 70%] Meshing curve 142 (Line)
+Info    : [ 70%] Meshing curve 143 (Line)
+Info    : [ 80%] Meshing curve 144 (Line)
+Info    : [ 80%] Meshing curve 145 (Line)
+Info    : [ 80%] Meshing curve 146 (Line)
+Info    : [ 80%] Meshing curve 147 (Line)
+Info    : [ 80%] Meshing curve 148 (Line)
+Info    : [ 80%] Meshing curve 149 (Line)
+Info    : [ 80%] Meshing curve 150 (Line)
+Info    : [ 80%] Meshing curve 151 (Line)
+Info    : [ 80%] Meshing curve 153 (Line)
+Info    : [ 80%] Meshing curve 154 (Line)
+Info    : [ 80%] Meshing curve 155 (Line)
+Info    : [ 80%] Meshing curve 156 (Line)
+Info    : [ 80%] Meshing curve 157 (Line)
+Info    : [ 80%] Meshing curve 158 (Line)
+Info    : [ 80%] Meshing curve 159 (Line)
+Info    : [ 80%] Meshing curve 160 (Line)
+Info    : [ 80%] Meshing curve 161 (Line)
+Info    : [ 80%] Meshing curve 162 (Line)
+Info    : [ 80%] Meshing curve 163 (Line)
+Info    : [ 80%] Meshing curve 164 (Line)
+Info    : [ 90%] Meshing curve 165 (Line)
+Info    : [ 90%] Meshing curve 166 (Line)
+Info    : [ 90%] Meshing curve 167 (Line)
+Info    : [ 90%] Meshing curve 168 (Line)
+Info    : [ 90%] Meshing curve 169 (Line)
+Info    : [ 90%] Meshing curve 170 (Line)
+Info    : [ 90%] Meshing curve 171 (Line)
+Info    : [ 90%] Meshing curve 172 (Line)
+Info    : [ 90%] Meshing curve 173 (Line)
+Info    : [ 90%] Meshing curve 174 (Line)
+Info    : [ 90%] Meshing curve 175 (Line)
+Info    : [ 90%] Meshing curve 176 (Line)
+Info    : [ 90%] Meshing curve 177 (Line)
+Info    : [ 90%] Meshing curve 178 (Line)
+Info    : [ 90%] Meshing curve 179 (Line)
+Info    : [ 90%] Meshing curve 180 (Line)
+Info    : [ 90%] Meshing curve 181 (Line)
+Info    : [ 90%] Meshing curve 182 (Line)
+Info    : [ 90%] Meshing curve 184 (Line)
+Info    : [ 90%] Meshing curve 185 (Line)
+Info    : [100%] Meshing curve 186 (Line)
+Info    : [100%] Meshing curve 187 (Line)
+Info    : [100%] Meshing curve 188 (Line)
+Info    : [100%] Meshing curve 189 (Line)
+Info    : [100%] Meshing curve 190 (Line)
+Info    : [100%] Meshing curve 191 (Line)
+Info    : [100%] Meshing curve 192 (Line)
+Info    : [100%] Meshing curve 193 (Line)
+Info    : [100%] Meshing curve 194 (Line)
+Info    : [100%] Meshing curve 195 (Line)
+Info    : [100%] Meshing curve 196 (Line)
+Info    : [100%] Meshing curve 197 (Line)
+Info    : [100%] Meshing curve 198 (Line)
+Info    : [100%] Meshing curve 199 (Line)
+Info    : [100%] Meshing curve 200 (Line)
+Info    : [100%] Meshing curve 201 (Line)
+Info    : [100%] Meshing curve 202 (Line)
+Info    : [100%] Meshing curve 204 (Line)
+Info    : [100%] Meshing curve 205 (Line)
+Info    : Done meshing 1D (Wall 0.0220486s, CPU 0.02631s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Done meshing 2D (Wall 0.220212s, CPU 0.220966s)
+Info    : 8238 nodes 17176 elements
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Solving steady state flow with isoviscous rheology...
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diag_resscale2</span> <span class="o">=</span> <span class="n">sz_resscale2</span><span class="o">.</span><span class="n">get_diagnostics</span><span class="p">()</span>
+<span class="n">T_ndof_resscale2</span> <span class="o">=</span> <span class="n">sz_resscale2</span><span class="o">.</span><span class="n">V_T</span><span class="o">.</span><span class="n">dofmap</span><span class="o">.</span><span class="n">index_map</span><span class="o">.</span><span class="n">size_global</span> <span class="o">*</span> <span class="n">sz</span><span class="o">.</span><span class="n">V_T</span><span class="o">.</span><span class="n">dofmap</span><span class="o">.</span><span class="n">index_map_bs</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;resscale&#39;</span><span class="p">,</span> <span class="s1">&#39;T_ndof&#39;</span><span class="p">,</span> <span class="s1">&#39;T_{200,-100}&#39;</span><span class="p">,</span> <span class="s1">&#39;Tbar_s&#39;</span><span class="p">,</span> <span class="s1">&#39;Tbar_w&#39;</span><span class="p">,</span> <span class="s1">&#39;Vrmsw&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&lt;12.4g}</span><span class="s1"> </span><span class="si">{:&lt;12d}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resscale2</span><span class="p">,</span> <span class="n">T_ndof_resscale2</span><span class="p">,</span> <span class="n">diag_resscale2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">diag_resscale2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">diag_resscale2</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">diag_resscale2</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_(200,-100) = 516.93 deg C
+T_slab = 451.68 deg C
+T_wedge = 926.26 deg C
+V_rms,w = 34.64 mm/yr
+
+resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw       
+2            32749        516.9332     451.6764     926.2604     34.6379     
+</pre></div>
+</div>
+</div>
+</div>
+<p>For comparison here are the values reported for case 1 using <a class="reference external" href="https://terraferma.github.io">TerraFERMA</a> in <a class="reference external" href="http://dx.doi.org/10.1186/s40645-023-00588-6">Wilson &amp; van Keken, 2023</a>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">resscale</span></code></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(T_{\text{ndof}} \)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(T_{(200,-100)}^*\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\overline{T}_s^*\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\( \overline{T}_w^* \)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(V_{\text{rms},w}^*\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2.0</p></td>
+<td><p>21403</p></td>
+<td><p>517.17</p></td>
+<td><p>451.83</p></td>
+<td><p>926.62</p></td>
+<td><p>34.64</p></td>
+</tr>
+<tr class="row-odd"><td><p>1.0</p></td>
+<td><p>83935</p></td>
+<td><p>516.95</p></td>
+<td><p>451.71</p></td>
+<td><p>926.33</p></td>
+<td><p>34.64</p></td>
+</tr>
+<tr class="row-even"><td><p>0.5</p></td>
+<td><p>332307</p></td>
+<td><p>516.86</p></td>
+<td><p>451.63</p></td>
+<td><p>926.15</p></td>
+<td><p>34.64</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">geom_case2_resscale2</span> <span class="o">=</span> <span class="n">create_sz_geometry</span><span class="p">(</span><span class="n">slab_resscale2</span><span class="p">,</span> <span class="n">resscale2</span><span class="p">,</span> <span class="n">sztype</span><span class="p">,</span> <span class="n">io_depth_2</span><span class="p">,</span> <span class="n">extra_width</span><span class="p">,</span> 
+                                          <span class="n">coast_distance</span><span class="p">,</span> <span class="n">lc_depth</span><span class="p">,</span> <span class="n">uc_depth</span><span class="p">)</span>
+<span class="n">sz_case2_resscale2</span> <span class="o">=</span> <span class="n">SubductionProblem</span><span class="p">(</span><span class="n">geom_case2_resscale2</span><span class="p">,</span> <span class="n">A</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">Vs</span><span class="o">=</span><span class="n">Vs</span><span class="p">,</span> <span class="n">sztype</span><span class="o">=</span><span class="n">sztype</span><span class="p">,</span> <span class="n">qs</span><span class="o">=</span><span class="n">qs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Solving steady state flow with dislocation creep rheology...&quot;</span><span class="p">)</span>
+<span class="n">sz_case2_resscale2</span><span class="o">.</span><span class="n">solve_steadystate_dislocationcreep</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 10%] Meshing curve 10 (Line)
+Info    : [ 10%] Meshing curve 11 (Line)
+Info    : [ 10%] Meshing curve 12 (Line)
+Info    : [ 10%] Meshing curve 13 (Line)
+Info    : [ 10%] Meshing curve 14 (Line)
+Info    : [ 10%] Meshing curve 15 (Line)
+Info    : [ 10%] Meshing curve 16 (Line)
+Info    : [ 10%] Meshing curve 17 (Line)
+Info    : [ 10%] Meshing curve 18 (Line)
+Info    : [ 10%] Meshing curve 19 (Line)
+Info    : [ 10%] Meshing curve 20 (Line)
+Info    : [ 10%] Meshing curve 21 (Line)
+Info    : [ 20%] Meshing curve 22 (Line)
+Info    : [ 20%] Meshing curve 23 (Line)
+Info    : [ 20%] Meshing curve 24 (Line)
+Info    : [ 20%] Meshing curve 25 (Line)
+Info    : [ 20%] Meshing curve 26 (Line)
+Info    : [ 20%] Meshing curve 27 (Line)
+Info    : [ 20%] Meshing curve 28 (Line)
+Info    : [ 20%] Meshing curve 29 (Line)
+Info    : [ 20%] Meshing curve 30 (Line)
+Info    : [ 20%] Meshing curve 31 (Line)
+Info    : [ 20%] Meshing curve 32 (Line)
+Info    : [ 20%] Meshing curve 33 (Line)
+Info    : [ 20%] Meshing curve 34 (Line)
+Info    : [ 20%] Meshing curve 35 (Line)
+Info    : [ 20%] Meshing curve 36 (Line)
+Info    : [ 20%] Meshing curve 37 (Line)
+Info    : [ 20%] Meshing curve 38 (Line)
+Info    : [ 20%] Meshing curve 39 (Line)
+Info    : [ 20%] Meshing curve 40 (Line)
+Info    : [ 20%] Meshing curve 41 (Line)
+Info    : [ 30%] Meshing curve 42 (Line)
+Info    : [ 30%] Meshing curve 43 (Line)
+Info    : [ 30%] Meshing curve 44 (Line)
+Info    : [ 30%] Meshing curve 45 (Line)
+Info    : [ 30%] Meshing curve 46 (Line)
+Info    : [ 30%] Meshing curve 47 (Line)
+Info    : [ 30%] Meshing curve 48 (Line)
+Info    : [ 30%] Meshing curve 49 (Line)
+Info    : [ 30%] Meshing curve 50 (Line)
+Info    : [ 30%] Meshing curve 51 (Line)
+Info    : [ 30%] Meshing curve 52 (Line)
+Info    : [ 30%] Meshing curve 53 (Line)
+Info    : [ 30%] Meshing curve 54 (Line)
+Info    : [ 30%] Meshing curve 56 (Line)
+Info    : [ 30%] Meshing curve 57 (Line)
+Info    : [ 30%] Meshing curve 58 (Line)
+Info    : [ 30%] Meshing curve 59 (Line)
+Info    : [ 30%] Meshing curve 60 (Line)
+Info    : [ 30%] Meshing curve 61 (Line)
+Info    : [ 30%] Meshing curve 62 (Line)
+Info    : [ 40%] Meshing curve 63 (Line)
+Info    : [ 40%] Meshing curve 64 (Line)
+Info    : [ 40%] Meshing curve 65 (Line)
+Info    : [ 40%] Meshing curve 66 (Line)
+Info    : [ 40%] Meshing curve 67 (Line)
+Info    : [ 40%] Meshing curve 68 (Line)
+Info    : [ 40%] Meshing curve 69 (Line)
+Info    : [ 40%] Meshing curve 70 (Line)
+Info    : [ 40%] Meshing curve 71 (Line)
+Info    : [ 40%] Meshing curve 72 (Line)
+Info    : [ 40%] Meshing curve 73 (Line)
+Info    : [ 40%] Meshing curve 74 (Line)
+Info    : [ 40%] Meshing curve 75 (Line)
+Info    : [ 40%] Meshing curve 76 (Line)
+Info    : [ 40%] Meshing curve 77 (Line)
+Info    : [ 40%] Meshing curve 78 (Line)
+Info    : [ 40%] Meshing curve 79 (Line)
+Info    : [ 40%] Meshing curve 80 (Line)
+Info    : [ 40%] Meshing curve 81 (Line)
+Info    : [ 40%] Meshing curve 82 (Line)
+Info    : [ 50%] Meshing curve 83 (Line)
+Info    : [ 50%] Meshing curve 84 (Line)
+Info    : [ 50%] Meshing curve 85 (Line)
+Info    : [ 50%] Meshing curve 86 (Line)
+Info    : [ 50%] Meshing curve 87 (Line)
+Info    : [ 50%] Meshing curve 88 (Line)
+Info    : [ 50%] Meshing curve 89 (Line)
+Info    : [ 50%] Meshing curve 90 (Line)
+Info    : [ 50%] Meshing curve 91 (Line)
+Info    : [ 50%] Meshing curve 92 (Line)
+Info    : [ 50%] Meshing curve 93 (Line)
+Info    : [ 50%] Meshing curve 94 (Line)
+Info    : [ 50%] Meshing curve 95 (Line)
+Info    : [ 50%] Meshing curve 96 (Line)
+Info    : [ 50%] Meshing curve 97 (Line)
+Info    : [ 50%] Meshing curve 98 (Line)
+Info    : [ 50%] Meshing curve 99 (Line)
+Info    : [ 50%] Meshing curve 100 (Line)
+Info    : [ 50%] Meshing curve 101 (Line)
+Info    : [ 50%] Meshing curve 102 (Line)
+Info    : [ 60%] Meshing curve 103 (Line)
+Info    : [ 60%] Meshing curve 104 (Line)
+Info    : [ 60%] Meshing curve 105 (Line)
+Info    : [ 60%] Meshing curve 106 (Line)
+Info    : [ 60%] Meshing curve 107 (Line)
+Info    : [ 60%] Meshing curve 108 (Line)
+Info    : [ 60%] Meshing curve 109 (Line)
+Info    : [ 60%] Meshing curve 110 (Line)
+Info    : [ 60%] Meshing curve 111 (Line)
+Info    : [ 60%] Meshing curve 112 (Line)
+Info    : [ 60%] Meshing curve 113 (Line)
+Info    : [ 60%] Meshing curve 114 (Line)
+Info    : [ 60%] Meshing curve 115 (Line)
+Info    : [ 60%] Meshing curve 117 (Line)
+Info    : [ 60%] Meshing curve 118 (Line)
+Info    : [ 60%] Meshing curve 119 (Line)
+Info    : [ 60%] Meshing curve 120 (Line)
+Info    : [ 60%] Meshing curve 121 (Line)
+Info    : [ 60%] Meshing curve 122 (Line)
+Info    : [ 60%] Meshing curve 123 (Line)
+Info    : [ 70%] Meshing curve 124 (Line)
+Info    : [ 70%] Meshing curve 125 (Line)
+Info    : [ 70%] Meshing curve 126 (Line)
+Info    : [ 70%] Meshing curve 127 (Line)
+Info    : [ 70%] Meshing curve 128 (Line)
+Info    : [ 70%] Meshing curve 129 (Line)
+Info    : [ 70%] Meshing curve 130 (Line)
+Info    : [ 70%] Meshing curve 131 (Line)
+Info    : [ 70%] Meshing curve 132 (Line)
+Info    : [ 70%] Meshing curve 133 (Line)
+Info    : [ 70%] Meshing curve 134 (Line)
+Info    : [ 70%] Meshing curve 135 (Line)
+Info    : [ 70%] Meshing curve 136 (Line)
+Info    : [ 70%] Meshing curve 137 (Line)
+Info    : [ 70%] Meshing curve 138 (Line)
+Info    : [ 70%] Meshing curve 139 (Line)
+Info    : [ 70%] Meshing curve 140 (Line)
+Info    : [ 70%] Meshing curve 141 (Line)
+Info    : [ 70%] Meshing curve 142 (Line)
+Info    : [ 70%] Meshing curve 143 (Line)
+Info    : [ 80%] Meshing curve 144 (Line)
+Info    : [ 80%] Meshing curve 145 (Line)
+Info    : [ 80%] Meshing curve 146 (Line)
+Info    : [ 80%] Meshing curve 147 (Line)
+Info    : [ 80%] Meshing curve 148 (Line)
+Info    : [ 80%] Meshing curve 149 (Line)
+Info    : [ 80%] Meshing curve 150 (Line)
+Info    : [ 80%] Meshing curve 151 (Line)
+Info    : [ 80%] Meshing curve 153 (Line)
+Info    : [ 80%] Meshing curve 154 (Line)
+Info    : [ 80%] Meshing curve 155 (Line)
+Info    : [ 80%] Meshing curve 156 (Line)
+Info    : [ 80%] Meshing curve 157 (Line)
+Info    : [ 80%] Meshing curve 158 (Line)
+Info    : [ 80%] Meshing curve 159 (Line)
+Info    : [ 80%] Meshing curve 160 (Line)
+Info    : [ 80%] Meshing curve 161 (Line)
+Info    : [ 80%] Meshing curve 162 (Line)
+Info    : [ 80%] Meshing curve 163 (Line)
+Info    : [ 80%] Meshing curve 164 (Line)
+Info    : [ 90%] Meshing curve 165 (Line)
+Info    : [ 90%] Meshing curve 166 (Line)
+Info    : [ 90%] Meshing curve 167 (Line)
+Info    : [ 90%] Meshing curve 168 (Line)
+Info    : [ 90%] Meshing curve 169 (Line)
+Info    : [ 90%] Meshing curve 170 (Line)
+Info    : [ 90%] Meshing curve 171 (Line)
+Info    : [ 90%] Meshing curve 172 (Line)
+Info    : [ 90%] Meshing curve 173 (Line)
+Info    : [ 90%] Meshing curve 174 (Line)
+Info    : [ 90%] Meshing curve 175 (Line)
+Info    : [ 90%] Meshing curve 176 (Line)
+Info    : [ 90%] Meshing curve 177 (Line)
+Info    : [ 90%] Meshing curve 178 (Line)
+Info    : [ 90%] Meshing curve 179 (Line)
+Info    : [ 90%] Meshing curve 180 (Line)
+Info    : [ 90%] Meshing curve 181 (Line)
+Info    : [ 90%] Meshing curve 182 (Line)
+Info    : [ 90%] Meshing curve 184 (Line)
+Info    : [ 90%] Meshing curve 185 (Line)
+Info    : [100%] Meshing curve 186 (Line)
+Info    : [100%] Meshing curve 187 (Line)
+Info    : [100%] Meshing curve 188 (Line)
+Info    : [100%] Meshing curve 189 (Line)
+Info    : [100%] Meshing curve 190 (Line)
+Info    : [100%] Meshing curve 191 (Line)
+Info    : [100%] Meshing curve 192 (Line)
+Info    : [100%] Meshing curve 193 (Line)
+Info    : [100%] Meshing curve 194 (Line)
+Info    : [100%] Meshing curve 195 (Line)
+Info    : [100%] Meshing curve 196 (Line)
+Info    : [100%] Meshing curve 197 (Line)
+Info    : [100%] Meshing curve 198 (Line)
+Info    : [100%] Meshing curve 199 (Line)
+Info    : [100%] Meshing curve 200 (Line)
+Info    : [100%] Meshing curve 201 (Line)
+Info    : [100%] Meshing curve 202 (Line)
+Info    : [100%] Meshing curve 204 (Line)
+Info    : [100%] Meshing curve 205 (Line)
+Info    : Done meshing 1D (Wall 0.0242031s, CPU 0.022412s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.25608s, CPU 0.260281s)
+Info    : 8232 nodes 17164 elements
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Solving steady state flow with dislocation creep rheology...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iteration   Residual     Relative Residual
+------------------------------------------
+0           12652.9      1           
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1           2593.5       0.204972    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2           354.193      0.027993    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3           126.582      0.0100041   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4           56.6955      0.00448081  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5           31.9665      0.0025264   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           20.3208      0.00160601  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7           13.862       0.00109555  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8           9.80868      0.00077521  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9           7.05601      0.000557657 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10          5.15867      0.000407705 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11          3.82963      0.000302667 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          2.88071      0.000227671 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>13          2.18946      0.000173039 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14          1.67703      0.000132541 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>15          1.29174      0.00010209  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16          0.998644     7.89258e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>17          0.773531     6.11344e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.599318     4.73659e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>19          0.463747     3.66513e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20          0.35788      2.82843e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21          0.275088     2.1741e-05  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>22          0.210376     1.66267e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>23          0.159927     1.26395e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24          0.120782     9.54576e-06 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>25          0.0906273    7.16254e-06 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>26          0.0676413    5.3459e-06  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>27          0.0503836    3.98197e-06 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diag_case2_resscale2</span> <span class="o">=</span> <span class="n">sz_case2_resscale2</span><span class="o">.</span><span class="n">get_diagnostics</span><span class="p">()</span>
+<span class="n">T_ndof_case2_resscale2</span> <span class="o">=</span> <span class="n">sz_case2_resscale2</span><span class="o">.</span><span class="n">V_T</span><span class="o">.</span><span class="n">dofmap</span><span class="o">.</span><span class="n">index_map</span><span class="o">.</span><span class="n">size_global</span> <span class="o">*</span> <span class="n">sz</span><span class="o">.</span><span class="n">V_T</span><span class="o">.</span><span class="n">dofmap</span><span class="o">.</span><span class="n">index_map_bs</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1"> </span><span class="si">{:&lt;12}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;resscale&#39;</span><span class="p">,</span> <span class="s1">&#39;T_ndof&#39;</span><span class="p">,</span> <span class="s1">&#39;T_{200,-100}&#39;</span><span class="p">,</span> <span class="s1">&#39;Tbar_s&#39;</span><span class="p">,</span> <span class="s1">&#39;Tbar_w&#39;</span><span class="p">,</span> <span class="s1">&#39;Vrmsw&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&lt;12.4g}</span><span class="s1"> </span><span class="si">{:&lt;12d}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1"> </span><span class="si">{:&lt;12.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resscale2</span><span class="p">,</span> <span class="n">T_ndof_case2_resscale2</span><span class="p">,</span> <span class="n">diag_case2_resscale2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">diag_case2_resscale2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">diag_case2_resscale2</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">diag_case2_resscale2</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_(200,-100) = 683.72 deg C
+T_slab = 573.07 deg C
+T_wedge = 935.15 deg C
+V_rms,w = 40.83 mm/yr
+
+resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw       
+2            32725        683.7207     573.0692     935.1450     40.8269     
+</pre></div>
+</div>
+</div>
+</div>
+<p>For comparison here are the values reported for case 2 using <a class="reference external" href="https://terraferma.github.io">TerraFERMA</a> in <a class="reference external" href="http://dx.doi.org/10.1186/s40645-023-00588-6">Wilson &amp; van Keken, 2023</a>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">resscale</span></code></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(T_{\text{ndof}} \)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(T_{(200,-100)}^*\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\overline{T}_s^*\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\( \overline{T}_w^* \)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(V_{\text{rms},w}^*\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2.0</p></td>
+<td><p>21403</p></td>
+<td><p>683.05</p></td>
+<td><p>571.58</p></td>
+<td><p>936.65</p></td>
+<td><p>40.89</p></td>
+</tr>
+<tr class="row-odd"><td><p>1.0</p></td>
+<td><p>83935</p></td>
+<td><p>682.87</p></td>
+<td><p>572.23</p></td>
+<td><p>936.11</p></td>
+<td><p>40.78</p></td>
+</tr>
+<tr class="row-even"><td><p>0.5</p></td>
+<td><p>332307</p></td>
+<td><p>682.80</p></td>
+<td><p>572.05</p></td>
+<td><p>937.37</p></td>
+<td><p>40.77</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="global-suite">
+<h2>Global Suite<a class="headerlink" href="#global-suite" title="Link to this heading">#</a></h2>
+<p>Load the data</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">allsz_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;all_sz.json&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">allsz_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">allsz_params</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="alaska-peninsula-dislocation-creep-low-res">
+<h3>Alaska Peninsula (dislocation creep, low res)<a class="headerlink" href="#alaska-peninsula-dislocation-creep-low-res" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">szdict</span> <span class="o">=</span> <span class="n">allsz_params</span><span class="p">[</span><span class="s1">&#39;01_Alaska_Peninsula&#39;</span><span class="p">]</span>
+<span class="n">slab_ak</span> <span class="o">=</span> <span class="n">create_slab</span><span class="p">(</span><span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;ys&#39;</span><span class="p">],</span> <span class="n">resscale</span><span class="p">,</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;lc_depth&#39;</span><span class="p">])</span>
+<span class="n">geom_ak</span> <span class="o">=</span> <span class="n">create_sz_geometry</span><span class="p">(</span><span class="n">slab_ak</span><span class="p">,</span> <span class="n">resscale</span><span class="p">,</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;sztype&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;io_depth&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;extra_width&#39;</span><span class="p">],</span> 
+                             <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;coast_distance&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;lc_depth&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;uc_depth&#39;</span><span class="p">])</span>
+<span class="n">sz_ak</span> <span class="o">=</span> <span class="n">SubductionProblem</span><span class="p">(</span><span class="n">geom_ak</span><span class="p">,</span> <span class="o">**</span><span class="n">szdict</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Solving steady state flow with isoviscous rheology...&quot;</span><span class="p">)</span>
+<span class="n">sz_ak</span><span class="o">.</span><span class="n">solve_steadystate_dislocationcreep</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 10%] Meshing curve 10 (Line)
+Info    : [ 10%] Meshing curve 11 (Line)
+Info    : [ 20%] Meshing curve 12 (Line)
+Info    : [ 20%] Meshing curve 13 (Line)
+Info    : [ 20%] Meshing curve 14 (Line)
+Info    : [ 20%] Meshing curve 15 (Line)
+Info    : [ 20%] Meshing curve 16 (Line)
+Info    : [ 20%] Meshing curve 17 (Line)
+Info    : [ 20%] Meshing curve 18 (Line)
+Info    : [ 20%] Meshing curve 19 (Line)
+Info    : [ 20%] Meshing curve 20 (Line)
+Info    : [ 20%] Meshing curve 21 (Line)
+Info    : [ 20%] Meshing curve 22 (Line)
+Info    : [ 30%] Meshing curve 24 (Line)
+Info    : [ 30%] Meshing curve 25 (Line)
+Info    : [ 30%] Meshing curve 26 (Line)
+Info    : [ 30%] Meshing curve 27 (Line)
+Info    : [ 30%] Meshing curve 28 (Line)
+Info    : [ 30%] Meshing curve 29 (Line)
+Info    : [ 30%] Meshing curve 30 (Line)
+Info    : [ 30%] Meshing curve 31 (Line)
+Info    : [ 30%] Meshing curve 32 (Line)
+Info    : [ 30%] Meshing curve 33 (Line)
+Info    : [ 30%] Meshing curve 34 (Line)
+Info    : [ 40%] Meshing curve 35 (Line)
+Info    : [ 40%] Meshing curve 36 (Line)
+Info    : [ 40%] Meshing curve 37 (Line)
+Info    : [ 40%] Meshing curve 38 (Line)
+Info    : [ 40%] Meshing curve 39 (Line)
+Info    : [ 40%] Meshing curve 40 (Line)
+Info    : [ 40%] Meshing curve 41 (Line)
+Info    : [ 40%] Meshing curve 42 (Line)
+Info    : [ 40%] Meshing curve 44 (Line)
+Info    : [ 40%] Meshing curve 45 (Line)
+Info    : [ 40%] Meshing curve 46 (Line)
+Info    : [ 50%] Meshing curve 47 (Line)
+Info    : [ 50%] Meshing curve 48 (Line)
+Info    : [ 50%] Meshing curve 49 (Line)
+Info    : [ 50%] Meshing curve 50 (Line)
+Info    : [ 50%] Meshing curve 51 (Line)
+Info    : [ 50%] Meshing curve 52 (Line)
+Info    : [ 50%] Meshing curve 53 (Line)
+Info    : [ 50%] Meshing curve 54 (Line)
+Info    : [ 50%] Meshing curve 55 (Line)
+Info    : [ 50%] Meshing curve 56 (Line)
+Info    : [ 50%] Meshing curve 57 (Line)
+Info    : [ 60%] Meshing curve 58 (Line)
+Info    : [ 60%] Meshing curve 59 (Line)
+Info    : [ 60%] Meshing curve 60 (Line)
+Info    : [ 60%] Meshing curve 61 (Line)
+Info    : [ 60%] Meshing curve 62 (Line)
+Info    : [ 60%] Meshing curve 63 (Line)
+Info    : [ 60%] Meshing curve 64 (Line)
+Info    : [ 60%] Meshing curve 65 (Line)
+Info    : [ 60%] Meshing curve 66 (Line)
+Info    : [ 60%] Meshing curve 67 (Line)
+Info    : [ 60%] Meshing curve 68 (Line)
+Info    : [ 70%] Meshing curve 69 (Line)
+Info    : [ 70%] Meshing curve 70 (Line)
+Info    : [ 70%] Meshing curve 71 (Line)
+Info    : [ 70%] Meshing curve 72 (Line)
+Info    : [ 70%] Meshing curve 74 (Line)
+Info    : [ 70%] Meshing curve 75 (Line)
+Info    : [ 70%] Meshing curve 76 (Line)
+Info    : [ 70%] Meshing curve 77 (Line)
+Info    : [ 70%] Meshing curve 78 (Line)
+Info    : [ 70%] Meshing curve 79 (Line)
+Info    : [ 70%] Meshing curve 80 (Line)
+Info    : [ 80%] Meshing curve 81 (Line)
+Info    : [ 80%] Meshing curve 82 (Line)
+Info    : [ 80%] Meshing curve 83 (Line)
+Info    : [ 80%] Meshing curve 84 (Line)
+Info    : [ 80%] Meshing curve 85 (Line)
+Info    : [ 80%] Meshing curve 86 (Line)
+Info    : [ 80%] Meshing curve 87 (Line)
+Info    : [ 80%] Meshing curve 88 (Line)
+Info    : [ 80%] Meshing curve 89 (Line)
+Info    : [ 80%] Meshing curve 90 (Line)
+Info    : [ 80%] Meshing curve 91 (Line)
+Info    : [ 90%] Meshing curve 92 (Line)
+Info    : [ 90%] Meshing curve 93 (Line)
+Info    : [ 90%] Meshing curve 95 (Line)
+Info    : [ 90%] Meshing curve 96 (Line)
+Info    : [ 90%] Meshing curve 97 (Line)
+Info    : [ 90%] Meshing curve 98 (Line)
+Info    : [ 90%] Meshing curve 99 (Line)
+Info    : [ 90%] Meshing curve 100 (Line)
+Info    : [ 90%] Meshing curve 101 (Line)
+Info    : [ 90%] Meshing curve 102 (Line)
+Info    : [ 90%] Meshing curve 103 (Line)
+Info    : [100%] Meshing curve 104 (Line)
+Info    : [100%] Meshing curve 105 (Line)
+Info    : [100%] Meshing curve 106 (Line)
+Info    : [100%] Meshing curve 107 (Line)
+Info    : [100%] Meshing curve 108 (Line)
+Info    : [100%] Meshing curve 109 (Line)
+Info    : [100%] Meshing curve 110 (Line)
+Info    : [100%] Meshing curve 111 (Line)
+Info    : [100%] Meshing curve 113 (Line)
+Info    : [100%] Meshing curve 114 (Line)
+Info    : Done meshing 1D (Wall 0.0149576s, CPU 0.015829s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0497618s, CPU 0.049535s)
+Info    : 1670 nodes 3653 elements
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Solving steady state flow with isoviscous rheology...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iteration   Residual     Relative Residual
+------------------------------------------
+0           7104.47      1           
+1           811.611      0.114239    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2           107.564      0.0151404   
+3           57.4009      0.00807954  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4           26.5432      0.00373613  
+5           10.9764      0.001545    
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           4.77238      0.000671743 
+7           2.31627      0.00032603  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8           1.25398      0.000176506 
+9           0.742959     0.000104576 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10          0.474903     6.68456e-05 
+11          0.324221     4.56362e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          0.234196     3.29646e-05 
+13          0.177298     2.49558e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14          0.139191     1.9592e-05  
+15          0.11218      1.579e-05   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16          0.0920342    1.29544e-05 
+17          0.0763636    1.07487e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.0637803    8.97749e-06 
+19          0.0534451    7.52274e-06 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20          0.0448299    6.31009e-06 
+21          0.0375863    5.29052e-06 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>22          0.0314698    4.42958e-06 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">plot_scalar</span><span class="p">(</span><span class="n">sz_ak</span><span class="o">.</span><span class="n">T_i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/9ed81bd01b7c1df2790815cbf9c9144c6de3a8eb82cbad0d967ca96a35280e57.png" src="../_images/9ed81bd01b7c1df2790815cbf9c9144c6de3a8eb82cbad0d967ca96a35280e57.png" />
+</div>
+</div>
+<p>FIXME: not sure why bounds appear incorrect on plot.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sz_ak</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/d77743af9ff84a7724279c0aa168e66ad9982133c64077a8a687ba6bd0760fd1.png" src="../_images/d77743af9ff84a7724279c0aa168e66ad9982133c64077a8a687ba6bd0760fd1.png" />
+</div>
+</div>
+</section>
+<section id="n-antilles-dislocation-creep-low-res">
+<h3>N Antilles (dislocation creep, low res)<a class="headerlink" href="#n-antilles-dislocation-creep-low-res" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">szdict</span> <span class="o">=</span> <span class="n">allsz_params</span><span class="p">[</span><span class="s1">&#39;19_N_Antilles&#39;</span><span class="p">]</span>
+<span class="n">slab_ant</span> <span class="o">=</span> <span class="n">create_slab</span><span class="p">(</span><span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;xs&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;ys&#39;</span><span class="p">],</span> <span class="n">resscale</span><span class="p">,</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;lc_depth&#39;</span><span class="p">])</span>
+<span class="n">geom_ant</span> <span class="o">=</span> <span class="n">create_sz_geometry</span><span class="p">(</span><span class="n">slab_ant</span><span class="p">,</span> <span class="n">resscale</span><span class="p">,</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;sztype&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;io_depth&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;extra_width&#39;</span><span class="p">],</span> 
+                             <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;coast_distance&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;lc_depth&#39;</span><span class="p">],</span> <span class="n">szdict</span><span class="p">[</span><span class="s1">&#39;uc_depth&#39;</span><span class="p">])</span>
+<span class="n">sz_ant</span> <span class="o">=</span> <span class="n">SubductionProblem</span><span class="p">(</span><span class="n">geom_ant</span><span class="p">,</span> <span class="o">**</span><span class="n">szdict</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Solving steady state flow with isoviscous rheology...&quot;</span><span class="p">)</span>
+<span class="n">sz_ant</span><span class="o">.</span><span class="n">solve_steadystate_dislocationcreep</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Line)
+Info    : [ 10%] Meshing curve 2 (Line)
+Info    : [ 10%] Meshing curve 3 (Line)
+Info    : [ 10%] Meshing curve 4 (Line)
+Info    : [ 10%] Meshing curve 5 (Line)
+Info    : [ 10%] Meshing curve 6 (Line)
+Info    : [ 10%] Meshing curve 7 (Line)
+Info    : [ 10%] Meshing curve 8 (Line)
+Info    : [ 10%] Meshing curve 9 (Line)
+Info    : [ 20%] Meshing curve 10 (Line)
+Info    : [ 20%] Meshing curve 11 (Line)
+Info    : [ 20%] Meshing curve 12 (Line)
+Info    : [ 20%] Meshing curve 13 (Line)
+Info    : [ 20%] Meshing curve 14 (Line)
+Info    : [ 20%] Meshing curve 15 (Line)
+Info    : [ 20%] Meshing curve 16 (Line)
+Info    : [ 20%] Meshing curve 17 (Line)
+Info    : [ 30%] Meshing curve 18 (Line)
+Info    : [ 30%] Meshing curve 19 (Line)
+Info    : [ 30%] Meshing curve 20 (Line)
+Info    : [ 30%] Meshing curve 21 (Line)
+Info    : [ 30%] Meshing curve 23 (Line)
+Info    : [ 30%] Meshing curve 24 (Line)
+Info    : [ 30%] Meshing curve 25 (Line)
+Info    : [ 30%] Meshing curve 26 (Line)
+Info    : [ 30%] Meshing curve 27 (Line)
+Info    : [ 40%] Meshing curve 28 (Line)
+Info    : [ 40%] Meshing curve 29 (Line)
+Info    : [ 40%] Meshing curve 30 (Line)
+Info    : [ 40%] Meshing curve 31 (Line)
+Info    : [ 40%] Meshing curve 32 (Line)
+Info    : [ 40%] Meshing curve 33 (Line)
+Info    : [ 40%] Meshing curve 34 (Line)
+Info    : [ 40%] Meshing curve 35 (Line)
+Info    : [ 50%] Meshing curve 36 (Line)
+Info    : [ 50%] Meshing curve 37 (Line)
+Info    : [ 50%] Meshing curve 38 (Line)
+Info    : [ 50%] Meshing curve 39 (Line)
+Info    : [ 50%] Meshing curve 41 (Line)
+Info    : [ 50%] Meshing curve 42 (Line)
+Info    : [ 50%] Meshing curve 43 (Line)
+Info    : [ 50%] Meshing curve 44 (Line)
+Info    : [ 50%] Meshing curve 45 (Line)
+Info    : [ 60%] Meshing curve 46 (Line)
+Info    : [ 60%] Meshing curve 47 (Line)
+Info    : [ 60%] Meshing curve 48 (Line)
+Info    : [ 60%] Meshing curve 49 (Line)
+Info    : [ 60%] Meshing curve 50 (Line)
+Info    : [ 60%] Meshing curve 51 (Line)
+Info    : [ 60%] Meshing curve 52 (Line)
+Info    : [ 60%] Meshing curve 53 (Line)
+Info    : [ 70%] Meshing curve 54 (Line)
+Info    : [ 70%] Meshing curve 55 (Line)
+Info    : [ 70%] Meshing curve 56 (Line)
+Info    : [ 70%] Meshing curve 57 (Line)
+Info    : [ 70%] Meshing curve 59 (Line)
+Info    : [ 70%] Meshing curve 60 (Line)
+Info    : [ 70%] Meshing curve 61 (Line)
+Info    : [ 70%] Meshing curve 62 (Line)
+Info    : [ 80%] Meshing curve 63 (Line)
+Info    : [ 80%] Meshing curve 64 (Line)
+Info    : [ 80%] Meshing curve 65 (Line)
+Info    : [ 80%] Meshing curve 66 (Line)
+Info    : [ 80%] Meshing curve 67 (Line)
+Info    : [ 80%] Meshing curve 68 (Line)
+Info    : [ 80%] Meshing curve 69 (Line)
+Info    : [ 80%] Meshing curve 70 (Line)
+Info    : [ 80%] Meshing curve 71 (Line)
+Info    : [ 90%] Meshing curve 73 (Line)
+Info    : [ 90%] Meshing curve 74 (Line)
+Info    : [ 90%] Meshing curve 75 (Line)
+Info    : [ 90%] Meshing curve 76 (Line)
+Info    : [ 90%] Meshing curve 77 (Line)
+Info    : [ 90%] Meshing curve 78 (Line)
+Info    : [ 90%] Meshing curve 79 (Line)
+Info    : [ 90%] Meshing curve 80 (Line)
+Info    : [100%] Meshing curve 81 (Line)
+Info    : [100%] Meshing curve 82 (Line)
+Info    : [100%] Meshing curve 83 (Line)
+Info    : [100%] Meshing curve 84 (Line)
+Info    : [100%] Meshing curve 85 (Line)
+Info    : [100%] Meshing curve 86 (Line)
+Info    : [100%] Meshing curve 88 (Line)
+Info    : [100%] Meshing curve 89 (Line)
+Info    : Done meshing 1D (Wall 0.0135429s, CPU 0.013523s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0341421s, CPU 0.033903s)
+Info    : 1246 nodes 2741 elements
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Solving steady state flow with isoviscous rheology...
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iteration   Residual     Relative Residual
+------------------------------------------
+0           1924.22      1           
+1           367.433      0.190952    
+2           97.536       0.0506885   
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3           42.9811      0.0223369   
+4           18.807       0.00977381  
+5           9.21965      0.00479137  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           5.30192      0.00275536  
+7           3.38398      0.00175863  
+8           2.31623      0.00120372  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9           1.68449      0.000875416 
+10          1.28513      0.000667871 
+11          1.01187      0.000525859 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          0.809671     0.000420778 
+13          0.651432     0.000338543 
+14          0.525367     0.000273028 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>15          0.4236       0.000220141 
+16          0.340724     0.000177071 
+17          0.273214     0.000141987 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.218409     0.000113505 
+19          0.174113     9.0485e-05  
+20          0.138468     7.19606e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21          0.1099       5.71142e-05 
+22          0.0870853    4.52574e-05 
+23          0.0689182    3.58162e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24          0.0544874    2.83166e-05 
+25          0.0430468    2.2371e-05  
+26          0.0339907    1.76647e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>27          0.0268306    1.39436e-05 
+28          0.0211747    1.10043e-05 
+29          0.0167097    8.68387e-06 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30          0.0131864    6.85287e-06 
+31          0.0104071    5.40846e-06 
+32          0.00821482   4.26916e-06 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">plot_scalar</span><span class="p">(</span><span class="n">sz_ant</span><span class="o">.</span><span class="n">T_i</span><span class="p">)</span>
+<span class="n">eta_i</span> <span class="o">=</span> <span class="n">sz_ant</span><span class="o">.</span><span class="n">project_dislocationcreep_viscosity</span><span class="p">()</span>
+<span class="n">utils</span><span class="o">.</span><span class="n">plot_scalar</span><span class="p">(</span><span class="n">eta_i</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sz_ant</span><span class="o">.</span><span class="n">eta0</span><span class="p">,</span> <span class="n">log_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_edges</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f7a52cf7dd326692df6da33788a344010dd66d6d9b02e7ce41eea770d871753c.png" src="../_images/f7a52cf7dd326692df6da33788a344010dd66d6d9b02e7ce41eea770d871753c.png" />
+<img alt="../_images/90ad74e873077bee25aca3f176bfa07a26bcf7ceaafbb7e5a08c8c30847f3fac.png" src="../_images/90ad74e873077bee25aca3f176bfa07a26bcf7ceaafbb7e5a08c8c30847f3fac.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sz_ant</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a37bfe2f54bf2be1def71fcc3db5de1bcbab5765ba78acdc0ae00187d7790e37.png" src="../_images/a37bfe2f54bf2be1def71fcc3db5de1bcbab5765ba78acdc0ae00187d7790e37.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load">Load</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-resolution">Higher Resolution</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1">Case 1</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#global-suite">Global Suite</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alaska-peninsula-dislocation-creep-low-res">Alaska Peninsula (dislocation creep, low res)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#n-antilles-dislocation-creep-low-res">N Antilles (dislocation creep, low res)</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Cian Wilson
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    <p class="last-updated">
+  Last updated on May 31, 2024.
+  <br/>
+</p>
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
