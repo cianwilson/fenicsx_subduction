@@ -57,6 +57,8 @@
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/Poisson1D';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -64,7 +66,7 @@
     <link rel="prev" title="Overview" href="../readme.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 31, 2024"/>
+    <meta name="docbuild:last-update" content="Jun 01, 2024"/>
   </head>
   
   
@@ -404,7 +406,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -420,6 +424,20 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description">Description</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preamble">Preamble</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution">Solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -431,6 +449,115 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="poisson-example-1d">
 <h1>Poisson Example 1D<a class="headerlink" href="#poisson-example-1d" title="Link to this heading">#</a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
+<p>As an introductory and simplified example we will solve the Poisson equation on a 1D domain of unit length, <span class="math notranslate nohighlight">\(\Upomega = [0,1]\)</span>, by seeking the approximate solution of</p>
+<div class="amsmath math notranslate nohighlight" id="equation-16af2e5c-7449-4652-b905-d5a84a9c088f">
+<span class="eqno">(1)<a class="headerlink" href="#equation-16af2e5c-7449-4652-b905-d5a84a9c088f" title="Permalink to this equation">#</a></span>\[\begin{align}
+-\frac{d^2 T}{dx^2} &amp;= f  % &amp;&amp; \text{in }\Upomega
+\end{align}\]</div>
+<p>where we choose for this example <span class="math notranslate nohighlight">\(f=\frac{1}{4}\pi^2 \sin\left(\frac{\pi x}{2} \right)\)</span>.</p>
+<p>At the boundaries, <span class="math notranslate nohighlight">\(x\)</span>=0 and <span class="math notranslate nohighlight">\(x\)</span>=1, we apply as boundary conditions \begin{align}
+T &amp;= 0 &amp;&amp; \text{at } x=0  \
+\frac{dT}{dx} &amp;= 0 &amp;&amp; \text{at } x=1
+\end{align}
+The first boundary condition is an example of an essential or Dirichlet boundary condition where we specify the
+value of the solution. The second boundary condition is an example of a natural or Neumann boundary condition that can be interpreted to mean that the solution is symmetrical around <span class="math notranslate nohighlight">\(x\)</span>=1.</p>
+<p>The analytical solution to the Poisson equation in 1D with the given boundary conditions and forcing function is simply</p>
+<div class="amsmath math notranslate nohighlight" id="equation-9b39d0eb-9674-4a02-8e69-3ea84793056b">
+<span class="eqno">(2)<a class="headerlink" href="#equation-9b39d0eb-9674-4a02-8e69-3ea84793056b" title="Permalink to this equation">#</a></span>\[\begin{equation}
+  T = \sin\left(\frac{\pi x}{2}\right)
+\end{equation}\]</div>
+<p>but we will still solve this numerically as a verification test of our implementation.</p>
+<p>Finite element methods are formulated by writing out the weak form of the equation.  In the case of 1D Poisson, we multiply the equation by an arbitrary “test” function, <span class="math notranslate nohighlight">\(T_t\)</span>, and integrate over the domain:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-b1ef9df9-3883-40c6-86ef-37d47916deb6">
+<span class="eqno">(3)<a class="headerlink" href="#equation-b1ef9df9-3883-40c6-86ef-37d47916deb6" title="Permalink to this equation">#</a></span>\[\begin{equation}
+-\int_0^1 T_t \frac{d^2 T}{dx^2} dx = \int_0^1 f dx
+\end{equation}\]</div>
+<p>To lower the continuity requirements on the discrete form of <span class="math notranslate nohighlight">\(T\)</span> we can integrate the first term by parts giving us the <strong>weak form</strong> of the equation</p>
+<div class="amsmath math notranslate nohighlight" id="equation-63788db7-5fde-43d2-9ca1-48a9c81db815">
+<span class="eqno">(4)<a class="headerlink" href="#equation-63788db7-5fde-43d2-9ca1-48a9c81db815" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\int_0^1 \frac{d T_t}{dx} \frac{d T}{dx} dx - \left[T_t \frac{dT}{dx} \right]_0^1  = \int_0^1 f dx
+\end{equation}\]</div>
+<p>To discretize the equation, the FEM approximates <span class="math notranslate nohighlight">\(T\)</span> by <span class="math notranslate nohighlight">\(\tilde{T}\)</span>, the solution’s representation in a <strong>function space</strong> on the mesh where</p>
+<div class="amsmath math notranslate nohighlight" id="equation-0acf7d29-1ba3-420d-86e5-957d093da710">
+<span class="eqno">(5)<a class="headerlink" href="#equation-0acf7d29-1ba3-420d-86e5-957d093da710" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\tilde{T}(\vec{x}, t) = \sum_j \phi_j(\vec{x}) T_j(t) 
+\end{equation}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(T_j\)</span> are coefficients that as indicated can be time-dependent if the problem is time-dependent (not the case in this example) but do not depend on space. The shape functions <span class="math notranslate nohighlight">\(\phi_j\)</span> are a function of space but generally independent of time. The index <span class="math notranslate nohighlight">\(j\)</span> indicates the number of the shape function on the mesh and is associated with the number of the nodal point or element number it is associated with.
+In this tutorial, we will principally discuss so-called  Lagrange shape functions which define <span class="math notranslate nohighlight">\(\phi_j\)</span> as a polynomial over an element with a value of 1 at a single nodal point and a value of 0 at all other points associated with the degrees of freedom such that <span class="math notranslate nohighlight">\(\sum_j\phi_j=1\)</span>.  The shape functions can be of arbitrary order and can have various conditions on their continuity across or in between elements. We will focus principally on linear Lagrange shape functions (denoted by P1) and quadratic Lagrange shape functions (denoted by P2) that are continuous between mesh elements.
+<img alt="Lagrange shape functions in 1D" src="../_images/shapefunctions1d.png" /></p>
+<p>Our choice of Lagrange shape functions means that <span class="math notranslate nohighlight">\(T_j\)</span> are the actual values of the solution.  With other forms of the shape function (see, e.g., <a class="reference external" href="https://defelement.com/">DefElement</a>)
+<span class="math notranslate nohighlight">\(T_j\)</span> are instead interpolation weights that are used to construct the solution values.
+The split of temporal and spatial dependence above is typical in geodynamic applications but not required.</p>
+<p>The test functions <span class="math notranslate nohighlight">\(T_t\)</span> can be independent of the functions
+that span the function space of the trial function,
+but in the widely used Galerkin approach the test functions
+are restricted to be in the same function space such that</p>
+<div class="amsmath math notranslate nohighlight" id="equation-4a8f649f-f71a-40ec-8876-91b90daf5925">
+<span class="eqno">(6)<a class="headerlink" href="#equation-4a8f649f-f71a-40ec-8876-91b90daf5925" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\tilde{T}_t(\vec{x}, t) = \sum_i\phi_i(\vec{x})  T_{ti}(t) 
+\end{equation}\]</div>
+<p>Since the method is valid for all <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> we can dispense with the test function values at the DOFs, <span class="math notranslate nohighlight">\(T_{ti}\)</span> and, through substitution of <span class="math notranslate nohighlight">\(T = \tilde{T}\)</span> and <span class="math notranslate nohighlight">\(T_t = \tilde{T}_t\)</span> write the <strong>discrete weak form</strong> as</p>
+<div class="amsmath math notranslate nohighlight" id="equation-4e868e33-ce83-4eb2-900c-3c99122c80be">
+<span class="eqno">(7)<a class="headerlink" href="#equation-4e868e33-ce83-4eb2-900c-3c99122c80be" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\sum_j\int_0^1 \frac{d \phi_i}{dx} \frac{d \phi_j}{dx} dx T_j - \sum_j\left[\phi_i \frac{d\phi_j}{dx} \right]_0^1 T_j = \int_0^1 f dx, \quad\quad i = 1,\ldots, n
+\end{equation}\]</div>
+<p>The second term can be dropped because we require <span class="math notranslate nohighlight">\(\frac{d\tilde{T}}{dx} = 0\)</span> at <span class="math notranslate nohighlight">\(x=1\)</span> and the solution at <span class="math notranslate nohighlight">\(x=0\)</span> (<span class="math notranslate nohighlight">\(i=0\)</span>) is known (<span class="math notranslate nohighlight">\(T_0=0\)</span>)</p>
+<div class="amsmath math notranslate nohighlight" id="equation-aa68b862-d261-481c-8766-44a8e37a231a">
+<span class="eqno">(8)<a class="headerlink" href="#equation-aa68b862-d261-481c-8766-44a8e37a231a" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\sum_j\int_0^1 \frac{d \phi_i}{dx} \frac{d \phi_j}{dx} dx T_j = \int_0^1 f dx, \quad\quad i = 1,\ldots, n
+\end{equation}\]</div>
+<p>Given a domain with <span class="math notranslate nohighlight">\(n\)</span> DOFs such that <span class="math notranslate nohighlight">\(i,j=1, \ldots, n\)</span>, the discrete weak form can be assembled into a matrix-vector system of the form</p>
+<div class="amsmath math notranslate nohighlight" id="equation-06e151ea-05d1-44da-99b4-3b638bde2f62">
+<span class="eqno">(9)<a class="headerlink" href="#equation-06e151ea-05d1-44da-99b4-3b638bde2f62" title="Permalink to this equation">#</a></span>\[\begin{equation}
+{\bf S} {\bf u} = {\bf f}
+\end{equation}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\bf{S}\)</span> is a <span class="math notranslate nohighlight">\(n \times n\)</span> matrix, <span class="math notranslate nohighlight">\(\bf{f}\)</span> is the right-hand side vector of length <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(\bf{u}\)</span> is the solution vector of values at the DOFs</p>
+<div class="amsmath math notranslate nohighlight" id="equation-e5d2ed28-fc10-4bd3-8a3d-b5137dfd0017">
+<span class="eqno">(10)<a class="headerlink" href="#equation-e5d2ed28-fc10-4bd3-8a3d-b5137dfd0017" title="Permalink to this equation">#</a></span>\[\begin{align}
+{\bf S} &amp;= S_{ij} = \int_0^1 \frac{d\phi_i}{dx} \frac{d\phi_j}{dx} ~dx  \\
+{\bf f} &amp;= f_i = \int_0^1 \phi_i  f ~dx \\
+{\bf u} &amp;= {\bf T} = T_j
+\end{align}\]</div>
+<p>where <span class="math notranslate nohighlight">\({\bf T}\)</span> has components <span class="math notranslate nohighlight">\(T_j\)</span> that define the continuous approximate solution</p>
+<div class="amsmath math notranslate nohighlight" id="equation-6e368ac2-2018-4374-b984-00638f964eaf">
+<span class="eqno">(11)<a class="headerlink" href="#equation-6e368ac2-2018-4374-b984-00638f964eaf" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\tilde{T}(x) = \sum_{j=1}^n  \phi_j(x) T_j
+\end{equation}\]</div>
+<p>and <span class="math notranslate nohighlight">\(T_0 = 0\)</span>.</p>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading">#</a></h2>
+<p>Traditionally, finite element methods have been implemented using Fortran or C/C++
+based codes that, at the core, build the matrix-vector system by numerical integration, after which this system is solved by linear algebraic solvers. Most FEM codes provide options for time-dependence and the ability to solve nonlinear and nonlinearly coupled systems of PDEs.
+Examples of such codes that have been used in geodynamical applications including subduction zone modeling are
+<a class="reference external" href="https://doi.org/10.1016/0031-9201(90)90225-M">ConMan</a>, <a class="reference external" href="https://doi.org/10.1111/j.1365-246X.1995.tb05908.x">Sopale</a>,
+<a class="reference external" href="https://doi.org/10.1016/j.pepi.2007.06.009">Underworld</a>,
+<a class="reference external" href="https://doi.org/10.1029/2008GC002048">CitcomS</a>,
+<a class="reference external" href="https://doi.org/10.1029/2007GC001719">MILAMIN</a>,
+<a class="reference external" href="https://doi.org/10.1111/j.1365-246X.2012.05609.x">ASPECT</a>,
+<a class="reference external" href="https://doi.org/10.1007/s12583-015-0508-0">Sepran</a>,
+<a class="reference external" href="https://doi.org/10.1029/2011GC003551">Fluidity</a>,
+and <a class="reference external" href="https://doi.org/10.1093/gji/ggs070">Rhea</a>.
+A number of these are distributed as open-source
+software and many among those are currently maintained through the
+<a class="reference internal" href="#geodynamics.org"><span class="xref myst">Computational Infrastructure for Geodynamics</span></a>.
+These implementations can be shown to be accurate using intercomparisons
+and benchmarks and make use of advances in parallel computing and efficient linear algebra solver techniques. Yet, modifications to the existing code requires deep insight into the structure of the Fortran/C/C++ code which is not trivial for experienced, let alone beginning, users.</p>
+<p>In recent years an alternative approach for FEM has become available which elevates the user interface to simply specifying the FEM problem and solution method with the high-level approach.
+Python code is used to automatically build a finite element model that can be executed in a variety of environments ranging from <a class="reference internal" href="#jupyter.org"><span class="xref myst">Jupyter notebooks</span></a> and desktop computers to massively parallel high performance computers.
+Two prominent examples of this approach are <a class="reference internal" href="#www.firedrakeproject.org"><span class="xref myst">Firedrake</span></a> and <a class="reference internal" href="#www.fenicsproject.org"><span class="xref myst">FEniCS</span></a>. Examples of the use of these two approaches in geodynamical
+applications are in <a class="reference external" href="https://doi.org/10.5194/gmd-15-5127-2022">Davies et al., 2022</a> and <a class="reference external" href="https://doi.org/10.1016/j.cageo.2012.05.012">Vynnytska et al., 2013</a>.</p>
+<p>This and following examples were presented by <a class="reference external" href="http://dx.doi.org/10.1186/s40645-023-00588-6">Wilson &amp; van Keken, 2023</a> using FEniCS v2019.1.0 and <a class="reference internal" href="#terraferma.github.io"><span class="xref myst">TerraFERMA</span></a>, a GUI-based model building framework that also uses FEniCS v2019.1.0.  These simulations are publicly available in a <a class="reference internal" href="#doi.org/10.5281/zenodo.7843967"><span class="xref myst">zenodo</span></a> archive and can be run using a <a class="reference external" href="https://github.com/users/cianwilson/packages/container/package/vankeken_wilson_peps_2023">docker</a> image.</p>
+<p>Here we will focus on reproducing the results of <a class="reference external" href="http://dx.doi.org/10.1186/s40645-023-00588-6">Wilson &amp; van Keken, 2023</a> using the latest version of FEniCS, FEniCSx.
+<a class="reference external" href="https://doi.org/10.11588/ans.2015.100.20553">FEniCS</a> is a suite of open-source numerical libraries for the description of finite element problems.  Most importantly it provides a high-level, human-readable language
+for the description of equations in python Unified Form Language (<a class="reference external" href="https://doi.org/10.1145/2566630">UFL</a>)
+and the FEniCS Form Compiler (<a class="reference external" href="https://doi.org/10.1145/1163641.1163644">FFC</a>)
+to write fast code to assemble the resulting discrete matrix-vector system.</p>
+<section id="preamble">
+<h3>Preamble<a class="headerlink" href="#preamble" title="Link to this heading">#</a></h3>
+<p>We start by loading all the modules we will require.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
@@ -439,10 +566,29 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">ufl</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">))</span>
+<span class="kn">import</span> <span class="nn">utils</span>
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="solution">
+<h3>Solution<a class="headerlink" href="#solution" title="Link to this heading">#</a></h3>
+<p>We then declare a python function <code class="docutils literal notranslate"><span class="pre">solve_poisson_1d</span></code> that contains a complete description of the discrete Poisson equation problem.</p>
+<p>This function follows much the same flow as described above:</p>
+<ol class="arabic simple">
+<li><p>we describe the domain <span class="math notranslate nohighlight">\(\Upomega\)</span> and discretize it into <code class="docutils literal notranslate"><span class="pre">ne</span></code> elements or cells to make a <code class="docutils literal notranslate"><span class="pre">mesh</span></code></p></li>
+<li><p>we declare the <strong>function space</strong>, <code class="docutils literal notranslate"><span class="pre">V</span></code>, to use Lagrange polynomials of degree <code class="docutils literal notranslate"><span class="pre">p</span></code></p></li>
+<li><p>using this function space we declare trial, <code class="docutils literal notranslate"><span class="pre">T_a</span></code>, and test, <code class="docutils literal notranslate"><span class="pre">T_t</span></code>, functions</p></li>
+<li><p>we define the Dirichlet boundary condition, <code class="docutils literal notranslate"><span class="pre">bc</span></code> at <span class="math notranslate nohighlight">\(x=0\)</span>, setting the desired value there to be 0</p></li>
+<li><p>we define the right hand side forcing function <span class="math notranslate nohighlight">\(f\)</span>, <code class="docutils literal notranslate"><span class="pre">rhsf</span></code></p></li>
+<li><p>we describe the <strong>discrete weak forms</strong>, <code class="docutils literal notranslate"><span class="pre">S</span></code> and <code class="docutils literal notranslate"><span class="pre">f</span></code>, that will be used to assemble the matrix <span class="math notranslate nohighlight">\(\mathbf{S}\)</span> and vector <span class="math notranslate nohighlight">\(f\)</span></p></li>
+<li><p>we solve the matrix problem using a linear algebra back-end and return the solution</p></li>
+</ol>
+<p>For a more detailed description of solving the Poisson equation using FEniCSx, see <a class="reference external" href="https://jsdokken.com/dolfinx-tutorial/chapter1/fundamentals.html">the FEniCSx tutorial</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">solve_poisson_1d</span><span class="p">(</span><span class="n">ne</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -453,54 +599,78 @@ document.write(`
 <span class="sd">      * ne - number of elements</span>
 <span class="sd">      * p  - polynomial order of the solution function space</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Describe the domain (a one-dimensional unit interval)</span>
+    <span class="c1"># and also the tessellation of that domain into ne </span>
+    <span class="c1"># equally spaced elements</span>
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">create_unit_interval</span><span class="p">(</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">,</span> <span class="n">ne</span><span class="p">)</span>
 
+    <span class="c1"># Define the solution function space using Lagrange polynomials</span>
+    <span class="c1"># of order p</span>
     <span class="n">V</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">functionspace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Lagrange&quot;</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
 
+    <span class="c1"># Define the trial and test functions on the same function space (V)</span>
     <span class="n">T_a</span> <span class="o">=</span> <span class="n">ufl</span><span class="o">.</span><span class="n">TrialFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
     <span class="n">T_t</span> <span class="o">=</span> <span class="n">ufl</span><span class="o">.</span><span class="n">TestFunction</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 
+    <span class="c1"># Define the location of the boundary, x=0</span>
     <span class="k">def</span> <span class="nf">boundary</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Specify the value and define a boundary condition (bc)</span>
     <span class="n">boundary_dofs</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">locate_dofs_geometrical</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">boundary</span><span class="p">)</span>
     <span class="n">gD</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">default_scalar_type</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>
     <span class="n">bc</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">dirichletbc</span><span class="p">(</span><span class="n">gD</span><span class="p">,</span> <span class="n">boundary_dofs</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
 
+    <span class="c1"># Define the right hand side function, rhsf</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">ufl</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
     <span class="n">rhsf</span> <span class="o">=</span> <span class="p">(</span><span class="n">ufl</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">ufl</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ufl</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">4</span>
 
+    <span class="c1"># Define the integral to be assembled into the stiffness matrix</span>
     <span class="n">S</span> <span class="o">=</span> <span class="n">ufl</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">ufl</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">T_t</span><span class="p">),</span> <span class="n">ufl</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">T_a</span><span class="p">))</span><span class="o">*</span><span class="n">ufl</span><span class="o">.</span><span class="n">dx</span>
+    <span class="c1"># Define the integral to be assembled into the forcing vector</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">T_t</span><span class="o">*</span><span class="n">rhsf</span><span class="o">*</span><span class="n">ufl</span><span class="o">.</span><span class="n">dx</span>
 
+    <span class="c1"># Compute the solution (given the boundary condition, bc)</span>
     <span class="n">problem</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">petsc</span><span class="o">.</span><span class="n">LinearProblem</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">bcs</span><span class="o">=</span><span class="p">[</span><span class="n">bc</span><span class="p">],</span> \
                                          <span class="n">petsc_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ksp_type&quot;</span><span class="p">:</span> <span class="s2">&quot;preonly&quot;</span><span class="p">,</span> \
                                                         <span class="s2">&quot;pc_type&quot;</span><span class="p">:</span> <span class="s2">&quot;lu&quot;</span><span class="p">})</span>
     <span class="n">T_i</span> <span class="o">=</span> <span class="n">problem</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
+    <span class="c1"># Return the solution</span>
     <span class="k">return</span> <span class="n">T_i</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>We can then use <code class="docutils literal notranslate"><span class="pre">solve_poisson_1d</span></code> to solve on, for example, 4 elements with (the default) P1 elements.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P1</span> <span class="o">=</span> <span class="n">solve_poisson_1d</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ne</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">T_P1</span> <span class="o">=</span> <span class="n">solve_poisson_1d</span><span class="p">(</span><span class="n">ne</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p>Comparing the numerical, <span class="math notranslate nohighlight">\(\tilde{T}\)</span>, and analytical, <span class="math notranslate nohighlight">\(T\)</span>, solutions we can see that even at this small number of elements we do a good job at reproducing the correct answer.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P1</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">array</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">201</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">T_P1_x</span> <span class="o">=</span> <span class="n">T_P1</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_first_cells</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">T_P1</span><span class="o">.</span><span class="n">function_space</span><span class="o">.</span><span class="n">mesh</span><span class="p">))[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">T_P1_x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">tilde</span><span class="si">{T}</span><span class="s1">$ (P1)&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[::</span><span class="mi">50</span><span class="p">],</span> <span class="n">T_P1_x</span><span class="p">[::</span><span class="mi">50</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;--g&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$T$&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$x$&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$T$&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Numerical (P1) and exact solutions&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.        , 0.38268343, 0.70710677, 0.92387952, 0.99999999])
-</pre></div>
+<img alt="../_images/bb3a73e7924f774bd67422c2fc6c041384db9ad20c7336e00506d78a7ae4b199.png" src="../_images/bb3a73e7924f774bd67422c2fc6c041384db9ad20c7336e00506d78a7ae4b199.png" />
 </div>
 </div>
-</div>
+<p>We can also try with a higher order element and see how it improves the solution.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P2</span> <span class="o">=</span> <span class="n">solve_poisson_1d</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -508,19 +678,30 @@ document.write(`
 </div>
 </div>
 </div>
+<p>The higher polynomial degree qualitatively appears to have a dramatic improvement in the solution accuracy.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P2</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">array</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">201</span><span class="p">)</span>
+<span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">T_P2_x</span> <span class="o">=</span> <span class="n">T_P2</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_first_cells</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">T_P2</span><span class="o">.</span><span class="n">function_space</span><span class="o">.</span><span class="n">mesh</span><span class="p">))[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">T_P2_x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">tilde</span><span class="si">{T}</span><span class="s1">$ (P2)&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[::</span><span class="mi">25</span><span class="p">],</span> <span class="n">T_P2_x</span><span class="p">[::</span><span class="mi">25</span><span class="p">],</span> <span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;--g&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$T$&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$x$&#39;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$T$&#39;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Numerical (P2) and exact solutions&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.        , 0.38268343, 0.19508792, 0.70710677, 0.55556338,
-       0.92387952, 0.83145936, 0.99999999, 0.98077319])
-</pre></div>
+<img alt="../_images/f1c1770ee10f9bc029771ed9d7f89347858e99927bb1d94da01932e4ed96177e.png" src="../_images/f1c1770ee10f9bc029771ed9d7f89347858e99927bb1d94da01932e4ed96177e.png" />
 </div>
 </div>
-</div>
+</section>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h3>
+<p>We can quantify the error in cases where the analytical solution is known by taking the L2 norm of the difference between the numerical and exact solutions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">evaluate_error</span><span class="p">(</span><span class="n">T_i</span><span class="p">):</span>
@@ -543,10 +724,21 @@ document.write(`
 </div>
 </div>
 </div>
+<p>Repeating the numerical experiments with increasing <code class="docutils literal notranslate"><span class="pre">ne</span></code> allows us to test the <strong>convergence</strong> of our approximate finite element solution to the known analytical solution.  A key feature of any discretization technique is that with an increasing number of degrees of freedom (DOFs) these solutions should converge, i.e. the error in our approximation should decrease.  As an error metric we will use the <span class="math notranslate nohighlight">\(L^2\)</span> norm of the difference between the
+approximate, <span class="math notranslate nohighlight">\(\tilde{T}\)</span>, and analytical, <span class="math notranslate nohighlight">\(T\)</span>, solutions</p>
+<div class="amsmath math notranslate nohighlight" id="equation-bab83d51-2eb8-45c5-90ad-f041a37ed674">
+<span class="eqno">(12)<a class="headerlink" href="#equation-bab83d51-2eb8-45c5-90ad-f041a37ed674" title="Permalink to this equation">#</a></span>\[\begin{equation}
+e_{L^2} = \sqrt{\int_\Upomega \left(\tilde{T} - T\right)^2 dx}
+\end{equation}\]</div>
+<p>The rate at which this decreases is known as the order of convergence. Numerical analysis predicts a certain order depending on the type of the polynomials used as finite element shape functions and other constraints related to the well-posedness of the problem. For piecewise linear shape functions we expect second-order convergence, that is that the error decreases as <span class="math notranslate nohighlight">\(h^{-2}\)</span> where <span class="math notranslate nohighlight">\(h\)</span> is the nodal point spacing. With piecewise quadratic elements we expect to see third-order convergence.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open a figure for plotting</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+<span class="c1"># Make an output folder</span>
+<span class="n">output_folder</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span>
+<span class="n">output_folder</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># List of polynomial orders to try</span>
 <span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
@@ -572,7 +764,7 @@ document.write(`
     <span class="n">hs</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nelements</span><span class="p">)</span><span class="o">/</span><span class="n">p</span>
     
     <span class="c1"># Write the errors to disk</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;1d_poisson_convergence_p</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s1">&#39;1d_poisson_convergence_p</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">nelements</span><span class="p">,</span> <span class="n">hs</span><span class="p">,</span> <span class="n">errors_l2_a</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> 
                    <span class="n">header</span><span class="o">=</span><span class="s1">&#39;nelements, hs, l2errs&#39;</span><span class="p">)</span>
     
@@ -592,9 +784,10 @@ document.write(`
 <span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Convergence&#39;</span><span class="p">)</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;1d_poisson_convergence.pdf&#39;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***********  convergence figure in poisson_convergence.pdf&quot;</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_folder</span> <span class="o">/</span> <span class="s1">&#39;1d_poisson_convergence.pdf&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***********  convergence figure in output/poisson_convergence.pdf&quot;</span><span class="p">)</span>
 <span class="c1"># Check if we passed the test</span>
 <span class="k">assert</span><span class="p">(</span><span class="n">test_passes</span><span class="p">)</span>
 </pre></div>
@@ -608,9 +801,7 @@ ne =  80 , l2error =  2.488573694825128e-05
 ne =  160 , l2error =  6.221473700843889e-06
 ne =  320 , l2error =  1.555370621288354e-06
 ***********  order of accuracy p=1, order=2.00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  10 , l2error =  1.5754217848735496e-05
+ne =  10 , l2error =  1.5754217848735496e-05
 ne =  20 , l2error =  1.9698108556933277e-06
 ne =  40 , l2error =  2.4624303785777827e-07
 ne =  80 , l2error =  3.0780902343243206e-08
@@ -619,12 +810,14 @@ ne =  320 , l2error =  4.813312843575689e-10
 ***********  order of accuracy p=2, order=3.00
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***********  convergence figure in poisson_convergence.pdf
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***********  convergence figure in output/poisson_convergence.pdf
 </pre></div>
 </div>
 <img alt="../_images/084cbbb965c8000c56db9334d56ed60822e0bce4086d4b633671d54fefae0f23.png" src="../_images/084cbbb965c8000c56db9334d56ed60822e0bce4086d4b633671d54fefae0f23.png" />
 </div>
 </div>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -682,6 +875,27 @@ ne =  320 , l2error =  4.813312843575689e-10
             
             
               
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description">Description</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preamble">Preamble</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution">Solution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
             
           </div>
           <footer class="bd-footer-content">
@@ -710,7 +924,7 @@ By Cian Wilson
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 31, 2024.
+  Last updated on Jun 01, 2024.
   <br/>
 </p>
   </div>

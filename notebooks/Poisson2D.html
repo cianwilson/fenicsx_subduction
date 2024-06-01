@@ -57,6 +57,8 @@
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/Poisson2D';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -64,7 +66,7 @@
     <link rel="prev" title="Poisson Example 1D" href="Poisson1D.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 31, 2024"/>
+    <meta name="docbuild:last-update" content="Jun 01, 2024"/>
   </head>
   
   
@@ -404,7 +406,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -420,6 +424,26 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description">Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-conditions">Boundary conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#weak-form">Weak form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization">Discretization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-specific-example">A specific example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preamble">Preamble</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution">Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#themes-and-variations">Themes and variations</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -431,6 +455,122 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="poisson-example-2d">
 <h1>Poisson Example 2D<a class="headerlink" href="#poisson-example-2d" title="Link to this heading">#</a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
+<p>We can generalize (and formalize) the description of the Poisson equation
+using the steady-state heat diffusion equation in multiple dimensions</p>
+<div class="amsmath math notranslate nohighlight" id="equation-fe289222-a96a-42db-b8ba-e3fdf915dcc7">
+<span class="eqno">(13)<a class="headerlink" href="#equation-fe289222-a96a-42db-b8ba-e3fdf915dcc7" title="Permalink to this equation">#</a></span>\[\begin{align}
+-\nabla \cdot\left( k \nabla T \right) &amp;= H &amp;&amp; \text{in }\Upomega
+\end{align}\]</div>
+<p><span class="math notranslate nohighlight">\(T\)</span> is the temperature solution we are seeking, <span class="math notranslate nohighlight">\(k\)</span> is the thermal conductivity and
+<span class="math notranslate nohighlight">\(H\)</span> is a heat source.  If <span class="math notranslate nohighlight">\(k\)</span> is constant in space we can simplify to</p>
+<div class="amsmath math notranslate nohighlight" id="equation-fe9a014e-f64a-4f6c-9d55-a10a44ae487f">
+<span class="eqno">(14)<a class="headerlink" href="#equation-fe9a014e-f64a-4f6c-9d55-a10a44ae487f" title="Permalink to this equation">#</a></span>\[\begin{align}
+-\nabla^2 T &amp;= f &amp;&amp; \text{in }\Upomega
+\end{align}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f = \frac{H}{k}\)</span>.</p>
+<section id="boundary-conditions">
+<h3>Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Link to this heading">#</a></h3>
+<p>We supplement the Poisson equation with some combination of the boundary conditions</p>
+<div class="amsmath math notranslate nohighlight" id="equation-e7161174-2dcd-4a24-95a6-6624bc6be629">
+<span class="eqno">(15)<a class="headerlink" href="#equation-e7161174-2dcd-4a24-95a6-6624bc6be629" title="Permalink to this equation">#</a></span>\[\begin{align}
+T &amp;= g_D &amp;&amp; \text{on } \partial\Upomega_D \subset \partial\Upomega \\
+\nabla T\cdot\hat{\vec{n}} &amp;= g_N &amp;&amp; \text{on } \partial\Upomega_N \subset \partial\Upomega \\
+aT + \nabla T\cdot\hat{\vec{n}} &amp;= g_R &amp;&amp; \text{on } \partial\Upomega_R \subset \partial\Upomega 
+\end{align}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>, <span class="math notranslate nohighlight">\(\partial\Upomega_N\)</span> and <span class="math notranslate nohighlight">\(\partial\Upomega_R\)</span> are
+segments of the domain boundary that do not overlap (<span class="math notranslate nohighlight">\(\partial\Upomega_D \bigcap \partial\Upomega_N =\emptyset\)</span>, <span class="math notranslate nohighlight">\(\partial\Upomega_D \bigcap \partial\Upomega_R =\emptyset\)</span>, <span class="math notranslate nohighlight">\(\partial\Upomega_N \bigcap \partial\Upomega_R =\emptyset\)</span>) and that together span the entire boundary (<span class="math notranslate nohighlight">\(\partial\Upomega_D \bigcup \partial\Upomega_N \bigcup \partial\Upomega_R = \partial\Upomega\)</span>).  The unit outward-pointing normal to the boundary <span class="math notranslate nohighlight">\(\partial\Upomega\)</span> is denoted by <span class="math notranslate nohighlight">\(\hat{\vec{n}}\)</span> and <span class="math notranslate nohighlight">\(g_D = g_D(\vec{x}, t)\)</span>, <span class="math notranslate nohighlight">\(g_N = g_N(\vec{x}, t)\)</span> and <span class="math notranslate nohighlight">\(g_R = g_R(\vec{x}, t)\)</span> are known functions of space and time.</p>
+<p>The first boundary condition is known as a Dirichlet boundary condition and specifies the value of the solution on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>. The second is a Neumann boundary condition and specifies the value of the flux through <span class="math notranslate nohighlight">\(\partial\Upomega_N\)</span>. Finally, the third is a Robin boundary condition, which describes a linear combination of the flux and the solution on <span class="math notranslate nohighlight">\(\partial\Upomega_R\)</span>.</p>
+</section>
+<section id="weak-form">
+<h3>Weak form<a class="headerlink" href="#weak-form" title="Link to this heading">#</a></h3>
+<p>The first step in the finite element discretization is to transform the equation into its <strong>weak form</strong>.  This requires multiplying the equation by a test function,  <span class="math notranslate nohighlight">\(T_t\)</span>,  and integrating over the domain <span class="math notranslate nohighlight">\(\Upomega\)</span></p>
+<div class="amsmath math notranslate nohighlight" id="equation-576fb19b-609c-499e-8652-753df9b139a1">
+<span class="eqno">(16)<a class="headerlink" href="#equation-576fb19b-609c-499e-8652-753df9b139a1" title="Permalink to this equation">#</a></span>\[\begin{equation}
+-\int_\Upomega T_t \nabla^2 T ~dx = \int_\Upomega T_t f ~dx
+\end{equation}\]</div>
+<p>After integrating the left-hand side by parts</p>
+<div class="amsmath math notranslate nohighlight" id="equation-e8fed9b0-ff0a-4413-a396-68e10d7c39e5">
+<span class="eqno">(17)<a class="headerlink" href="#equation-e8fed9b0-ff0a-4413-a396-68e10d7c39e5" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\int_\Upomega \nabla T_t \cdot \nabla T ~dx - \int_{\partial\Upomega} T_t \nabla T\cdot\hat{\vec{n}}~ds = \int_\Upomega T_t f ~dx
+\end{equation}\]</div>
+<p>we can see that we have reduced the continuity requirements on <span class="math notranslate nohighlight">\(T\)</span> by only requiring its first derivative to be bounded across <span class="math notranslate nohighlight">\(\Upomega\)</span>. Integrating by parts also allows Neumann and Robin boundary conditions to be imposed “naturally” through the second integral on the left-hand side since this directly incorporates the flux components across the boundary.  In this formulation, Dirichlet conditions cannot be imposed weakly and are referred to as essential boundary conditions,  that are required of the solution but do not arise naturally in the weak form.  The weak form therefore becomes: find <span class="math notranslate nohighlight">\(T\)</span> such that <span class="math notranslate nohighlight">\(T\)</span>=<span class="math notranslate nohighlight">\(g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span> and</p>
+<div class="amsmath math notranslate nohighlight" id="equation-9c966f31-9c90-4c22-b22e-00df1a1c1c48">
+<span class="eqno">(18)<a class="headerlink" href="#equation-9c966f31-9c90-4c22-b22e-00df1a1c1c48" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\int_\Upomega \nabla T_t \cdot \nabla T ~dx - \int_{\partial\Upomega_N} T_t g_N ~ds - \int_{\partial\Upomega_R} T_t \left(g_R - aT\right)~ds = \int_\Upomega T_t f ~dx
+\end{equation}\]</div>
+<p>for all <span class="math notranslate nohighlight">\(T_t\)</span> such that <span class="math notranslate nohighlight">\(T_t = 0\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>.</p>
+</section>
+<section id="discretization">
+<h3>Discretization<a class="headerlink" href="#discretization" title="Link to this heading">#</a></h3>
+<p>The weak and strong forms of the problem are equivalent so long as the solution is sufficiently smooth.  We make our first approximation by, instead of seeking <span class="math notranslate nohighlight">\(T\)</span> such that <span class="math notranslate nohighlight">\(T = g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>, seeking the discrete trial function <span class="math notranslate nohighlight">\(\tilde{T}\)</span> such that <span class="math notranslate nohighlight">\(\tilde{T} = g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span> where</p>
+<div class="amsmath math notranslate nohighlight" id="equation-9bb64b8d-b20e-45c6-a7a1-1254956f68f8">
+<span class="eqno">(19)<a class="headerlink" href="#equation-9bb64b8d-b20e-45c6-a7a1-1254956f68f8" title="Permalink to this equation">#</a></span>\[\begin{equation}
+T \approx \tilde{T} = \sum_j \phi_j T_j \label{eq:trialT}
+\end{equation}\]</div>
+<p>for all test functions <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> where</p>
+<div class="amsmath math notranslate nohighlight" id="equation-b3c675f1-d1b2-4fa6-a3c6-4d82648c0228">
+<span class="eqno">(20)<a class="headerlink" href="#equation-b3c675f1-d1b2-4fa6-a3c6-4d82648c0228" title="Permalink to this equation">#</a></span>\[\begin{equation}
+T_t \approx \tilde{T}_t = \sum_i \phi_i T_{ti} \label{eq:testT}
+\end{equation}\]</div>
+<p>noting again that <span class="math notranslate nohighlight">\(\tilde{T}_t = 0\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>.<br />
+<span class="math notranslate nohighlight">\(\phi_j\)</span> are the finite element shape functions. Assuming these are continuous across elements of the mesh, <span class="math notranslate nohighlight">\(\tilde{T}\)</span> and <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> can be substituted into the weak form to yield</p>
+<div class="amsmath math notranslate nohighlight" id="equation-5aab37dd-7e3c-4e05-8237-0df63d2e3043">
+<span class="eqno">(21)<a class="headerlink" href="#equation-5aab37dd-7e3c-4e05-8237-0df63d2e3043" title="Permalink to this equation">#</a></span>\[\begin{multline}
+\sum_i\sum_j T_{ti}T_j\sum_k  \int_{e_k} \nabla \phi_i \cdot \nabla \phi_j ~dx 
+ + \sum_i\sum_j T_{ti}T_j \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i a\phi_j ~ds
+\\- \sum_i T_{ti} \sum_k \int_{\partial e_k \cap {\partial\Upomega_N}} \phi_i g_N ~ds 
+- \sum_i T_{ti} \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i g_R 
+\\= \sum_i T_{ti} \sum_k \int_{e_k} \phi_i f ~dx
+\end{multline}\]</div>
+<p>where we are integrating over the whole domain by summing the integrals over all the elements  <span class="math notranslate nohighlight">\(e_k\)</span> (<span class="math notranslate nohighlight">\(\int_\Upomega dx\)</span>=<span class="math notranslate nohighlight">\(\sum_k\int_{e_k} dx\)</span>).  Note that in practice, because the shape functions are zero over most of the domain, only element integrals with non-zero values need be included in the summation.  The element boundaries, <span class="math notranslate nohighlight">\(\partial e_k\)</span>, are only of interest (due to the assumed continuity of the shape functions between the elements) if they either intersect with <span class="math notranslate nohighlight">\(\partial\Upomega_N\)</span>, <span class="math notranslate nohighlight">\(\partial e_k \cap {\partial\Upomega_N}\)</span>, or <span class="math notranslate nohighlight">\(\partial\Upomega_R\)</span>, <span class="math notranslate nohighlight">\(\partial e_k \cap {\partial\Upomega_R}\)</span>.  Since the solution of the now discretized weak form should be valid for all <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> we can drop <span class="math notranslate nohighlight">\(T_{ti}\)</span></p>
+<div class="amsmath math notranslate nohighlight" id="equation-3e336a82-56dc-4d0f-acc1-77979becefcf">
+<span class="eqno">(22)<a class="headerlink" href="#equation-3e336a82-56dc-4d0f-acc1-77979becefcf" title="Permalink to this equation">#</a></span>\[\begin{multline}
+\sum_jT_j\sum_k  \int_{e_k} \nabla \phi_i \cdot \nabla \phi_j ~dx 
+ + \sum_jT_j\sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i a \phi_j ~ds
+\\- \sum_k \int_{\partial e_k \cap {\partial\Upomega_N}} \phi_i g_N ~ds 
+- \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i g_R~ds 
+= \sum_k \int_{e_k} \phi_i f ~dx
+\end{multline}\]</div>
+<p>This represents a matrix-vector system of the form</p>
+<div class="amsmath math notranslate nohighlight" id="equation-3d31b9f7-fa2a-4959-9839-5e45157621b6">
+<span class="eqno">(23)<a class="headerlink" href="#equation-3d31b9f7-fa2a-4959-9839-5e45157621b6" title="Permalink to this equation">#</a></span>\[\begin{equation}
+{\bf S} {\bf u} = {\bf f}
+\end{equation}\]</div>
+<p>with</p>
+<div class="amsmath math notranslate nohighlight" id="equation-be014bc3-1ab2-4e9e-95b2-eb33ce05c646">
+<span class="eqno">(24)<a class="headerlink" href="#equation-be014bc3-1ab2-4e9e-95b2-eb33ce05c646" title="Permalink to this equation">#</a></span>\[\begin{align}
+{\bf S} &amp;= S_{ij} = \sum_k\int_{e_k} \nabla \phi_i \cdot \nabla \phi_j ~dx + \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i a\phi_j ~ds  \\
+{\bf f} &amp;= f_i = \sum_k \int_{e_k} \phi_i f ~dx + \sum_k \int_{\partial e_k \cap {\partial\Upomega_N}} \phi_i g_N ~ds 
++ \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i g_R~ds \\
+{\bf u} &amp;= {\bf T} = T_j 
+\end{align}\]</div>
+<p>The compact support of the shape functions <span class="math notranslate nohighlight">\(\phi_{(i,j)}\)</span>, which limits their nonzero values to the elements immediately neighboring DOF <span class="math notranslate nohighlight">\(i\)</span> or <span class="math notranslate nohighlight">\(j\)</span>, means that the integrals in can be evaluated efficiently by only considering shape functions associated with an element <span class="math notranslate nohighlight">\(e_k\)</span>.  It also means that the resulting matrix <span class="math notranslate nohighlight">\({\bf S}\)</span> is sparse, with most entries being zero.</p>
+</section>
+<section id="a-specific-example">
+<h3>A specific example<a class="headerlink" href="#a-specific-example" title="Link to this heading">#</a></h3>
+<p>In this case we use a manufactured solution (that is, one that is not necessarily an example of a solution to a PDE representing a naturally occurring physical problem) where we take a known analytical solution <span class="math notranslate nohighlight">\(T(x,y)\)</span> and substitute this into the original equation to find <span class="math notranslate nohighlight">\(f\)</span>, then use this as the right-hand side in our numerical test. We choose <span class="math notranslate nohighlight">\(T(x,y)\)</span>=<span class="math notranslate nohighlight">\(\exp\left(x+\tfrac{y}{2}\right)\)</span>, which is the solution to</p>
+<div class="amsmath math notranslate nohighlight" id="equation-62d0feb4-472d-4452-96d1-10fe0898687a">
+<span class="eqno">(25)<a class="headerlink" href="#equation-62d0feb4-472d-4452-96d1-10fe0898687a" title="Permalink to this equation">#</a></span>\[\begin{equation}
+- \nabla^2 T = -\tfrac{5}{4} \exp \left( x+\tfrac{y}{2} \right)
+\end{equation}\]</div>
+<p>Solving the Poisson equation numerically in a unit square, <span class="math notranslate nohighlight">\(\Upomega=[0,1]\times[0,1]\)</span>, for the approximate solution <span class="math notranslate nohighlight">\(\tilde{T} \approx T\)</span>, we impose the boundary conditions</p>
+<div class="amsmath math notranslate nohighlight" id="equation-cab63754-44e7-4f23-a6d3-cc3523a92bfc">
+<span class="eqno">(26)<a class="headerlink" href="#equation-cab63754-44e7-4f23-a6d3-cc3523a92bfc" title="Permalink to this equation">#</a></span>\[\begin{align}
+  \tilde{T} &amp;= \exp\left(x+\tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Upomega \text{ where } x=0 \text{ or } y=0 \\
+  \nabla \tilde{T}\cdot \hat{\vec{n}} &amp;= \exp\left(x + \tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Upomega \text{ where } x=1  \\
+  \nabla \tilde{T}\cdot \hat{\vec{n}} &amp;= \tfrac{1}{2}\exp\left(x + \tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Upomega \text{ where } y=1
+ \end{align}\]</div>
+<p>representing an essential Dirichlet condition on the value of <span class="math notranslate nohighlight">\(\tilde{T}\)</span> and natural Neumann conditions on <span class="math notranslate nohighlight">\(\nabla\tilde{T}\)</span>.</p>
+</section>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading">#</a></h2>
+<p>This example was presented by <a class="reference external" href="http://dx.doi.org/10.1186/s40645-023-00588-6">Wilson &amp; van Keken, 2023</a> using FEniCS v2019.1.0 and <a class="reference internal" href="#terraferma.github.io"><span class="xref myst">TerraFERMA</span></a>, a GUI-based model building framework that also uses FEniCS v2019.1.0.  Here we reproduce these results using the latest version of FEniCS, FEniCSx.</p>
+<section id="preamble">
+<h3>Preamble<a class="headerlink" href="#preamble" title="Link to this heading">#</a></h3>
+<p>We start by loading all the modules we will require.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
@@ -439,10 +579,30 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">ufl</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">pardir</span><span class="p">,</span> <span class="s1">&#39;python&#39;</span><span class="p">))</span>
+<span class="kn">import</span> <span class="nn">utils</span>
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="solution">
+<h3>Solution<a class="headerlink" href="#solution" title="Link to this heading">#</a></h3>
+<p>We then declare a python function <code class="docutils literal notranslate"><span class="pre">solve_poisson_2d</span></code> that contains a complete description of the discrete Poisson equation problem.</p>
+<p>This function follows much the same flow as described above:</p>
+<ol class="arabic simple">
+<li><p>we describe the unit square domain <span class="math notranslate nohighlight">\(\Upomega = [0,1]\times[0,1]\)</span> and discretize it into <span class="math notranslate nohighlight">\(2\times\)</span><code class="docutils literal notranslate"><span class="pre">ne</span></code><span class="math notranslate nohighlight">\(\times\)</span><code class="docutils literal notranslate"><span class="pre">ne</span></code> triangular elements or cells to make a <code class="docutils literal notranslate"><span class="pre">mesh</span></code></p></li>
+<li><p>we declare the <strong>function space</strong>, <code class="docutils literal notranslate"><span class="pre">V</span></code>, to use Lagrange polynomials of degree <code class="docutils literal notranslate"><span class="pre">p</span></code></p></li>
+<li><p>using this function space we declare trial, <code class="docutils literal notranslate"><span class="pre">T_a</span></code>, and test, <code class="docutils literal notranslate"><span class="pre">T_t</span></code>, functions</p></li>
+<li><p>we define the Dirichlet boundary condition, <code class="docutils literal notranslate"><span class="pre">bc</span></code> at <span class="math notranslate nohighlight">\(x=0\)</span> and <span class="math notranslate nohighlight">\(y=0\)</span>, setting the desired value there to the known exact solution</p></li>
+<li><p>we define a finite element <code class="docutils literal notranslate"><span class="pre">Function</span></code>, <code class="docutils literal notranslate"><span class="pre">gN</span></code>, containing the values of <span class="math notranslate nohighlight">\(\nabla \tilde{T}\)</span> on the Neumann boundaries <span class="math notranslate nohighlight">\(x=1\)</span> and <span class="math notranslate nohighlight">\(y=1\)</span> (note that this will be used in the weak form rather than as a boundary condition object)</p></li>
+<li><p>we define the right hand side forcing function <span class="math notranslate nohighlight">\(f\)</span>, <code class="docutils literal notranslate"><span class="pre">rhsf</span></code></p></li>
+<li><p>we describe the <strong>discrete weak forms</strong>, <code class="docutils literal notranslate"><span class="pre">S</span></code> and <code class="docutils literal notranslate"><span class="pre">f</span></code>, that will be used to assemble the matrix <span class="math notranslate nohighlight">\(\mathbf{S}\)</span> and vector <span class="math notranslate nohighlight">\(f\)</span></p></li>
+<li><p>we solve the matrix problem using a linear algebra back-end and return the solution</p></li>
+</ol>
+<p>For a more detailed description of solving the Poisson equation using FEniCSx, see <a class="reference external" href="https://jsdokken.com/dolfinx-tutorial/chapter1/fundamentals.html">the FEniCSx tutorial</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">solve_poisson_2d</span><span class="p">(</span><span class="n">ne</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
@@ -502,6 +662,7 @@ document.write(`
 </div>
 </div>
 </div>
+<p>We can now numerically solve the equations using, e.g. 4 elements and piecewise linear polynomials.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P1</span> <span class="o">=</span> <span class="n">solve_poisson_2d</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
@@ -509,22 +670,18 @@ document.write(`
 </div>
 </div>
 </div>
+<p>And use a utility function to plot it.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P1</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">array</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">plot_scalar</span><span class="p">(</span><span class="n">T_P1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([2.11700002, 2.71828183, 3.07607517, 2.39300746, 1.64872127,
-       3.47552155, 1.86378343, 2.70429778, 1.28402542, 3.91658031,
-       1.45270264, 2.10799425, 3.05497632, 1.        , 4.380178  ,
-       1.13314845, 1.64456432, 2.38623507, 3.45563542, 1.28402542,
-       1.86351962, 2.70757666, 1.45499141, 2.1155796 , 1.64872127])
-</pre></div>
+<img alt="../_images/57333d8d44dd8e8d2805b0b14c5f32dcb14abf2cc99c24ffd1036fb6785e481e.png" src="../_images/57333d8d44dd8e8d2805b0b14c5f32dcb14abf2cc99c24ffd1036fb6785e481e.png" />
 </div>
 </div>
-</div>
+<p>Similarly, we can solve the equation using quadratic elements (<code class="docutils literal notranslate"><span class="pre">p=2</span></code>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P2</span> <span class="o">=</span> <span class="n">solve_poisson_2d</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -534,151 +691,22 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T_P2</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">array</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">plot_scalar</span><span class="p">(</span><span class="n">T_P2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([2.11700002, 2.71828183, 3.07986154, 2.89399496, 2.55366417,
-       2.39887529, 2.3989977 , 2.7182273 , 2.25355749, 1.64872127,
-       1.98873743, 1.86824596, 3.48992355, 3.27921426, 2.89364334,
-       1.8683193 , 2.11703539, 1.75504963, 2.71842267, 3.080143  ,
-       2.55364436, 1.28402542, 1.54881963, 1.45499141, 2.25356417,
-       3.95461943, 3.7158387 , 3.27893116, 1.45503813, 1.64873518,
-       1.36682783, 2.11710422, 2.39893173, 1.9887686 , 3.08038955,
-       3.49027602, 2.89366607, 1.        , 1.20621822, 1.13314845,
-       1.75506601, 2.55363549, 4.48011966, 4.21035467, 3.71554801,
-       1.13314845, 1.28401969, 1.06449446, 1.64879019, 1.86828154,
-       1.54884206, 2.3990056 , 2.71835624, 2.25358626, 3.48957779,
-       3.95558321, 3.2787253 , 1.36683104, 1.9887691 , 2.89365187,
-       1.28402542, 1.45499435, 1.20623025, 1.86835487, 2.11705921,
-       1.75508812, 2.71767897, 3.08071393, 2.55346757, 1.54883748,
-       2.25358429, 1.45499141, 1.64875502, 1.36683794, 2.11655621,
-       2.39927008, 1.98866368, 1.75513866, 1.64872127, 1.86866898,
-       1.5488303 ])
-</pre></div>
+<img alt="../_images/69d52e419a9a167dd9b71798e7b721bbadf908ae053eb06219463f558b5bc41e.png" src="../_images/69d52e419a9a167dd9b71798e7b721bbadf908ae053eb06219463f558b5bc41e.png" />
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">evaluate_error</span><span class="p">(</span><span class="n">T_i</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A python function to evaluate the l2 norm of the error in </span>
-<span class="sd">    the two dimensional Poisson problem given a known analytical</span>
-<span class="sd">    solution.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Define the exact solution</span>
-    <span class="n">x</span>  <span class="o">=</span> <span class="n">ufl</span><span class="o">.</span><span class="n">SpatialCoordinate</span><span class="p">(</span><span class="n">T_i</span><span class="o">.</span><span class="n">function_space</span><span class="o">.</span><span class="n">mesh</span><span class="p">)</span>
-    <span class="n">Te</span> <span class="o">=</span> <span class="n">ufl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
-    
-    <span class="c1"># Define the error between the exact solution and the given</span>
-    <span class="c1"># approximate solution</span>
-    <span class="n">l2err</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">assemble_scalar</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">fem</span><span class="o">.</span><span class="n">form</span><span class="p">((</span><span class="n">T_i</span> <span class="o">-</span> <span class="n">Te</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">T_i</span> <span class="o">-</span> <span class="n">Te</span><span class="p">)</span><span class="o">*</span><span class="n">ufl</span><span class="o">.</span><span class="n">dx</span><span class="p">))</span><span class="o">**</span><span class="mf">0.5</span>
-    
-    <span class="c1"># Return the l2 norm of the error</span>
-    <span class="k">return</span> <span class="n">l2err</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># &quot;&quot;&quot;</span>
-<span class="c1"># A python function to test the convergence between a series of</span>
-<span class="c1"># higher dimensional or higher order solutions to the two-dimensional</span>
-<span class="c1"># Poisson problem.</span>
-<span class="c1"># &quot;&quot;&quot;</span>
-<span class="c1"># Open a figure for plotting</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-
-<span class="c1"># List of polynomial orders to try</span>
-<span class="n">ps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-<span class="c1"># List of resolutions to try</span>
-<span class="n">nelements</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">320</span><span class="p">]</span>
-<span class="c1"># Keep track of whether we get the expected order of convergence</span>
-<span class="n">test_passes</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="c1"># Loop over the polynomial orders</span>
-<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">ps</span><span class="p">:</span>
-<span class="c1"># Accumulate the errors</span>
-    <span class="n">errors_l2_a</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># Loop over the resolutions</span>
-    <span class="k">for</span> <span class="n">ne</span> <span class="ow">in</span> <span class="n">nelements</span><span class="p">:</span>
-        <span class="c1"># Solve the 2D Poisson problem</span>
-        <span class="n">T_i</span> <span class="o">=</span> <span class="n">solve_poisson_2d</span><span class="p">(</span><span class="n">ne</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-        <span class="c1"># Evaluate the error in the approximate solution</span>
-        <span class="n">l2error</span> <span class="o">=</span> <span class="n">evaluate_error</span><span class="p">(</span><span class="n">T_i</span><span class="p">)</span>
-        <span class="c1"># Print to screen and save</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ne = &#39;</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="s1">&#39;, l2error = &#39;</span><span class="p">,</span> <span class="n">l2error</span><span class="p">)</span>
-        <span class="n">errors_l2_a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l2error</span><span class="p">)</span>
-    
-    <span class="c1"># Work out the order of convergence at this p</span>
-    <span class="n">hs</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nelements</span><span class="p">)</span><span class="o">/</span><span class="n">p</span>
-    
-    <span class="c1"># Write the errors to disk</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;2d_poisson_convergence_p</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">nelements</span><span class="p">,</span> <span class="n">hs</span><span class="p">,</span> <span class="n">errors_l2_a</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> 
-                <span class="n">header</span><span class="o">=</span><span class="s1">&#39;nelements, hs, l2errs&#39;</span><span class="p">)</span>
-    
-    <span class="c1"># Fit a line to the convergence data</span>
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">hs</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">errors_l2_a</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***********  order of accuracy p=</span><span class="si">{}</span><span class="s2">, order=</span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    
-    <span class="c1"># log-log plot of the error  </span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">hs</span><span class="p">,</span><span class="n">errors_l2_a</span><span class="p">,</span><span class="s1">&#39;o-&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;p=</span><span class="si">{}</span><span class="s1">, order=</span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-    
-    <span class="c1"># Test if the order of convergence is as expected</span>
-    <span class="n">test_passes</span> <span class="o">=</span> <span class="n">test_passes</span> <span class="ow">and</span> <span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">p</span><span class="o">+</span><span class="mf">0.9</span>
-
-<span class="c1"># Tidy up the ploy</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;||e||_2&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Convergence&#39;</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;2d_poisson_convergence.pdf&#39;</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;***********  convergence figure in poisson_convergence.pdf&quot;</span><span class="p">)</span>
-<span class="c1"># Check if we passed the test</span>
-<span class="k">assert</span><span class="p">(</span><span class="n">test_passes</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  10 , l2error =  0.0027147027486234317
-ne =  20 , l2error =  0.0006802808525134606
-ne =  40 , l2error =  0.00017001104598895738
-ne =  80 , l2error =  4.248277778831769e-05
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  160 , l2error =  1.0618025908709893e-05
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  320 , l2error =  2.654224903714333e-06
-***********  order of accuracy p=1, order=2.00
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  10 , l2error =  2.7202419657001693e-05
-ne =  20 , l2error =  3.42969827192103e-06
-ne =  40 , l2error =  4.308286099302828e-07
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  80 , l2error =  5.399649529668796e-08
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  160 , l2error =  6.7588327187155875e-09
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ne =  320 , l2error =  8.482568834760889e-10
-***********  order of accuracy p=2, order=2.99
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>***********  convergence figure in poisson_convergence.pdf
-</pre></div>
-</div>
-<img alt="../_images/94ef50db40cab6a803472ae0ad0277854fe5e56c7760c1eab232a49317cc2499.png" src="../_images/94ef50db40cab6a803472ae0ad0277854fe5e56c7760c1eab232a49317cc2499.png" />
-</div>
-</div>
+</section>
+</section>
+<section id="themes-and-variations">
+<h2>Themes and variations<a class="headerlink" href="#themes-and-variations" title="Link to this heading">#</a></h2>
+<p>Given that we know the exact solution to this problem is <span class="math notranslate nohighlight">\(T(x,y)\)</span>=<span class="math notranslate nohighlight">\(\exp\left(x+\tfrac{y}{2}\right)\)</span> write a python function to evaluate the error in our numerical solution.</p>
+<p>Then loop over a variety of <code class="docutils literal notranslate"><span class="pre">ne</span></code>s and <code class="docutils literal notranslate"><span class="pre">p</span></code>s and check that the numerical solution converges with an increasing number of degrees of freedom.</p>
+<p>Note that, aside from the analytic solution being different, this is very similar to the 1D case in <code class="docutils literal notranslate"><span class="pre">Poisson1D.ipynb</span></code>.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -736,6 +764,33 @@ ne =  40 , l2error =  4.308286099302828e-07
             
             
               
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description">Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boundary-conditions">Boundary conditions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#weak-form">Weak form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discretization">Discretization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-specific-example">A specific example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">Implementation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preamble">Preamble</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solution">Solution</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#themes-and-variations">Themes and variations</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
             
           </div>
           <footer class="bd-footer-content">
@@ -764,7 +819,7 @@ By Cian Wilson
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 31, 2024.
+  Last updated on Jun 01, 2024.
   <br/>
 </p>
   </div>

@@ -65,7 +65,7 @@
     <link rel="prev" title="Poisson Example 2D" href="Poisson2D.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 31, 2024"/>
+    <meta name="docbuild:last-update" content="Jun 01, 2024"/>
   </head>
   
   
@@ -1122,7 +1122,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0123801s, CPU 0.013691s)
+Info    : Done meshing 1D (Wall 0.0184165s, CPU 0.020686s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -1130,7 +1130,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0390883s, CPU 0.039896s)
+Info    : Done meshing 2D (Wall 0.085486s, CPU 0.086549s)
 Info    : 1474 nodes 3239 elements
 </pre></div>
 </div>
@@ -1541,8 +1541,8 @@ Info    : 1474 nodes 3239 elements
 </div>
 <p>We now need to set up boundary conditions for our functions.</p>
 <p>At the trench inflow boundary we assume a half-space cooling model <span class="math notranslate nohighlight">\(T_\text{trench}(z)\)</span> given by</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d7b62147-c61e-4c4f-9d02-2e8f826b9200">
-<span class="eqno">(1)<a class="headerlink" href="#equation-d7b62147-c61e-4c4f-9d02-2e8f826b9200" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-154615f4-a153-44eb-be2d-b47b54cdb3ed">
+<span class="eqno">(27)<a class="headerlink" href="#equation-154615f4-a153-44eb-be2d-b47b54cdb3ed" title="Permalink to this equation">#</a></span>\[\begin{equation}
 T(x=0, z) = T_\text{trench}(z) = T_s + (T_m - T_s ) {\rm erf} \left( \tfrac{z}{z_d} \right)
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(z\)</span> is depth below the surface, <span class="math notranslate nohighlight">\(T_s\)</span> is the non-dimensional surface temperature, <span class="math notranslate nohighlight">\(T_m\)</span> the non-dimensional mantle temperature, and the non-dimensional scale depth <span class="math notranslate nohighlight">\(z_d\)</span> is proportional to the dimensional age of the incoming lithosphere
@@ -1562,8 +1562,8 @@ T(x=0, z) = T_\text{trench}(z) = T_s + (T_m - T_s ) {\rm erf} \left( \tfrac{z}{z
 </div>
 </div>
 <p>In the ocean-ocean (<code class="docutils literal notranslate"><span class="pre">sztype</span> <span class="pre">==</span> <span class="pre">&quot;oceanic&quot;</span></code>) subduction cases, the wedge inflow boundary condition on temperature down to <span class="math notranslate nohighlight">\(z_\textrm{io}\)</span> (<code class="docutils literal notranslate"><span class="pre">io_depth</span></code>) is</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6638276e-468e-432b-aaea-10d9ee613d88">
-<span class="eqno">(2)<a class="headerlink" href="#equation-6638276e-468e-432b-aaea-10d9ee613d88" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-633bae20-0a91-4c5b-97e7-2a1d4d858beb">
+<span class="eqno">(28)<a class="headerlink" href="#equation-633bae20-0a91-4c5b-97e7-2a1d4d858beb" title="Permalink to this equation">#</a></span>\[\begin{equation}
 T(x=L, z) = T_\text{backarc,o}(z) ~=~ T_s + (T_m - T_s ) {\rm erf} \left( \tfrac{z}{z_c} \right) 
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(z_c\)</span> is related to the dimensional age of the overriding plate
@@ -1583,8 +1583,8 @@ T(x=L, z) = T_\text{backarc,o}(z) ~=~ T_s + (T_m - T_s ) {\rm erf} \left( \tfrac
 </div>
 </div>
 <p>The benchmark cases are ocean-continent (<code class="docutils literal notranslate"><span class="pre">sztype</span> <span class="pre">==</span> <span class="pre">&quot;continental&quot;</span></code>) where the wedge inflow the boundary condition on temperature is chosen to be a geotherm <span class="math notranslate nohighlight">\(T_\text{backarc}(z)\)</span> consistent with these parameters</p>
-<div class="amsmath math notranslate nohighlight" id="equation-03751645-374f-4c6a-a3e8-8992893d41df">
-<span class="eqno">(3)<a class="headerlink" href="#equation-03751645-374f-4c6a-a3e8-8992893d41df" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-260f7c53-2e45-495b-bd8f-3f727fc31f24">
+<span class="eqno">(29)<a class="headerlink" href="#equation-260f7c53-2e45-495b-bd8f-3f727fc31f24" title="Permalink to this equation">#</a></span>\[\begin{equation}
 T(x=L,z) = T_\text{backarc,c}(z) ~=~
  \left\{ \begin{array}{l&#64;{\quad:\quad}l}
  T_s -\frac{H_1 z^2}{2 k_c}~+~\frac{q_s}{k_c}z  &amp; z ~\in~ [0,z_1] \\
@@ -2024,7 +2024,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0144212s, CPU 0.016893s)
+Info    : Done meshing 1D (Wall 0.0205218s, CPU 0.019331s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -2032,7 +2032,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.039777s, CPU 0.040538s)
+Info    : Done meshing 2D (Wall 0.0576381s, CPU 0.058425s)
 Info    : 1474 nodes 3239 elements
 </pre></div>
 </div>
@@ -2058,44 +2058,44 @@ Info    : 1474 nodes 3239 elements
 <h4>Isoviscous (Case 1)<a class="headerlink" href="#isoviscous-case-1" title="Link to this heading">#</a></h4>
 <p>As the setup of our boundary and initial conditions looks correct we now wish to solve partial differential equations describing the thermal structure of a subduction zone in our domain.</p>
 <p>For the velocity <span class="math notranslate nohighlight">\(\vec{v}\)</span>, and pressure, <span class="math notranslate nohighlight">\(p\)</span>, we wish to solve the Stokes equations</p>
-<div class="amsmath math notranslate nohighlight" id="equation-55861b2c-7e53-4f0c-b2fd-41427b6760c8">
-<span class="eqno">(4)<a class="headerlink" href="#equation-55861b2c-7e53-4f0c-b2fd-41427b6760c8" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-b83e312b-88ab-4f74-ab48-f6fea3af8258">
+<span class="eqno">(30)<a class="headerlink" href="#equation-b83e312b-88ab-4f74-ab48-f6fea3af8258" title="Permalink to this equation">#</a></span>\[\begin{equation}
 -\nabla \cdot \left(2\eta \frac{\nabla \vec{v} + \nabla \vec{v}^T}{2} \right) + \nabla p = 0
 \end{equation}\]</div>
-<div class="amsmath math notranslate nohighlight" id="equation-a366aae5-9180-4517-8477-6a96a9691721">
-<span class="eqno">(5)<a class="headerlink" href="#equation-a366aae5-9180-4517-8477-6a96a9691721" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-f795188c-0eba-4237-af88-e865a37468f5">
+<span class="eqno">(31)<a class="headerlink" href="#equation-f795188c-0eba-4237-af88-e865a37468f5" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \nabla \cdot \vec{v} = 0
 \end{equation}\]</div>
 <p>for an incompressible viscous fluid where <span class="math notranslate nohighlight">\(\vec{v}\)</span> can be the wedge velocity, <span class="math notranslate nohighlight">\(\vec{v}_w\)</span> (<code class="docutils literal notranslate"><span class="pre">wedge_vw_i</span></code>), or the slab velocity <span class="math notranslate nohighlight">\(\vec{v}_s\)</span> (<code class="docutils literal notranslate"><span class="pre">slab_vs_i</span></code>), and similarly <span class="math notranslate nohighlight">\(p\)</span> can be the wedge pressure, <span class="math notranslate nohighlight">\(p_w\)</span> (<code class="docutils literal notranslate"><span class="pre">wedge_pw_i</span></code>), or the slab pressure <span class="math notranslate nohighlight">\(p_s\)</span> (<code class="docutils literal notranslate"><span class="pre">slab_ps_i</span></code>).  <span class="math notranslate nohighlight">\(\eta\)</span> is the non-dimensional viscosity.</p>
 <p>Our goal is to discretize this system of equations using finite elements such that we have systems like</p>
-<div class="amsmath math notranslate nohighlight" id="equation-d201b3b3-5d76-4d6d-82e3-624a06cad44c">
-<span class="eqno">(6)<a class="headerlink" href="#equation-d201b3b3-5d76-4d6d-82e3-624a06cad44c" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-7f4dfd3a-1546-463e-b179-bf6d2cda2c46">
+<span class="eqno">(32)<a class="headerlink" href="#equation-7f4dfd3a-1546-463e-b179-bf6d2cda2c46" title="Permalink to this equation">#</a></span>\[\begin{align}
 S_s u_s = S_s \left(\begin{array}{c}\vec{v}\\p\end{array}\right) = f_s
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(S_s = S_s(u_{s_t}, u_{s_a})\)</span> is a bilinear form of the combined velocity-pressure test <span class="math notranslate nohighlight">\(u_{s_t}\)</span> and trial <span class="math notranslate nohighlight">\(u_{s_a}\)</span> functions that will be used to assemble a left-hand side matrix and <span class="math notranslate nohighlight">\(f_s = f_s(u_{s_t})\)</span> is a linear form that will be used to describe a right-hand side vector in a matrix-vector equation for the velocity-pressure solution <span class="math notranslate nohighlight">\(u_s = \left(\vec{v}, p\right)^T\)</span>.</p>
 <p>To get this form we multiply the Stokes equations through by the test function <span class="math notranslate nohighlight">\(u_t = \left(\vec{v}_{w_t}, p_{w_t}\right)^T\)</span>, integrate by parts, and apply appropriate boundary conditions to the resulting boundary integrals (in this case we can just drop them all).</p>
 <p>Doing this in the wedge (using the subscript <span class="math notranslate nohighlight">\(w\)</span>) we get</p>
-<div class="amsmath math notranslate nohighlight" id="equation-211caf59-b62b-48d3-a43e-9ce5976b982b">
-<span class="eqno">(7)<a class="headerlink" href="#equation-211caf59-b62b-48d3-a43e-9ce5976b982b" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-0ddebc59-139a-487d-99bc-c763891fbca9">
+<span class="eqno">(33)<a class="headerlink" href="#equation-0ddebc59-139a-487d-99bc-c763891fbca9" title="Permalink to this equation">#</a></span>\[\begin{align}
 S_{s_w} =&amp; K_{s_w} + G_{s_w} + D_{s_w} \\
 f_{s_w} =&amp; \int_{\text{wedge}} u_{w_t} 0 dx
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-27ae51c3-f1dd-4fb3-bdc4-e763affeb6ed">
-<span class="eqno">(8)<a class="headerlink" href="#equation-27ae51c3-f1dd-4fb3-bdc4-e763affeb6ed" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-d2c954df-bb68-46f7-8427-84f9f31823e7">
+<span class="eqno">(34)<a class="headerlink" href="#equation-d2c954df-bb68-46f7-8427-84f9f31823e7" title="Permalink to this equation">#</a></span>\[\begin{align}
 K_{s_w} =&amp;  \int_{\text{wedge}} \left[ \left(\frac{\nabla\vec{v}_{w_t} + \nabla\vec{v}_{w_t}^T}{2}\right):2\eta\left(\frac{\nabla\vec{v}_{w_a} + \nabla\vec{v}_{w_a}^T}{2}\right) \right] dx \\
 G_{s_w} =&amp;  -  \int_{\text{wedge}} \nabla \cdot \vec{v}_{w_t} p_{w_a} dx \\
 D_{s_w} =&amp; -  \int_{\text{wedge}}  p_{w_t} \nabla \cdot \vec{v}_{w_a} dx
 \end{align}\]</div>
 <p>and similarly in the slab (using the subscript <span class="math notranslate nohighlight">\(s\)</span>) we get</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fbb26706-0a28-4a65-bad2-f655d6ab7fd9">
-<span class="eqno">(9)<a class="headerlink" href="#equation-fbb26706-0a28-4a65-bad2-f655d6ab7fd9" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-cdb08bb7-2c24-4190-a18b-f266aeb5502a">
+<span class="eqno">(35)<a class="headerlink" href="#equation-cdb08bb7-2c24-4190-a18b-f266aeb5502a" title="Permalink to this equation">#</a></span>\[\begin{align}
 S_{s_s} =&amp; K_{s_s} + G_{s_s} + D_{s_s} \\
 f_{s_s} =&amp; \int_{\text{slab}} u_{s_t} 0 dx
 \end{align}\]</div>
 <p>where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0bcb80ad-044a-4282-90ac-578f6eb0209d">
-<span class="eqno">(10)<a class="headerlink" href="#equation-0bcb80ad-044a-4282-90ac-578f6eb0209d" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-cb13a75a-d4fc-458b-8125-df3682446493">
+<span class="eqno">(36)<a class="headerlink" href="#equation-cb13a75a-d4fc-458b-8125-df3682446493" title="Permalink to this equation">#</a></span>\[\begin{align}
 K_{s_s} =&amp;  \int_{\text{slab}} \left[ \left(\frac{\nabla\vec{v}_{s_t} + \nabla\vec{v}_{s_t}^T}{2}\right):2\eta\left(\frac{\nabla\vec{v}_{s_a} + \nabla\vec{v}_{s_a}^T}{2}\right) \right] dx \\
 G_{s_s} =&amp;  -  \int_{\text{slab}} \nabla \cdot \vec{v}_{s_t} p_{s_a} dx \\
 D_{s_s} =&amp; -  \int_{\text{slab}}  p_{s_t} \nabla \cdot \vec{v}_{s_a} dx
@@ -2141,30 +2141,30 @@ D_{s_s} =&amp; -  \int_{\text{slab}}  p_{s_t} \nabla \cdot \vec{v}_{s_a} dx
 </div>
 </div>
 <p>We can write a similar function (<code class="docutils literal notranslate"><span class="pre">temperature_forms_steadystate</span></code>) for the temperature forms given the steady-state temperature advection-diffusion equation</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9ce1b544-0510-4877-a410-5e95813b9e28">
-<span class="eqno">(11)<a class="headerlink" href="#equation-9ce1b544-0510-4877-a410-5e95813b9e28" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-4dffa12a-27ab-4248-9c79-7345ab8efa45">
+<span class="eqno">(37)<a class="headerlink" href="#equation-4dffa12a-27ab-4248-9c79-7345ab8efa45" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \rho c_p \vec{v} \cdot \nabla T = \nabla \cdot \left( k \nabla T \right) + H
 \end{equation}\]</div>
 <p>which we wish to convert into bilinear, <span class="math notranslate nohighlight">\(S_T = S_T(T_t, T_a)\)</span>, and linear, <span class="math notranslate nohighlight">\(f_T = f_T(T_t)\)</span>, forms, such that:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-16d1094c-0e39-4f26-89b8-d6e88dd2a5f3">
-<span class="eqno">(12)<a class="headerlink" href="#equation-16d1094c-0e39-4f26-89b8-d6e88dd2a5f3" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-aab26319-2afd-402f-8e16-2b9b065dc8cf">
+<span class="eqno">(38)<a class="headerlink" href="#equation-aab26319-2afd-402f-8e16-2b9b065dc8cf" title="Permalink to this equation">#</a></span>\[\begin{equation}
 S_T T = f_T
 \end{equation}\]</div>
 <p>Due to the variation of the material parameters and the velocity Functions across the domain, <span class="math notranslate nohighlight">\(S_s\)</span> is compiled from several integrals of different subregions of the domain</p>
-<div class="amsmath math notranslate nohighlight" id="equation-919f7e6f-1019-440c-b508-9f7a95995606">
-<span class="eqno">(13)<a class="headerlink" href="#equation-919f7e6f-1019-440c-b508-9f7a95995606" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-eebe528f-9d8a-4d3b-8b6a-073dc9c7ab79">
+<span class="eqno">(39)<a class="headerlink" href="#equation-eebe528f-9d8a-4d3b-8b6a-073dc9c7ab79" title="Permalink to this equation">#</a></span>\[\begin{align}
 S_T =&amp; \int_{\text{wedge}} \left[ T_t \rho_m \vec{v}_w\cdot\nabla T_a + \nabla T_t \cdot k_m\nabla T_a \right] dx \\
 &amp; + \int_{\text{slab}} \left[ T_t \rho_m \vec{v}_s\cdot\nabla T_a + \nabla T_t \cdot k_m\nabla T_a \right] dx \\
 &amp; + \int_{\text{crust}} \left[ \nabla T_t \cdot k_c\nabla T_a \right] dx
 \end{align}\]</div>
 <p>Meanwhile <span class="math notranslate nohighlight">\(f_T\)</span> depends on whether the case has over-riding continental</p>
-<div class="amsmath math notranslate nohighlight" id="equation-a2c7a7e8-69f2-4c52-8020-65c7fd4211ca">
-<span class="eqno">(14)<a class="headerlink" href="#equation-a2c7a7e8-69f2-4c52-8020-65c7fd4211ca" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-0291a5d5-6caf-482b-bc5c-c07d6083da73">
+<span class="eqno">(40)<a class="headerlink" href="#equation-0291a5d5-6caf-482b-bc5c-c07d6083da73" title="Permalink to this equation">#</a></span>\[\begin{equation}
 f_T = \int_{\text{upper crust}} T_t H_1 dx + \int_{\text{lower crust}} T_t H_2 dx
 \end{equation}\]</div>
 <p>or oceanic</p>
-<div class="amsmath math notranslate nohighlight" id="equation-aab68155-e210-4583-9a6d-670740f40fcc">
-<span class="eqno">(15)<a class="headerlink" href="#equation-aab68155-e210-4583-9a6d-670740f40fcc" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-3ca1a1ec-402c-4faa-a0c8-318c396ca3ac">
+<span class="eqno">(41)<a class="headerlink" href="#equation-3ca1a1ec-402c-4faa-a0c8-318c396ca3ac" title="Permalink to this equation">#</a></span>\[\begin{equation}
 f_T = \int T_t 0 dx
 \end{equation}\]</div>
 <p>crust.</p>
@@ -2273,14 +2273,14 @@ f_T = \int T_t 0 dx
 where gradients in velocity and temperature are high.</p>
 <p>The first metric is
 the slab temperature at 100 km depth, <span class="math notranslate nohighlight">\(T_{(200,-100)}^*\)</span></p>
-<div class="amsmath math notranslate nohighlight" id="equation-3e24421a-b545-4fe2-aca7-d6b7abd6516d">
-<span class="eqno">(16)<a class="headerlink" href="#equation-3e24421a-b545-4fe2-aca7-d6b7abd6516d" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-34dee3a1-3ec0-4dc4-906f-7ce28387f15c">
+<span class="eqno">(42)<a class="headerlink" href="#equation-34dee3a1-3ec0-4dc4-906f-7ce28387f15c" title="Permalink to this equation">#</a></span>\[\begin{equation}
     T_{(200,-100)}^* ~=~ T_0 T(x=200,y=-100)
 \end{equation}\]</div>
 <p>The second metric is the average integrated temperature <span class="math notranslate nohighlight">\(\overline{T}_s^*\)</span> along the slab surface between
 depths <span class="math notranslate nohighlight">\(z_{s,1}\)</span>=70 and <span class="math notranslate nohighlight">\(z_{s,2}\)</span>=120, that is</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9a8d53ea-0d6b-4927-b26f-4c217bae60c5">
-<span class="eqno">(17)<a class="headerlink" href="#equation-9a8d53ea-0d6b-4927-b26f-4c217bae60c5" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-12804659-3408-4d0a-b07a-d885d9d97ec2">
+<span class="eqno">(43)<a class="headerlink" href="#equation-12804659-3408-4d0a-b07a-d885d9d97ec2" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \overline{T}_s^* ~=~ T_0 \frac{\int_{s_1}^{s_2} T ds}{\int_{s_1}^{s_2} ds}
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(s\)</span> is distance along the slab top from the trench,
@@ -2290,14 +2290,14 @@ the volume-averaged temperature <span class="math notranslate nohighlight">\(\ov
 <span class="math notranslate nohighlight">\(z\)</span>=<span class="math notranslate nohighlight">\(z_2\)</span> and above where the slab surface, <span class="math notranslate nohighlight">\(z\)</span>=<span class="math notranslate nohighlight">\(z_\text{slab}(x)\)</span>,
 is between
 <span class="math notranslate nohighlight">\(z_{s,1}\)</span> and <span class="math notranslate nohighlight">\(z_{s,2}\)</span> as defined above</p>
-<div class="amsmath math notranslate nohighlight" id="equation-8e0623e6-0bb4-459c-90ef-1757b7b11b43">
-<span class="eqno">(18)<a class="headerlink" href="#equation-8e0623e6-0bb4-459c-90ef-1757b7b11b43" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-a994d106-043c-4623-bc54-c0dc9a62eddc">
+<span class="eqno">(44)<a class="headerlink" href="#equation-a994d106-043c-4623-bc54-c0dc9a62eddc" title="Permalink to this equation">#</a></span>\[\begin{equation}
     \overline{T}_w^* ~=~ T_0 \frac{\int_{x=140}^{x=240}\int_{z=z_2}^{z=z_\text{slab}(x)} \tilde{T} dz dx}{\int_{x=140}^{x=240}\int_{z=z_2}^{z=z_\text{slab}(x)} dz dx}
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(z_\text{slab}(x)\)</span>=<span class="math notranslate nohighlight">\(x/2\)</span>.</p>
 <p>The final metric is the root-mean-squared averaged velocity <span class="math notranslate nohighlight">\(V_{\text{rms},w}^*\)</span> in the same volume as the third metric, that is</p>
-<div class="amsmath math notranslate nohighlight" id="equation-ab5f2e33-99e1-4d70-a7d7-52e2e3522da0">
-<span class="eqno">(19)<a class="headerlink" href="#equation-ab5f2e33-99e1-4d70-a7d7-52e2e3522da0" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-180590e0-c7e5-42d9-9894-424dfc769f17">
+<span class="eqno">(45)<a class="headerlink" href="#equation-180590e0-c7e5-42d9-9894-424dfc769f17" title="Permalink to this equation">#</a></span>\[\begin{equation}
     V_{\text{rms},w}^*~=~ v_0 
     \sqrt{ 
      \frac {\int_{x=140}^{x=240}\int_{z=z_2}^{z=z_\text{slab}} \left( \tilde{\vec{v}}\cdot\tilde{\vec{v}} \right) dzdx}
@@ -2454,7 +2454,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0161791s, CPU 0.016843s)
+Info    : Done meshing 1D (Wall 0.0174509s, CPU 0.018038s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -2462,7 +2462,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0457516s, CPU 0.046359s)
+Info    : Done meshing 2D (Wall 0.0712469s, CPU 0.071369s)
 Info    : 1474 nodes 3239 elements
 </pre></div>
 </div>
@@ -2490,9 +2490,15 @@ Info    : 1474 nodes 3239 elements
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_(200,-100) = 517.17 deg C
-T_slab = 451.95 deg C
-T_wedge = 927.02 deg C
-V_rms,w = 34.64 mm/yr
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_slab = 451.95 deg C
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_wedge = 927.02 deg C
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>V_rms,w = 34.64 mm/yr
 
 resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw       
 5            5812         517.1668     451.9452     927.0205     34.6379     
@@ -2609,8 +2615,8 @@ resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw
 <h4>Dislocation Creep Viscosity (Case 2)<a class="headerlink" href="#dislocation-creep-viscosity-case-2" title="Link to this heading">#</a></h4>
 <p>For case 2 the viscosity is a function of temperature and
 strain rate following a simplified creep law for dislocation creep in dry olivine from <a class="reference external" href="http://dx.doi.org/10.1126/science.260.5109.771">Karato &amp; Wu, 1993</a></p>
-<div class="amsmath math notranslate nohighlight" id="equation-4c8503fc-562a-48ec-80cc-4d14c9765776">
-<span class="eqno">(20)<a class="headerlink" href="#equation-4c8503fc-562a-48ec-80cc-4d14c9765776" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-795adca4-1f83-4883-af10-91b06b2d0fdd">
+<span class="eqno">(46)<a class="headerlink" href="#equation-795adca4-1f83-4883-af10-91b06b2d0fdd" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \eta^*_\text{disl}~=~ A_\eta^* \exp \left( \frac{E^*}{n_\sigma R^*(T^*+T^*_a)} \right) {{\dot{\epsilon}_{II}}}^{*\frac{1-n_\sigma}{n_\sigma}}
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(A_\eta^*\)</span> is a prefactor, <span class="math notranslate nohighlight">\(E^*\)</span> is the activation energy, <span class="math notranslate nohighlight">\(R^*\)</span> is the gas constant, <span class="math notranslate nohighlight">\(n\)</span> is a powerlaw index,
@@ -2619,15 +2625,15 @@ a linear approximation of an adiabatic temperature
 using a gradient of 0.3<span class="math notranslate nohighlight">\(^\circ\)</span>C/km with <span class="math notranslate nohighlight">\(T^*_a\)</span>=0 at the top of the model (beyond the benchmark this may not be at <span class="math notranslate nohighlight">\(z^*\)</span>=0 due to assumptions of ocean bathymetry)
 and <span class="math notranslate nohighlight">\(\dot{\epsilon}_{II}^*\)</span> is the second invariant of the
 deviatoric strain-rate tensor (also known as the effective deviatoric strain rate)</p>
-<div class="amsmath math notranslate nohighlight" id="equation-38862008-e52e-4616-ab86-fd12a3af6e5e">
-<span class="eqno">(21)<a class="headerlink" href="#equation-38862008-e52e-4616-ab86-fd12a3af6e5e" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-c7f33e62-9d96-411f-aded-52abd8740328">
+<span class="eqno">(47)<a class="headerlink" href="#equation-c7f33e62-9d96-411f-aded-52abd8740328" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \dot{\epsilon}_{II}^*~=~ \sqrt{\frac{1}{2} \frac{\nabla\vec{v}^* + \nabla\vec{v}^{*T}}{2}:\frac{\nabla\vec{v}^* + \nabla\vec{v}^{*T}}{2}}
 \end{equation}\]</div>
 <p>and depends on whether we are in the wedge, where <span class="math notranslate nohighlight">\(\vec{v}^* = \vec{v}_w^*\)</span> is the dimensional wedge velocity, or in the slab, where <span class="math notranslate nohighlight">\(\vec{v}^* = \vec{v}_s^*\)</span> is the dimensional slab velocity.</p>
 <p>Since the dynamical range of the viscosity is large over the temperature contrast across
 subduction zones the viscosity is capped at some arbitrary maximum <span class="math notranslate nohighlight">\(\eta^*_\text{max}\)</span> so that in the variable viscosity case</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fe175421-f838-4163-a879-f9d537ae7a79">
-<span class="eqno">(22)<a class="headerlink" href="#equation-fe175421-f838-4163-a879-f9d537ae7a79" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-a83e3c0d-153d-47b1-888f-b7012bb12004">
+<span class="eqno">(48)<a class="headerlink" href="#equation-a83e3c0d-153d-47b1-888f-b7012bb12004" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \eta~=~ \left( \frac{\eta_0}{\eta^*_\text{disl}} ~+~ \frac{\eta_0}{\eta^*_\text{max}}\right)^{-1}
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\eta_0\)</span> is a reference viscosity scale used to non-dimensionalize the viscosity.</p>
@@ -2941,7 +2947,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0138335s, CPU 0.0157s)
+Info    : Done meshing 1D (Wall 0.0131177s, CPU 0.014102s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -2949,7 +2955,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0392668s, CPU 0.040033s)
+Info    : Done meshing 2D (Wall 0.0479633s, CPU 0.04961s)
 Info    : 1485 nodes 3261 elements
 </pre></div>
 </div>
@@ -2960,46 +2966,48 @@ Info    : 1485 nodes 3261 elements
 ------------------------------------------
 0           14039.3      1           
 1           1161.26      0.0827153   
-2           256.735      0.0182869   
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3           103.968      0.0074055   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2           256.735      0.0182869   
+3           103.968      0.0074055   
 4           48.9798      0.00348877  
-5           26.4549      0.00188435  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           16.1772      0.00115228  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5           26.4549      0.00188435  
+6           16.1772      0.00115228  
 7           10.7653      0.0007668   
-8           7.60442      0.000541653 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9           5.59295      0.000398379 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8           7.60442      0.000541653 
+9           5.59295      0.000398379 
 10          4.21471      0.000300209 
-11          3.22359      0.000229612 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          2.4908       0.000177416 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11          3.22359      0.000229612 
+12          2.4908       0.000177416 
 13          1.93954      0.000138151 
-14          1.51997      0.000108266 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>15          1.19783      8.53198e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14          1.51997      0.000108266 
+15          1.19783      8.53198e-05 
 16          0.948679     6.75732e-05 
-17          0.754764     5.37609e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.602991     4.29503e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>17          0.754764     5.37609e-05 
+18          0.602991     4.29503e-05 
 19          0.483598     3.44461e-05 
-20          0.389239     2.7725e-05  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21          0.314337     2.23898e-05 
-22          0.254634     1.81372e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20          0.389239     2.7725e-05  
+21          0.314337     2.23898e-05 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>22          0.254634     1.81372e-05 
 23          0.206858     1.47342e-05 
+24          0.168483     1.20008e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24          0.168483     1.20008e-05 
-25          0.13755      9.79752e-06 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>25          0.13755      9.79752e-06 
 26          0.112533     8.01558e-06 
 </pre></div>
 </div>
@@ -3024,7 +3032,9 @@ Info    : 1485 nodes 3261 elements
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_(200,-100) = 679.02 deg C
-T_slab = 568.56 deg C
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_slab = 568.56 deg C
 T_wedge = 941.66 deg C
 V_rms,w = 41.96 mm/yr
 
@@ -3230,7 +3240,7 @@ By Cian Wilson
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 31, 2024.
+  Last updated on Jun 01, 2024.
   <br/>
 </p>
   </div>
