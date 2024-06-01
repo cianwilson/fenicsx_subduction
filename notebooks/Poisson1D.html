@@ -451,10 +451,10 @@ document.write(`
 <h1>Poisson Example 1D<a class="headerlink" href="#poisson-example-1d" title="Link to this heading">#</a></h1>
 <section id="description">
 <h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
-<p>As an introductory and simplified example we will solve the Poisson equation on a 1D domain of unit length, <span class="math notranslate nohighlight">\(\Upomega = [0,1]\)</span>, by seeking the approximate solution of</p>
-<div class="amsmath math notranslate nohighlight" id="equation-16af2e5c-7449-4652-b905-d5a84a9c088f">
-<span class="eqno">(1)<a class="headerlink" href="#equation-16af2e5c-7449-4652-b905-d5a84a9c088f" title="Permalink to this equation">#</a></span>\[\begin{align}
--\frac{d^2 T}{dx^2} &amp;= f  % &amp;&amp; \text{in }\Upomega
+<p>As an introductory and simplified example we will solve the Poisson equation on a 1D domain of unit length, <span class="math notranslate nohighlight">\(\Omega = [0,1]\)</span>, by seeking the approximate solution of</p>
+<div class="amsmath math notranslate nohighlight" id="equation-628dc038-5395-4b42-810b-0132ee48285f">
+<span class="eqno">(1)<a class="headerlink" href="#equation-628dc038-5395-4b42-810b-0132ee48285f" title="Permalink to this equation">#</a></span>\[\begin{align}
+-\frac{d^2 T}{dx^2} &amp;= f  % &amp;&amp; \text{in }\Omega
 \end{align}\]</div>
 <p>where we choose for this example <span class="math notranslate nohighlight">\(f=\frac{1}{4}\pi^2 \sin\left(\frac{\pi x}{2} \right)\)</span>.</p>
 <p>At the boundaries, <span class="math notranslate nohighlight">\(x\)</span>=0 and <span class="math notranslate nohighlight">\(x\)</span>=1, we apply as boundary conditions \begin{align}
@@ -464,24 +464,24 @@ T &amp;= 0 &amp;&amp; \text{at } x=0  \
 The first boundary condition is an example of an essential or Dirichlet boundary condition where we specify the
 value of the solution. The second boundary condition is an example of a natural or Neumann boundary condition that can be interpreted to mean that the solution is symmetrical around <span class="math notranslate nohighlight">\(x\)</span>=1.</p>
 <p>The analytical solution to the Poisson equation in 1D with the given boundary conditions and forcing function is simply</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9b39d0eb-9674-4a02-8e69-3ea84793056b">
-<span class="eqno">(2)<a class="headerlink" href="#equation-9b39d0eb-9674-4a02-8e69-3ea84793056b" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-1dc9d470-d0a1-48f4-9325-9befc664c031">
+<span class="eqno">(2)<a class="headerlink" href="#equation-1dc9d470-d0a1-48f4-9325-9befc664c031" title="Permalink to this equation">#</a></span>\[\begin{equation}
   T = \sin\left(\frac{\pi x}{2}\right)
 \end{equation}\]</div>
 <p>but we will still solve this numerically as a verification test of our implementation.</p>
 <p>Finite element methods are formulated by writing out the weak form of the equation.  In the case of 1D Poisson, we multiply the equation by an arbitrary “test” function, <span class="math notranslate nohighlight">\(T_t\)</span>, and integrate over the domain:</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b1ef9df9-3883-40c6-86ef-37d47916deb6">
-<span class="eqno">(3)<a class="headerlink" href="#equation-b1ef9df9-3883-40c6-86ef-37d47916deb6" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-842d6133-c075-478d-9d9a-0945e7695dad">
+<span class="eqno">(3)<a class="headerlink" href="#equation-842d6133-c075-478d-9d9a-0945e7695dad" title="Permalink to this equation">#</a></span>\[\begin{equation}
 -\int_0^1 T_t \frac{d^2 T}{dx^2} dx = \int_0^1 f dx
 \end{equation}\]</div>
 <p>To lower the continuity requirements on the discrete form of <span class="math notranslate nohighlight">\(T\)</span> we can integrate the first term by parts giving us the <strong>weak form</strong> of the equation</p>
-<div class="amsmath math notranslate nohighlight" id="equation-63788db7-5fde-43d2-9ca1-48a9c81db815">
-<span class="eqno">(4)<a class="headerlink" href="#equation-63788db7-5fde-43d2-9ca1-48a9c81db815" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-ed90b207-c858-412b-be43-4a2ac611aadc">
+<span class="eqno">(4)<a class="headerlink" href="#equation-ed90b207-c858-412b-be43-4a2ac611aadc" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \int_0^1 \frac{d T_t}{dx} \frac{d T}{dx} dx - \left[T_t \frac{dT}{dx} \right]_0^1  = \int_0^1 f dx
 \end{equation}\]</div>
 <p>To discretize the equation, the FEM approximates <span class="math notranslate nohighlight">\(T\)</span> by <span class="math notranslate nohighlight">\(\tilde{T}\)</span>, the solution’s representation in a <strong>function space</strong> on the mesh where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-0acf7d29-1ba3-420d-86e5-957d093da710">
-<span class="eqno">(5)<a class="headerlink" href="#equation-0acf7d29-1ba3-420d-86e5-957d093da710" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-ea4957a1-94cd-4805-a87b-a9f5431cdb29">
+<span class="eqno">(5)<a class="headerlink" href="#equation-ea4957a1-94cd-4805-a87b-a9f5431cdb29" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \tilde{T}(\vec{x}, t) = \sum_j \phi_j(\vec{x}) T_j(t) 
 \end{equation}\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(T_j\)</span> are coefficients that as indicated can be time-dependent if the problem is time-dependent (not the case in this example) but do not depend on space. The shape functions <span class="math notranslate nohighlight">\(\phi_j\)</span> are a function of space but generally independent of time. The index <span class="math notranslate nohighlight">\(j\)</span> indicates the number of the shape function on the mesh and is associated with the number of the nodal point or element number it is associated with.
@@ -494,35 +494,35 @@ The split of temporal and spatial dependence above is typical in geodynamic appl
 that span the function space of the trial function,
 but in the widely used Galerkin approach the test functions
 are restricted to be in the same function space such that</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4a8f649f-f71a-40ec-8876-91b90daf5925">
-<span class="eqno">(6)<a class="headerlink" href="#equation-4a8f649f-f71a-40ec-8876-91b90daf5925" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-3bf2941f-2787-4e32-9686-59b947ebd61c">
+<span class="eqno">(6)<a class="headerlink" href="#equation-3bf2941f-2787-4e32-9686-59b947ebd61c" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \tilde{T}_t(\vec{x}, t) = \sum_i\phi_i(\vec{x})  T_{ti}(t) 
 \end{equation}\]</div>
 <p>Since the method is valid for all <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> we can dispense with the test function values at the DOFs, <span class="math notranslate nohighlight">\(T_{ti}\)</span> and, through substitution of <span class="math notranslate nohighlight">\(T = \tilde{T}\)</span> and <span class="math notranslate nohighlight">\(T_t = \tilde{T}_t\)</span> write the <strong>discrete weak form</strong> as</p>
-<div class="amsmath math notranslate nohighlight" id="equation-4e868e33-ce83-4eb2-900c-3c99122c80be">
-<span class="eqno">(7)<a class="headerlink" href="#equation-4e868e33-ce83-4eb2-900c-3c99122c80be" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-377fed38-64eb-4fe5-bf4a-f145d16a0b6e">
+<span class="eqno">(7)<a class="headerlink" href="#equation-377fed38-64eb-4fe5-bf4a-f145d16a0b6e" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \sum_j\int_0^1 \frac{d \phi_i}{dx} \frac{d \phi_j}{dx} dx T_j - \sum_j\left[\phi_i \frac{d\phi_j}{dx} \right]_0^1 T_j = \int_0^1 f dx, \quad\quad i = 1,\ldots, n
 \end{equation}\]</div>
 <p>The second term can be dropped because we require <span class="math notranslate nohighlight">\(\frac{d\tilde{T}}{dx} = 0\)</span> at <span class="math notranslate nohighlight">\(x=1\)</span> and the solution at <span class="math notranslate nohighlight">\(x=0\)</span> (<span class="math notranslate nohighlight">\(i=0\)</span>) is known (<span class="math notranslate nohighlight">\(T_0=0\)</span>)</p>
-<div class="amsmath math notranslate nohighlight" id="equation-aa68b862-d261-481c-8766-44a8e37a231a">
-<span class="eqno">(8)<a class="headerlink" href="#equation-aa68b862-d261-481c-8766-44a8e37a231a" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-c4d65854-81fb-4636-ab3f-3556bdeafca0">
+<span class="eqno">(8)<a class="headerlink" href="#equation-c4d65854-81fb-4636-ab3f-3556bdeafca0" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \sum_j\int_0^1 \frac{d \phi_i}{dx} \frac{d \phi_j}{dx} dx T_j = \int_0^1 f dx, \quad\quad i = 1,\ldots, n
 \end{equation}\]</div>
 <p>Given a domain with <span class="math notranslate nohighlight">\(n\)</span> DOFs such that <span class="math notranslate nohighlight">\(i,j=1, \ldots, n\)</span>, the discrete weak form can be assembled into a matrix-vector system of the form</p>
-<div class="amsmath math notranslate nohighlight" id="equation-06e151ea-05d1-44da-99b4-3b638bde2f62">
-<span class="eqno">(9)<a class="headerlink" href="#equation-06e151ea-05d1-44da-99b4-3b638bde2f62" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-54a8c20f-cdf2-4d5b-9235-7ea4c269b762">
+<span class="eqno">(9)<a class="headerlink" href="#equation-54a8c20f-cdf2-4d5b-9235-7ea4c269b762" title="Permalink to this equation">#</a></span>\[\begin{equation}
 {\bf S} {\bf u} = {\bf f}
 \end{equation}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\bf{S}\)</span> is a <span class="math notranslate nohighlight">\(n \times n\)</span> matrix, <span class="math notranslate nohighlight">\(\bf{f}\)</span> is the right-hand side vector of length <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(\bf{u}\)</span> is the solution vector of values at the DOFs</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e5d2ed28-fc10-4bd3-8a3d-b5137dfd0017">
-<span class="eqno">(10)<a class="headerlink" href="#equation-e5d2ed28-fc10-4bd3-8a3d-b5137dfd0017" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-458e17c8-d5ad-4ff5-a653-e4e0f9460c66">
+<span class="eqno">(10)<a class="headerlink" href="#equation-458e17c8-d5ad-4ff5-a653-e4e0f9460c66" title="Permalink to this equation">#</a></span>\[\begin{align}
 {\bf S} &amp;= S_{ij} = \int_0^1 \frac{d\phi_i}{dx} \frac{d\phi_j}{dx} ~dx  \\
 {\bf f} &amp;= f_i = \int_0^1 \phi_i  f ~dx \\
 {\bf u} &amp;= {\bf T} = T_j
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\({\bf T}\)</span> has components <span class="math notranslate nohighlight">\(T_j\)</span> that define the continuous approximate solution</p>
-<div class="amsmath math notranslate nohighlight" id="equation-6e368ac2-2018-4374-b984-00638f964eaf">
-<span class="eqno">(11)<a class="headerlink" href="#equation-6e368ac2-2018-4374-b984-00638f964eaf" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-5260e158-c620-4e7e-8bbd-fbc518a2a2e4">
+<span class="eqno">(11)<a class="headerlink" href="#equation-5260e158-c620-4e7e-8bbd-fbc518a2a2e4" title="Permalink to this equation">#</a></span>\[\begin{equation}
 \tilde{T}(x) = \sum_{j=1}^n  \phi_j(x) T_j
 \end{equation}\]</div>
 <p>and <span class="math notranslate nohighlight">\(T_0 = 0\)</span>.</p>
@@ -580,7 +580,7 @@ to write fast code to assemble the resulting discrete matrix-vector system.</p>
 <p>We then declare a python function <code class="docutils literal notranslate"><span class="pre">solve_poisson_1d</span></code> that contains a complete description of the discrete Poisson equation problem.</p>
 <p>This function follows much the same flow as described above:</p>
 <ol class="arabic simple">
-<li><p>we describe the domain <span class="math notranslate nohighlight">\(\Upomega\)</span> and discretize it into <code class="docutils literal notranslate"><span class="pre">ne</span></code> elements or cells to make a <code class="docutils literal notranslate"><span class="pre">mesh</span></code></p></li>
+<li><p>we describe the domain <span class="math notranslate nohighlight">\(\Omega\)</span> and discretize it into <code class="docutils literal notranslate"><span class="pre">ne</span></code> elements or cells to make a <code class="docutils literal notranslate"><span class="pre">mesh</span></code></p></li>
 <li><p>we declare the <strong>function space</strong>, <code class="docutils literal notranslate"><span class="pre">V</span></code>, to use Lagrange polynomials of degree <code class="docutils literal notranslate"><span class="pre">p</span></code></p></li>
 <li><p>using this function space we declare trial, <code class="docutils literal notranslate"><span class="pre">T_a</span></code>, and test, <code class="docutils literal notranslate"><span class="pre">T_t</span></code>, functions</p></li>
 <li><p>we define the Dirichlet boundary condition, <code class="docutils literal notranslate"><span class="pre">bc</span></code> at <span class="math notranslate nohighlight">\(x=0\)</span>, setting the desired value there to be 0</p></li>
@@ -726,9 +726,9 @@ to write fast code to assemble the resulting discrete matrix-vector system.</p>
 </div>
 <p>Repeating the numerical experiments with increasing <code class="docutils literal notranslate"><span class="pre">ne</span></code> allows us to test the <strong>convergence</strong> of our approximate finite element solution to the known analytical solution.  A key feature of any discretization technique is that with an increasing number of degrees of freedom (DOFs) these solutions should converge, i.e. the error in our approximation should decrease.  As an error metric we will use the <span class="math notranslate nohighlight">\(L^2\)</span> norm of the difference between the
 approximate, <span class="math notranslate nohighlight">\(\tilde{T}\)</span>, and analytical, <span class="math notranslate nohighlight">\(T\)</span>, solutions</p>
-<div class="amsmath math notranslate nohighlight" id="equation-bab83d51-2eb8-45c5-90ad-f041a37ed674">
-<span class="eqno">(12)<a class="headerlink" href="#equation-bab83d51-2eb8-45c5-90ad-f041a37ed674" title="Permalink to this equation">#</a></span>\[\begin{equation}
-e_{L^2} = \sqrt{\int_\Upomega \left(\tilde{T} - T\right)^2 dx}
+<div class="amsmath math notranslate nohighlight" id="equation-bd21450c-fcbd-4fd9-8b00-58ef5f6f58e8">
+<span class="eqno">(12)<a class="headerlink" href="#equation-bd21450c-fcbd-4fd9-8b00-58ef5f6f58e8" title="Permalink to this equation">#</a></span>\[\begin{equation}
+e_{L^2} = \sqrt{\int_\Omega \left(\tilde{T} - T\right)^2 dx}
 \end{equation}\]</div>
 <p>The rate at which this decreases is known as the order of convergence. Numerical analysis predicts a certain order depending on the type of the polynomials used as finite element shape functions and other constraints related to the well-posedness of the problem. For piecewise linear shape functions we expect second-order convergence, that is that the error decreases as <span class="math notranslate nohighlight">\(h^{-2}\)</span> where <span class="math notranslate nohighlight">\(h\)</span> is the nodal point spacing. With piecewise quadratic elements we expect to see third-order convergence.</p>
 <div class="cell docutils container">

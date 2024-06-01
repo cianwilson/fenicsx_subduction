@@ -459,91 +459,91 @@ document.write(`
 <h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
 <p>We can generalize (and formalize) the description of the Poisson equation
 using the steady-state heat diffusion equation in multiple dimensions</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fe289222-a96a-42db-b8ba-e3fdf915dcc7">
-<span class="eqno">(13)<a class="headerlink" href="#equation-fe289222-a96a-42db-b8ba-e3fdf915dcc7" title="Permalink to this equation">#</a></span>\[\begin{align}
--\nabla \cdot\left( k \nabla T \right) &amp;= H &amp;&amp; \text{in }\Upomega
+<div class="amsmath math notranslate nohighlight" id="equation-1fb32d13-f564-4eca-8df3-3dd775fce5be">
+<span class="eqno">(13)<a class="headerlink" href="#equation-1fb32d13-f564-4eca-8df3-3dd775fce5be" title="Permalink to this equation">#</a></span>\[\begin{align}
+-\nabla \cdot\left( k \nabla T \right) &amp;= H &amp;&amp; \text{in }\Omega
 \end{align}\]</div>
 <p><span class="math notranslate nohighlight">\(T\)</span> is the temperature solution we are seeking, <span class="math notranslate nohighlight">\(k\)</span> is the thermal conductivity and
 <span class="math notranslate nohighlight">\(H\)</span> is a heat source.  If <span class="math notranslate nohighlight">\(k\)</span> is constant in space we can simplify to</p>
-<div class="amsmath math notranslate nohighlight" id="equation-fe9a014e-f64a-4f6c-9d55-a10a44ae487f">
-<span class="eqno">(14)<a class="headerlink" href="#equation-fe9a014e-f64a-4f6c-9d55-a10a44ae487f" title="Permalink to this equation">#</a></span>\[\begin{align}
--\nabla^2 T &amp;= f &amp;&amp; \text{in }\Upomega
+<div class="amsmath math notranslate nohighlight" id="equation-24e5450d-c05a-4b41-a09e-7a9731fcc1d3">
+<span class="eqno">(14)<a class="headerlink" href="#equation-24e5450d-c05a-4b41-a09e-7a9731fcc1d3" title="Permalink to this equation">#</a></span>\[\begin{align}
+-\nabla^2 T &amp;= f &amp;&amp; \text{in }\Omega
 \end{align}\]</div>
 <p>where <span class="math notranslate nohighlight">\(f = \frac{H}{k}\)</span>.</p>
 <section id="boundary-conditions">
 <h3>Boundary conditions<a class="headerlink" href="#boundary-conditions" title="Link to this heading">#</a></h3>
 <p>We supplement the Poisson equation with some combination of the boundary conditions</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e7161174-2dcd-4a24-95a6-6624bc6be629">
-<span class="eqno">(15)<a class="headerlink" href="#equation-e7161174-2dcd-4a24-95a6-6624bc6be629" title="Permalink to this equation">#</a></span>\[\begin{align}
-T &amp;= g_D &amp;&amp; \text{on } \partial\Upomega_D \subset \partial\Upomega \\
-\nabla T\cdot\hat{\vec{n}} &amp;= g_N &amp;&amp; \text{on } \partial\Upomega_N \subset \partial\Upomega \\
-aT + \nabla T\cdot\hat{\vec{n}} &amp;= g_R &amp;&amp; \text{on } \partial\Upomega_R \subset \partial\Upomega 
+<div class="amsmath math notranslate nohighlight" id="equation-60a82657-bfc3-42f2-8116-79aecdbc23bb">
+<span class="eqno">(15)<a class="headerlink" href="#equation-60a82657-bfc3-42f2-8116-79aecdbc23bb" title="Permalink to this equation">#</a></span>\[\begin{align}
+T &amp;= g_D &amp;&amp; \text{on } \partial\Omega_D \subset \partial\Omega \\
+\nabla T\cdot\hat{\vec{n}} &amp;= g_N &amp;&amp; \text{on } \partial\Omega_N \subset \partial\Omega \\
+aT + \nabla T\cdot\hat{\vec{n}} &amp;= g_R &amp;&amp; \text{on } \partial\Omega_R \subset \partial\Omega 
 \end{align}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>, <span class="math notranslate nohighlight">\(\partial\Upomega_N\)</span> and <span class="math notranslate nohighlight">\(\partial\Upomega_R\)</span> are
-segments of the domain boundary that do not overlap (<span class="math notranslate nohighlight">\(\partial\Upomega_D \bigcap \partial\Upomega_N =\emptyset\)</span>, <span class="math notranslate nohighlight">\(\partial\Upomega_D \bigcap \partial\Upomega_R =\emptyset\)</span>, <span class="math notranslate nohighlight">\(\partial\Upomega_N \bigcap \partial\Upomega_R =\emptyset\)</span>) and that together span the entire boundary (<span class="math notranslate nohighlight">\(\partial\Upomega_D \bigcup \partial\Upomega_N \bigcup \partial\Upomega_R = \partial\Upomega\)</span>).  The unit outward-pointing normal to the boundary <span class="math notranslate nohighlight">\(\partial\Upomega\)</span> is denoted by <span class="math notranslate nohighlight">\(\hat{\vec{n}}\)</span> and <span class="math notranslate nohighlight">\(g_D = g_D(\vec{x}, t)\)</span>, <span class="math notranslate nohighlight">\(g_N = g_N(\vec{x}, t)\)</span> and <span class="math notranslate nohighlight">\(g_R = g_R(\vec{x}, t)\)</span> are known functions of space and time.</p>
-<p>The first boundary condition is known as a Dirichlet boundary condition and specifies the value of the solution on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>. The second is a Neumann boundary condition and specifies the value of the flux through <span class="math notranslate nohighlight">\(\partial\Upomega_N\)</span>. Finally, the third is a Robin boundary condition, which describes a linear combination of the flux and the solution on <span class="math notranslate nohighlight">\(\partial\Upomega_R\)</span>.</p>
+<p>where <span class="math notranslate nohighlight">\(\partial\Omega_D\)</span>, <span class="math notranslate nohighlight">\(\partial\Omega_N\)</span> and <span class="math notranslate nohighlight">\(\partial\Omega_R\)</span> are
+segments of the domain boundary that do not overlap (<span class="math notranslate nohighlight">\(\partial\Omega_D \bigcap \partial\Omega_N =\emptyset\)</span>, <span class="math notranslate nohighlight">\(\partial\Omega_D \bigcap \partial\Omega_R =\emptyset\)</span>, <span class="math notranslate nohighlight">\(\partial\Omega_N \bigcap \partial\Omega_R =\emptyset\)</span>) and that together span the entire boundary (<span class="math notranslate nohighlight">\(\partial\Omega_D \bigcup \partial\Omega_N \bigcup \partial\Omega_R = \partial\Omega\)</span>).  The unit outward-pointing normal to the boundary <span class="math notranslate nohighlight">\(\partial\Omega\)</span> is denoted by <span class="math notranslate nohighlight">\(\hat{\vec{n}}\)</span> and <span class="math notranslate nohighlight">\(g_D = g_D(\vec{x}, t)\)</span>, <span class="math notranslate nohighlight">\(g_N = g_N(\vec{x}, t)\)</span> and <span class="math notranslate nohighlight">\(g_R = g_R(\vec{x}, t)\)</span> are known functions of space and time.</p>
+<p>The first boundary condition is known as a Dirichlet boundary condition and specifies the value of the solution on <span class="math notranslate nohighlight">\(\partial\Omega_D\)</span>. The second is a Neumann boundary condition and specifies the value of the flux through <span class="math notranslate nohighlight">\(\partial\Omega_N\)</span>. Finally, the third is a Robin boundary condition, which describes a linear combination of the flux and the solution on <span class="math notranslate nohighlight">\(\partial\Omega_R\)</span>.</p>
 </section>
 <section id="weak-form">
 <h3>Weak form<a class="headerlink" href="#weak-form" title="Link to this heading">#</a></h3>
-<p>The first step in the finite element discretization is to transform the equation into its <strong>weak form</strong>.  This requires multiplying the equation by a test function,  <span class="math notranslate nohighlight">\(T_t\)</span>,  and integrating over the domain <span class="math notranslate nohighlight">\(\Upomega\)</span></p>
-<div class="amsmath math notranslate nohighlight" id="equation-576fb19b-609c-499e-8652-753df9b139a1">
-<span class="eqno">(16)<a class="headerlink" href="#equation-576fb19b-609c-499e-8652-753df9b139a1" title="Permalink to this equation">#</a></span>\[\begin{equation}
--\int_\Upomega T_t \nabla^2 T ~dx = \int_\Upomega T_t f ~dx
+<p>The first step in the finite element discretization is to transform the equation into its <strong>weak form</strong>.  This requires multiplying the equation by a test function,  <span class="math notranslate nohighlight">\(T_t\)</span>,  and integrating over the domain <span class="math notranslate nohighlight">\(\Omega\)</span></p>
+<div class="amsmath math notranslate nohighlight" id="equation-e9ba3454-01c1-4556-9154-51dc49564258">
+<span class="eqno">(16)<a class="headerlink" href="#equation-e9ba3454-01c1-4556-9154-51dc49564258" title="Permalink to this equation">#</a></span>\[\begin{equation}
+-\int_\Omega T_t \nabla^2 T ~dx = \int_\Omega T_t f ~dx
 \end{equation}\]</div>
 <p>After integrating the left-hand side by parts</p>
-<div class="amsmath math notranslate nohighlight" id="equation-e8fed9b0-ff0a-4413-a396-68e10d7c39e5">
-<span class="eqno">(17)<a class="headerlink" href="#equation-e8fed9b0-ff0a-4413-a396-68e10d7c39e5" title="Permalink to this equation">#</a></span>\[\begin{equation}
-\int_\Upomega \nabla T_t \cdot \nabla T ~dx - \int_{\partial\Upomega} T_t \nabla T\cdot\hat{\vec{n}}~ds = \int_\Upomega T_t f ~dx
+<div class="amsmath math notranslate nohighlight" id="equation-c1082048-a91c-4120-af88-e7fdb0c2f56b">
+<span class="eqno">(17)<a class="headerlink" href="#equation-c1082048-a91c-4120-af88-e7fdb0c2f56b" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\int_\Omega \nabla T_t \cdot \nabla T ~dx - \int_{\partial\Omega} T_t \nabla T\cdot\hat{\vec{n}}~ds = \int_\Omega T_t f ~dx
 \end{equation}\]</div>
-<p>we can see that we have reduced the continuity requirements on <span class="math notranslate nohighlight">\(T\)</span> by only requiring its first derivative to be bounded across <span class="math notranslate nohighlight">\(\Upomega\)</span>. Integrating by parts also allows Neumann and Robin boundary conditions to be imposed “naturally” through the second integral on the left-hand side since this directly incorporates the flux components across the boundary.  In this formulation, Dirichlet conditions cannot be imposed weakly and are referred to as essential boundary conditions,  that are required of the solution but do not arise naturally in the weak form.  The weak form therefore becomes: find <span class="math notranslate nohighlight">\(T\)</span> such that <span class="math notranslate nohighlight">\(T\)</span>=<span class="math notranslate nohighlight">\(g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span> and</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9c966f31-9c90-4c22-b22e-00df1a1c1c48">
-<span class="eqno">(18)<a class="headerlink" href="#equation-9c966f31-9c90-4c22-b22e-00df1a1c1c48" title="Permalink to this equation">#</a></span>\[\begin{equation}
-\int_\Upomega \nabla T_t \cdot \nabla T ~dx - \int_{\partial\Upomega_N} T_t g_N ~ds - \int_{\partial\Upomega_R} T_t \left(g_R - aT\right)~ds = \int_\Upomega T_t f ~dx
+<p>we can see that we have reduced the continuity requirements on <span class="math notranslate nohighlight">\(T\)</span> by only requiring its first derivative to be bounded across <span class="math notranslate nohighlight">\(\Omega\)</span>. Integrating by parts also allows Neumann and Robin boundary conditions to be imposed “naturally” through the second integral on the left-hand side since this directly incorporates the flux components across the boundary.  In this formulation, Dirichlet conditions cannot be imposed weakly and are referred to as essential boundary conditions,  that are required of the solution but do not arise naturally in the weak form.  The weak form therefore becomes: find <span class="math notranslate nohighlight">\(T\)</span> such that <span class="math notranslate nohighlight">\(T\)</span>=<span class="math notranslate nohighlight">\(g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Omega_D\)</span> and</p>
+<div class="amsmath math notranslate nohighlight" id="equation-d35cd54e-5dbf-4e34-9855-64dddc952884">
+<span class="eqno">(18)<a class="headerlink" href="#equation-d35cd54e-5dbf-4e34-9855-64dddc952884" title="Permalink to this equation">#</a></span>\[\begin{equation}
+\int_\Omega \nabla T_t \cdot \nabla T ~dx - \int_{\partial\Omega_N} T_t g_N ~ds - \int_{\partial\Omega_R} T_t \left(g_R - aT\right)~ds = \int_\Omega T_t f ~dx
 \end{equation}\]</div>
-<p>for all <span class="math notranslate nohighlight">\(T_t\)</span> such that <span class="math notranslate nohighlight">\(T_t = 0\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>.</p>
+<p>for all <span class="math notranslate nohighlight">\(T_t\)</span> such that <span class="math notranslate nohighlight">\(T_t = 0\)</span> on <span class="math notranslate nohighlight">\(\partial\Omega_D\)</span>.</p>
 </section>
 <section id="discretization">
 <h3>Discretization<a class="headerlink" href="#discretization" title="Link to this heading">#</a></h3>
-<p>The weak and strong forms of the problem are equivalent so long as the solution is sufficiently smooth.  We make our first approximation by, instead of seeking <span class="math notranslate nohighlight">\(T\)</span> such that <span class="math notranslate nohighlight">\(T = g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>, seeking the discrete trial function <span class="math notranslate nohighlight">\(\tilde{T}\)</span> such that <span class="math notranslate nohighlight">\(\tilde{T} = g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span> where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-9bb64b8d-b20e-45c6-a7a1-1254956f68f8">
-<span class="eqno">(19)<a class="headerlink" href="#equation-9bb64b8d-b20e-45c6-a7a1-1254956f68f8" title="Permalink to this equation">#</a></span>\[\begin{equation}
-T \approx \tilde{T} = \sum_j \phi_j T_j \label{eq:trialT}
+<p>The weak and strong forms of the problem are equivalent so long as the solution is sufficiently smooth.  We make our first approximation by, instead of seeking <span class="math notranslate nohighlight">\(T\)</span> such that <span class="math notranslate nohighlight">\(T = g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Omega_D\)</span>, seeking the discrete trial function <span class="math notranslate nohighlight">\(\tilde{T}\)</span> such that <span class="math notranslate nohighlight">\(\tilde{T} = g_D\)</span> on <span class="math notranslate nohighlight">\(\partial\Omega_D\)</span> where</p>
+<div class="amsmath math notranslate nohighlight" id="equation-db8350b5-1a90-4030-95e7-b9a902299023">
+<span class="eqno">(19)<a class="headerlink" href="#equation-db8350b5-1a90-4030-95e7-b9a902299023" title="Permalink to this equation">#</a></span>\[\begin{equation}
+T \approx \tilde{T} = \sum_j \phi_j T_j
 \end{equation}\]</div>
 <p>for all test functions <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> where</p>
-<div class="amsmath math notranslate nohighlight" id="equation-b3c675f1-d1b2-4fa6-a3c6-4d82648c0228">
-<span class="eqno">(20)<a class="headerlink" href="#equation-b3c675f1-d1b2-4fa6-a3c6-4d82648c0228" title="Permalink to this equation">#</a></span>\[\begin{equation}
-T_t \approx \tilde{T}_t = \sum_i \phi_i T_{ti} \label{eq:testT}
+<div class="amsmath math notranslate nohighlight" id="equation-f0941ad7-3479-4640-941b-099e24cd9255">
+<span class="eqno">(20)<a class="headerlink" href="#equation-f0941ad7-3479-4640-941b-099e24cd9255" title="Permalink to this equation">#</a></span>\[\begin{equation}
+T_t \approx \tilde{T}_t = \sum_i \phi_i T_{ti}
 \end{equation}\]</div>
-<p>noting again that <span class="math notranslate nohighlight">\(\tilde{T}_t = 0\)</span> on <span class="math notranslate nohighlight">\(\partial\Upomega_D\)</span>.<br />
+<p>noting again that <span class="math notranslate nohighlight">\(\tilde{T}_t = 0\)</span> on <span class="math notranslate nohighlight">\(\partial\Omega_D\)</span>.<br />
 <span class="math notranslate nohighlight">\(\phi_j\)</span> are the finite element shape functions. Assuming these are continuous across elements of the mesh, <span class="math notranslate nohighlight">\(\tilde{T}\)</span> and <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> can be substituted into the weak form to yield</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5aab37dd-7e3c-4e05-8237-0df63d2e3043">
-<span class="eqno">(21)<a class="headerlink" href="#equation-5aab37dd-7e3c-4e05-8237-0df63d2e3043" title="Permalink to this equation">#</a></span>\[\begin{multline}
+<div class="amsmath math notranslate nohighlight" id="equation-8bccd81e-8f58-4f17-a5d2-9aeb68e8411b">
+<span class="eqno">(21)<a class="headerlink" href="#equation-8bccd81e-8f58-4f17-a5d2-9aeb68e8411b" title="Permalink to this equation">#</a></span>\[\begin{multline}
 \sum_i\sum_j T_{ti}T_j\sum_k  \int_{e_k} \nabla \phi_i \cdot \nabla \phi_j ~dx 
- + \sum_i\sum_j T_{ti}T_j \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i a\phi_j ~ds
-\\- \sum_i T_{ti} \sum_k \int_{\partial e_k \cap {\partial\Upomega_N}} \phi_i g_N ~ds 
-- \sum_i T_{ti} \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i g_R 
+ + \sum_i\sum_j T_{ti}T_j \sum_k \int_{\partial e_k \cap {\partial\Omega_R}} \phi_i a\phi_j ~ds
+\\- \sum_i T_{ti} \sum_k \int_{\partial e_k \cap {\partial\Omega_N}} \phi_i g_N ~ds 
+- \sum_i T_{ti} \sum_k \int_{\partial e_k \cap {\partial\Omega_R}} \phi_i g_R 
 \\= \sum_i T_{ti} \sum_k \int_{e_k} \phi_i f ~dx
 \end{multline}\]</div>
-<p>where we are integrating over the whole domain by summing the integrals over all the elements  <span class="math notranslate nohighlight">\(e_k\)</span> (<span class="math notranslate nohighlight">\(\int_\Upomega dx\)</span>=<span class="math notranslate nohighlight">\(\sum_k\int_{e_k} dx\)</span>).  Note that in practice, because the shape functions are zero over most of the domain, only element integrals with non-zero values need be included in the summation.  The element boundaries, <span class="math notranslate nohighlight">\(\partial e_k\)</span>, are only of interest (due to the assumed continuity of the shape functions between the elements) if they either intersect with <span class="math notranslate nohighlight">\(\partial\Upomega_N\)</span>, <span class="math notranslate nohighlight">\(\partial e_k \cap {\partial\Upomega_N}\)</span>, or <span class="math notranslate nohighlight">\(\partial\Upomega_R\)</span>, <span class="math notranslate nohighlight">\(\partial e_k \cap {\partial\Upomega_R}\)</span>.  Since the solution of the now discretized weak form should be valid for all <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> we can drop <span class="math notranslate nohighlight">\(T_{ti}\)</span></p>
-<div class="amsmath math notranslate nohighlight" id="equation-3e336a82-56dc-4d0f-acc1-77979becefcf">
-<span class="eqno">(22)<a class="headerlink" href="#equation-3e336a82-56dc-4d0f-acc1-77979becefcf" title="Permalink to this equation">#</a></span>\[\begin{multline}
+<p>where we are integrating over the whole domain by summing the integrals over all the elements  <span class="math notranslate nohighlight">\(e_k\)</span> (<span class="math notranslate nohighlight">\(\int_\Omega dx\)</span>=<span class="math notranslate nohighlight">\(\sum_k\int_{e_k} dx\)</span>).  Note that in practice, because the shape functions are zero over most of the domain, only element integrals with non-zero values need be included in the summation.  The element boundaries, <span class="math notranslate nohighlight">\(\partial e_k\)</span>, are only of interest (due to the assumed continuity of the shape functions between the elements) if they either intersect with <span class="math notranslate nohighlight">\(\partial\Omega_N\)</span>, <span class="math notranslate nohighlight">\(\partial e_k \cap {\partial\Omega_N}\)</span>, or <span class="math notranslate nohighlight">\(\partial\Omega_R\)</span>, <span class="math notranslate nohighlight">\(\partial e_k \cap {\partial\Omega_R}\)</span>.  Since the solution of the now discretized weak form should be valid for all <span class="math notranslate nohighlight">\(\tilde{T}_t\)</span> we can drop <span class="math notranslate nohighlight">\(T_{ti}\)</span></p>
+<div class="amsmath math notranslate nohighlight" id="equation-b9a2670a-6a06-45a8-9773-794b687d4f84">
+<span class="eqno">(22)<a class="headerlink" href="#equation-b9a2670a-6a06-45a8-9773-794b687d4f84" title="Permalink to this equation">#</a></span>\[\begin{multline}
 \sum_jT_j\sum_k  \int_{e_k} \nabla \phi_i \cdot \nabla \phi_j ~dx 
- + \sum_jT_j\sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i a \phi_j ~ds
-\\- \sum_k \int_{\partial e_k \cap {\partial\Upomega_N}} \phi_i g_N ~ds 
-- \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i g_R~ds 
+ + \sum_jT_j\sum_k \int_{\partial e_k \cap {\partial\Omega_R}} \phi_i a \phi_j ~ds
+\\- \sum_k \int_{\partial e_k \cap {\partial\Omega_N}} \phi_i g_N ~ds 
+- \sum_k \int_{\partial e_k \cap {\partial\Omega_R}} \phi_i g_R~ds 
 = \sum_k \int_{e_k} \phi_i f ~dx
 \end{multline}\]</div>
 <p>This represents a matrix-vector system of the form</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3d31b9f7-fa2a-4959-9839-5e45157621b6">
-<span class="eqno">(23)<a class="headerlink" href="#equation-3d31b9f7-fa2a-4959-9839-5e45157621b6" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-e3ff4efb-f613-456f-8f98-b5279b40fdd8">
+<span class="eqno">(23)<a class="headerlink" href="#equation-e3ff4efb-f613-456f-8f98-b5279b40fdd8" title="Permalink to this equation">#</a></span>\[\begin{equation}
 {\bf S} {\bf u} = {\bf f}
 \end{equation}\]</div>
 <p>with</p>
-<div class="amsmath math notranslate nohighlight" id="equation-be014bc3-1ab2-4e9e-95b2-eb33ce05c646">
-<span class="eqno">(24)<a class="headerlink" href="#equation-be014bc3-1ab2-4e9e-95b2-eb33ce05c646" title="Permalink to this equation">#</a></span>\[\begin{align}
-{\bf S} &amp;= S_{ij} = \sum_k\int_{e_k} \nabla \phi_i \cdot \nabla \phi_j ~dx + \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i a\phi_j ~ds  \\
-{\bf f} &amp;= f_i = \sum_k \int_{e_k} \phi_i f ~dx + \sum_k \int_{\partial e_k \cap {\partial\Upomega_N}} \phi_i g_N ~ds 
-+ \sum_k \int_{\partial e_k \cap {\partial\Upomega_R}} \phi_i g_R~ds \\
+<div class="amsmath math notranslate nohighlight" id="equation-45c85358-75be-41fc-abb3-b6ed8b6345c6">
+<span class="eqno">(24)<a class="headerlink" href="#equation-45c85358-75be-41fc-abb3-b6ed8b6345c6" title="Permalink to this equation">#</a></span>\[\begin{align}
+{\bf S} &amp;= S_{ij} = \sum_k\int_{e_k} \nabla \phi_i \cdot \nabla \phi_j ~dx + \sum_k \int_{\partial e_k \cap {\partial\Omega_R}} \phi_i a\phi_j ~ds  \\
+{\bf f} &amp;= f_i = \sum_k \int_{e_k} \phi_i f ~dx + \sum_k \int_{\partial e_k \cap {\partial\Omega_N}} \phi_i g_N ~ds 
++ \sum_k \int_{\partial e_k \cap {\partial\Omega_R}} \phi_i g_R~ds \\
 {\bf u} &amp;= {\bf T} = T_j 
 \end{align}\]</div>
 <p>The compact support of the shape functions <span class="math notranslate nohighlight">\(\phi_{(i,j)}\)</span>, which limits their nonzero values to the elements immediately neighboring DOF <span class="math notranslate nohighlight">\(i\)</span> or <span class="math notranslate nohighlight">\(j\)</span>, means that the integrals in can be evaluated efficiently by only considering shape functions associated with an element <span class="math notranslate nohighlight">\(e_k\)</span>.  It also means that the resulting matrix <span class="math notranslate nohighlight">\({\bf S}\)</span> is sparse, with most entries being zero.</p>
@@ -551,16 +551,16 @@ T_t \approx \tilde{T}_t = \sum_i \phi_i T_{ti} \label{eq:testT}
 <section id="a-specific-example">
 <h3>A specific example<a class="headerlink" href="#a-specific-example" title="Link to this heading">#</a></h3>
 <p>In this case we use a manufactured solution (that is, one that is not necessarily an example of a solution to a PDE representing a naturally occurring physical problem) where we take a known analytical solution <span class="math notranslate nohighlight">\(T(x,y)\)</span> and substitute this into the original equation to find <span class="math notranslate nohighlight">\(f\)</span>, then use this as the right-hand side in our numerical test. We choose <span class="math notranslate nohighlight">\(T(x,y)\)</span>=<span class="math notranslate nohighlight">\(\exp\left(x+\tfrac{y}{2}\right)\)</span>, which is the solution to</p>
-<div class="amsmath math notranslate nohighlight" id="equation-62d0feb4-472d-4452-96d1-10fe0898687a">
-<span class="eqno">(25)<a class="headerlink" href="#equation-62d0feb4-472d-4452-96d1-10fe0898687a" title="Permalink to this equation">#</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-2de83424-1576-4a19-b973-3bc1654fb9bb">
+<span class="eqno">(25)<a class="headerlink" href="#equation-2de83424-1576-4a19-b973-3bc1654fb9bb" title="Permalink to this equation">#</a></span>\[\begin{equation}
 - \nabla^2 T = -\tfrac{5}{4} \exp \left( x+\tfrac{y}{2} \right)
 \end{equation}\]</div>
-<p>Solving the Poisson equation numerically in a unit square, <span class="math notranslate nohighlight">\(\Upomega=[0,1]\times[0,1]\)</span>, for the approximate solution <span class="math notranslate nohighlight">\(\tilde{T} \approx T\)</span>, we impose the boundary conditions</p>
-<div class="amsmath math notranslate nohighlight" id="equation-cab63754-44e7-4f23-a6d3-cc3523a92bfc">
-<span class="eqno">(26)<a class="headerlink" href="#equation-cab63754-44e7-4f23-a6d3-cc3523a92bfc" title="Permalink to this equation">#</a></span>\[\begin{align}
-  \tilde{T} &amp;= \exp\left(x+\tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Upomega \text{ where } x=0 \text{ or } y=0 \\
-  \nabla \tilde{T}\cdot \hat{\vec{n}} &amp;= \exp\left(x + \tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Upomega \text{ where } x=1  \\
-  \nabla \tilde{T}\cdot \hat{\vec{n}} &amp;= \tfrac{1}{2}\exp\left(x + \tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Upomega \text{ where } y=1
+<p>Solving the Poisson equation numerically in a unit square, <span class="math notranslate nohighlight">\(\Omega=[0,1]\times[0,1]\)</span>, for the approximate solution <span class="math notranslate nohighlight">\(\tilde{T} \approx T\)</span>, we impose the boundary conditions</p>
+<div class="amsmath math notranslate nohighlight" id="equation-5e9f0f70-9255-4e53-905f-216a5e62205e">
+<span class="eqno">(26)<a class="headerlink" href="#equation-5e9f0f70-9255-4e53-905f-216a5e62205e" title="Permalink to this equation">#</a></span>\[\begin{align}
+  \tilde{T} &amp;= \exp\left(x+\tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Omega \text{ where } x=0 \text{ or } y=0 \\
+  \nabla \tilde{T}\cdot \hat{\vec{n}} &amp;= \exp\left(x + \tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Omega \text{ where } x=1  \\
+  \nabla \tilde{T}\cdot \hat{\vec{n}} &amp;= \tfrac{1}{2}\exp\left(x + \tfrac{y}{2}\right) &amp;&amp; \text{on } \partial\Omega \text{ where } y=1
  \end{align}\]</div>
 <p>representing an essential Dirichlet condition on the value of <span class="math notranslate nohighlight">\(\tilde{T}\)</span> and natural Neumann conditions on <span class="math notranslate nohighlight">\(\nabla\tilde{T}\)</span>.</p>
 </section>
@@ -593,7 +593,7 @@ T_t \approx \tilde{T}_t = \sum_i \phi_i T_{ti} \label{eq:testT}
 <p>We then declare a python function <code class="docutils literal notranslate"><span class="pre">solve_poisson_2d</span></code> that contains a complete description of the discrete Poisson equation problem.</p>
 <p>This function follows much the same flow as described above:</p>
 <ol class="arabic simple">
-<li><p>we describe the unit square domain <span class="math notranslate nohighlight">\(\Upomega = [0,1]\times[0,1]\)</span> and discretize it into <span class="math notranslate nohighlight">\(2\times\)</span><code class="docutils literal notranslate"><span class="pre">ne</span></code><span class="math notranslate nohighlight">\(\times\)</span><code class="docutils literal notranslate"><span class="pre">ne</span></code> triangular elements or cells to make a <code class="docutils literal notranslate"><span class="pre">mesh</span></code></p></li>
+<li><p>we describe the unit square domain <span class="math notranslate nohighlight">\(\Omega = [0,1]\times[0,1]\)</span> and discretize it into <span class="math notranslate nohighlight">\(2\times\)</span><code class="docutils literal notranslate"><span class="pre">ne</span></code><span class="math notranslate nohighlight">\(\times\)</span><code class="docutils literal notranslate"><span class="pre">ne</span></code> triangular elements or cells to make a <code class="docutils literal notranslate"><span class="pre">mesh</span></code></p></li>
 <li><p>we declare the <strong>function space</strong>, <code class="docutils literal notranslate"><span class="pre">V</span></code>, to use Lagrange polynomials of degree <code class="docutils literal notranslate"><span class="pre">p</span></code></p></li>
 <li><p>using this function space we declare trial, <code class="docutils literal notranslate"><span class="pre">T_a</span></code>, and test, <code class="docutils literal notranslate"><span class="pre">T_t</span></code>, functions</p></li>
 <li><p>we define the Dirichlet boundary condition, <code class="docutils literal notranslate"><span class="pre">bc</span></code> at <span class="math notranslate nohighlight">\(x=0\)</span> and <span class="math notranslate nohighlight">\(y=0\)</span>, setting the desired value there to the known exact solution</p></li>
