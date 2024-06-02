@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
   
@@ -52,7 +52,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -64,7 +64,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 01, 2024"/>
+    <meta name="docbuild:last-update" content="Jun 02, 2024"/>
   </head>
   
   
@@ -432,6 +432,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load">Load</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-resolution">Higher Resolution</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1">Case 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2">Case 2</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#global-suite">Global Suite</a><ul class="nav section-nav flex-column">
@@ -596,7 +597,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0162713s, CPU 0.016169s)
+Info    : Done meshing 1D (Wall 0.0135696s, CPU 0.014526s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -604,11 +605,11 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0445072s, CPU 0.043913s)
+Info    : Done meshing 2D (Wall 0.0356504s, CPU 0.035198s)
 Info    : 1474 nodes 3239 elements
 </pre></div>
 </div>
-<img alt="../_images/594bcc8639c4364603a4bb076f915931512b3720ce8038ef232cd3b625d90222.png" src="../_images/594bcc8639c4364603a4bb076f915931512b3720ce8038ef232cd3b625d90222.png" />
+<img alt="../_images/d147097d9f0e03d95c9a84046363ab967790ac504e5042965811b01b1ab8b395.png" src="../_images/d147097d9f0e03d95c9a84046363ab967790ac504e5042965811b01b1ab8b395.png" />
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
 </pre></div>
 </div>
@@ -704,7 +705,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0149015s, CPU 0.015383s)
+Info    : Done meshing 1D (Wall 0.0146489s, CPU 0.010639s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -712,13 +713,13 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0439903s, CPU 0.044849s)
+Info    : Done meshing 2D (Wall 0.0366893s, CPU 0.036507s)
 Info    : 1474 nodes 3239 elements
 </pre></div>
 </div>
-<img alt="../_images/1266b414ca0c88955eb40818b1b14b7aedb27e40efaeed109395b43b18e7d2c0.png" src="../_images/1266b414ca0c88955eb40818b1b14b7aedb27e40efaeed109395b43b18e7d2c0.png" />
-<img alt="../_images/1d0b8fed2c1f271183da17e65f01c862ea27eee418cad7a93f0f49d4712b1761.png" src="../_images/1d0b8fed2c1f271183da17e65f01c862ea27eee418cad7a93f0f49d4712b1761.png" />
-<img alt="../_images/e0fd528df102c69044b6e3b6807774e79b7f9cdd41ee2e6b8521ba99a4516ee1.png" src="../_images/e0fd528df102c69044b6e3b6807774e79b7f9cdd41ee2e6b8521ba99a4516ee1.png" />
+<img alt="../_images/7b8e090061964da6c4baa8eb7a06808bb46023c2f20b8366e4f31ec4c5b0a556.png" src="../_images/7b8e090061964da6c4baa8eb7a06808bb46023c2f20b8366e4f31ec4c5b0a556.png" />
+<img alt="../_images/3fa13722e771110069ce8ca1a03bcfc9e71eb515113dfdc04b9da08137c25ca9.png" src="../_images/3fa13722e771110069ce8ca1a03bcfc9e71eb515113dfdc04b9da08137c25ca9.png" />
+<img alt="../_images/9e1ed15fd1f33d2581827b033d4ec720b4068d701e2112c755a81b431bedc52e.png" src="../_images/9e1ed15fd1f33d2581827b033d4ec720b4068d701e2112c755a81b431bedc52e.png" />
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
 </pre></div>
 </div>
@@ -814,7 +815,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0181386s, CPU 0.018476s)
+Info    : Done meshing 1D (Wall 0.0152788s, CPU 0.016138s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -822,7 +823,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.044635s, CPU 0.043413s)
+Info    : Done meshing 2D (Wall 0.0399939s, CPU 0.040574s)
 Info    : 1474 nodes 3239 elements
 </pre></div>
 </div>
@@ -835,9 +836,9 @@ resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw
 5            5812         517.1668     451.9452     927.0205     34.6379     
 </pre></div>
 </div>
-<img alt="../_images/7f6070876bd542ef72ce67d49d738591fab84b5c062d3a8784fee5251cd1be03.png" src="../_images/7f6070876bd542ef72ce67d49d738591fab84b5c062d3a8784fee5251cd1be03.png" />
-<img alt="../_images/1fc6df4c30ba325d74a68bc5d4d863a9b0286e7c6de8bcbd4ea7cf88cc1f87bd.png" src="../_images/1fc6df4c30ba325d74a68bc5d4d863a9b0286e7c6de8bcbd4ea7cf88cc1f87bd.png" />
-<img alt="../_images/5d0764f917939160fa6885dce3f6f74850c69a0b84871d2ba51898bdac30c8f4.png" src="../_images/5d0764f917939160fa6885dce3f6f74850c69a0b84871d2ba51898bdac30c8f4.png" />
+<img alt="../_images/d17970c63c2dd4fd7c12b69d6836e91406bd4ffbfe9323dc552be7e450cba86b.png" src="../_images/d17970c63c2dd4fd7c12b69d6836e91406bd4ffbfe9323dc552be7e450cba86b.png" />
+<img alt="../_images/576feac3d16afc004b9dc7c21c82fa5911dc501d95ecf87702d362892ece54bf.png" src="../_images/576feac3d16afc004b9dc7c21c82fa5911dc501d95ecf87702d362892ece54bf.png" />
+<img alt="../_images/f98b96f5b211ee2eec5434bc59eeb7fe9ea9c8756fe8a0d0be6751c678e12aa7.png" src="../_images/f98b96f5b211ee2eec5434bc59eeb7fe9ea9c8756fe8a0d0be6751c678e12aa7.png" />
 <img alt="../_images/9ac32bf40fb60250686f5a78c1cfed9288bde641b4fecb9578fa428d54334e53.png" src="../_images/9ac32bf40fb60250686f5a78c1cfed9288bde641b4fecb9578fa428d54334e53.png" />
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning : Gmsh has aleady been initialized
 </pre></div>
@@ -934,7 +935,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0161509s, CPU 0.019286s)
+Info    : Done meshing 1D (Wall 0.0142324s, CPU 0.015272s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -942,7 +943,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0471569s, CPU 0.04786s)
+Info    : Done meshing 2D (Wall 0.0371303s, CPU 0.036692s)
 Info    : 1485 nodes 3261 elements
 </pre></div>
 </div>
@@ -953,54 +954,52 @@ Info    : 1485 nodes 3261 elements
 ------------------------------------------
 0           14039.3      1           
 1           1161.26      0.0827153   
+2           256.735      0.0182869   
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2           256.735      0.0182869   
-3           103.968      0.0074055   
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3           103.968      0.0074055   
 4           48.9798      0.00348877  
+5           26.4549      0.00188435  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5           26.4549      0.00188435  
-6           16.1772      0.00115228  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           16.1772      0.00115228  
 7           10.7653      0.0007668   
+8           7.60442      0.000541653 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8           7.60442      0.000541653 
-9           5.59295      0.000398379 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9           5.59295      0.000398379 
 10          4.21471      0.000300209 
+11          3.22359      0.000229612 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11          3.22359      0.000229612 
-12          2.4908       0.000177416 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          2.4908       0.000177416 
 13          1.93954      0.000138151 
+14          1.51997      0.000108266 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14          1.51997      0.000108266 
-15          1.19783      8.53198e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>15          1.19783      8.53198e-05 
 16          0.948679     6.75732e-05 
+17          0.754764     5.37609e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>17          0.754764     5.37609e-05 
-18          0.602991     4.29503e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.602991     4.29503e-05 
 19          0.483598     3.44461e-05 
+20          0.389239     2.7725e-05  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20          0.389239     2.7725e-05  
-21          0.314337     2.23898e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21          0.314337     2.23898e-05 
 22          0.254634     1.81372e-05 
+23          0.206858     1.47342e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>23          0.206858     1.47342e-05 
-24          0.168483     1.20008e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24          0.168483     1.20008e-05 
 25          0.13755      9.79752e-06 
+26          0.112533     8.01558e-06 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>26          0.112533     8.01558e-06 
-27          0.0922379    6.56999e-06 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>27          0.0922379    6.56999e-06 
 28          0.0757272    5.39395e-06 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>29          0.0622606    4.43474e-06 
+29          0.0622606    4.43474e-06 
 T_(200,-100) = 679.02 deg C
 T_slab = 568.56 deg C
 T_wedge = 941.66 deg C
@@ -1010,10 +1009,10 @@ resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw
 5            5856         679.0166     568.5575     941.6615     41.9561     
 </pre></div>
 </div>
-<img alt="../_images/da079a69fa4579ae474b741876975dc9fefcd0234cd0e18cc13758f999aca56f.png" src="../_images/da079a69fa4579ae474b741876975dc9fefcd0234cd0e18cc13758f999aca56f.png" />
-<img alt="../_images/61f6894482f8fa07d40c411e6f0c123034c83906554965e60c75a43f3fe40590.png" src="../_images/61f6894482f8fa07d40c411e6f0c123034c83906554965e60c75a43f3fe40590.png" />
-<img alt="../_images/7bd9d0621d2d9f07af6b00b6e1145123493f3b335f7b59c2a6d7efbf8e10d044.png" src="../_images/7bd9d0621d2d9f07af6b00b6e1145123493f3b335f7b59c2a6d7efbf8e10d044.png" />
-<img alt="../_images/62e288084be0fa7863b9d76a723cba72c379354fa05f2f7ce5cb6a6d22b6f1df.png" src="../_images/62e288084be0fa7863b9d76a723cba72c379354fa05f2f7ce5cb6a6d22b6f1df.png" />
+<img alt="../_images/4073b80fbb3064e7b11ff44afb0924018d5d3fca89afa6433f87c599c54bd005.png" src="../_images/4073b80fbb3064e7b11ff44afb0924018d5d3fca89afa6433f87c599c54bd005.png" />
+<img alt="../_images/00e049b85fc6b43544ca2f62e0d5db5972c01cc313a878ba4621568fba53c17f.png" src="../_images/00e049b85fc6b43544ca2f62e0d5db5972c01cc313a878ba4621568fba53c17f.png" />
+<img alt="../_images/3ff9d81b7ae624ac5afd489effa6acc4171f00fe5eb36ecc503dbe28af426761.png" src="../_images/3ff9d81b7ae624ac5afd489effa6acc4171f00fe5eb36ecc503dbe28af426761.png" />
+<img alt="../_images/e2d4c77cf847b99da2da8a23ff3589268f57f906b1e40171792945758db0248e.png" src="../_images/e2d4c77cf847b99da2da8a23ff3589268f57f906b1e40171792945758db0248e.png" />
 <img alt="../_images/14e2b2b982f647232793a6468f10bfe105cb02ae7b7c442275060ff0b767dbf1.png" src="../_images/14e2b2b982f647232793a6468f10bfe105cb02ae7b7c442275060ff0b767dbf1.png" />
 </div>
 </div>
@@ -1239,17 +1238,17 @@ Info    : [100%] Meshing curve 201 (Line)
 Info    : [100%] Meshing curve 202 (Line)
 Info    : [100%] Meshing curve 204 (Line)
 Info    : [100%] Meshing curve 205 (Line)
-Info    : Done meshing 1D (Wall 0.0272302s, CPU 0.027987s)
+Info    : Done meshing 1D (Wall 0.0214574s, CPU 0.022446s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
 Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
-Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.308252s, CPU 0.314345s)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.25588s, CPU 0.254604s)
 Info    : 8238 nodes 17176 elements
 </pre></div>
 </div>
@@ -1317,6 +1316,19 @@ resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw
 </tbody>
 </table>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">plot_scalar</span><span class="p">(</span><span class="n">sz_resscale2</span><span class="o">.</span><span class="n">T_i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dc2bb82ef92c940ecadd00dc67c5c77c5c374d909ce0f05a734dc1d5111c4627.png" src="../_images/dc2bb82ef92c940ecadd00dc67c5c77c5c374d909ce0f05a734dc1d5111c4627.png" />
+</div>
+</div>
+</section>
+<section id="case-2">
+<h3>Case 2<a class="headerlink" href="#case-2" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">geom_case2_resscale2</span> <span class="o">=</span> <span class="n">create_sz_geometry</span><span class="p">(</span><span class="n">slab_resscale2</span><span class="p">,</span> <span class="n">resscale2</span><span class="p">,</span> <span class="n">sztype</span><span class="p">,</span> <span class="n">io_depth_2</span><span class="p">,</span> <span class="n">extra_width</span><span class="p">,</span> 
@@ -1532,17 +1544,17 @@ Info    : [100%] Meshing curve 201 (Line)
 Info    : [100%] Meshing curve 202 (Line)
 Info    : [100%] Meshing curve 204 (Line)
 Info    : [100%] Meshing curve 205 (Line)
-Info    : Done meshing 1D (Wall 0.0263502s, CPU 0.030987s)
+Info    : Done meshing 1D (Wall 0.0241268s, CPU 0.030113s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
 Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
-Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.287084s, CPU 0.292117s)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Info    : Done meshing 2D (Wall 0.234763s, CPU 0.238834s)
 Info    : 8232 nodes 17164 elements
 </pre></div>
 </div>
@@ -1696,6 +1708,16 @@ resscale     T_ndof       T_{200,-100} Tbar_s       Tbar_w       Vrmsw
 </tbody>
 </table>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">plot_scalar</span><span class="p">(</span><span class="n">sz_case2_resscale2</span><span class="o">.</span><span class="n">T_i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f09f7f88c22335a82e1d72eddf773060ed4c7810f81696a3e5b4a081917bdb23.png" src="../_images/f09f7f88c22335a82e1d72eddf773060ed4c7810f81696a3e5b4a081917bdb23.png" />
+</div>
+</div>
 </section>
 </section>
 <section id="global-suite">
@@ -1838,7 +1860,7 @@ Info    : [100%] Meshing curve 110 (Line)
 Info    : [100%] Meshing curve 111 (Line)
 Info    : [100%] Meshing curve 113 (Line)
 Info    : [100%] Meshing curve 114 (Line)
-Info    : Done meshing 1D (Wall 0.0152566s, CPU 0.014854s)
+Info    : Done meshing 1D (Wall 0.0153976s, CPU 0.017278s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -1846,7 +1868,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.06001s, CPU 0.061237s)
+Info    : Done meshing 2D (Wall 0.0577693s, CPU 0.058383s)
 Info    : 1670 nodes 3653 elements
 </pre></div>
 </div>
@@ -1861,41 +1883,35 @@ Info    : 1670 nodes 3653 elements
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2           107.564      0.0151404   
 3           57.4009      0.00807954  
+4           26.5432      0.00373613  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4           26.5432      0.00373613  
-5           10.9764      0.001545    
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5           10.9764      0.001545    
+6           4.77238      0.000671743 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           4.77238      0.000671743 
-7           2.31627      0.00032603  
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8           1.25398      0.000176506 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7           2.31627      0.00032603  
+8           1.25398      0.000176506 
 9           0.742959     0.000104576 
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10          0.474903     6.68456e-05 
 11          0.324221     4.56362e-05 
+12          0.234196     3.29646e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          0.234196     3.29646e-05 
-13          0.177298     2.49558e-05 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14          0.139191     1.9592e-05  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>13          0.177298     2.49558e-05 
+14          0.139191     1.9592e-05  
 15          0.11218      1.579e-05   
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16          0.0920342    1.29544e-05 
 17          0.0763636    1.07487e-05 
+18          0.0637803    8.97749e-06 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.0637803    8.97749e-06 
-19          0.0534451    7.52274e-06 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20          0.0448299    6.31009e-06 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>19          0.0534451    7.52274e-06 
+20          0.0448299    6.31009e-06 
 21          0.0375863    5.29052e-06 
 </pre></div>
 </div>
@@ -1911,10 +1927,9 @@ Info    : 1670 nodes 3653 elements
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/9ed81bd01b7c1df2790815cbf9c9144c6de3a8eb82cbad0d967ca96a35280e57.png" src="../_images/9ed81bd01b7c1df2790815cbf9c9144c6de3a8eb82cbad0d967ca96a35280e57.png" />
+<img alt="../_images/99fae470c3c53db320d199d2aaed96156cea2d9eb12772ac88985ff9cce0550d.png" src="../_images/99fae470c3c53db320d199d2aaed96156cea2d9eb12772ac88985ff9cce0550d.png" />
 </div>
 </div>
-<p>FIXME: not sure why bounds appear incorrect on plot.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sz_ak</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -2029,7 +2044,7 @@ Info    : [100%] Meshing curve 85 (Line)
 Info    : [100%] Meshing curve 86 (Line)
 Info    : [100%] Meshing curve 88 (Line)
 Info    : [100%] Meshing curve 89 (Line)
-Info    : Done meshing 1D (Wall 0.0175927s, CPU 0.01629s)
+Info    : Done meshing 1D (Wall 0.0127343s, CPU 0.012668s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -2037,67 +2052,67 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0495532s, CPU 0.048683s)
+Info    : Done meshing 2D (Wall 0.0290067s, CPU 0.028639s)
 Info    : 1246 nodes 2741 elements
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Solving steady state flow with isoviscous rheology...
-Iteration   Residual     Relative Residual
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Iteration   Residual     Relative Residual
 ------------------------------------------
 0           1924.22      1           
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1           367.433      0.190952    
+1           367.433      0.190952    
 2           97.536       0.0506885   
-3           42.9811      0.0223369   
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4           18.807       0.00977381  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3           42.9811      0.0223369   
+4           18.807       0.00977381  
 5           9.21965      0.00479137  
-6           5.30192      0.00275536  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7           3.38398      0.00175863  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6           5.30192      0.00275536  
+7           3.38398      0.00175863  
 8           2.31623      0.00120372  
-9           1.68449      0.000875416 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10          1.28513      0.000667871 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9           1.68449      0.000875416 
+10          1.28513      0.000667871 
 11          1.01187      0.000525859 
-12          0.809671     0.000420778 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>13          0.651432     0.000338543 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12          0.809671     0.000420778 
+13          0.651432     0.000338543 
 14          0.525367     0.000273028 
-15          0.4236       0.000220141 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16          0.340724     0.000177071 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>15          0.4236       0.000220141 
+16          0.340724     0.000177071 
 17          0.273214     0.000141987 
-18          0.218409     0.000113505 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>19          0.174113     9.0485e-05  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18          0.218409     0.000113505 
+19          0.174113     9.0485e-05  
 20          0.138468     7.19606e-05 
-21          0.1099       5.71142e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>22          0.0870853    4.52574e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>21          0.1099       5.71142e-05 
+22          0.0870853    4.52574e-05 
 23          0.0689182    3.58162e-05 
-24          0.0544874    2.83166e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>25          0.0430468    2.2371e-05  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24          0.0544874    2.83166e-05 
+25          0.0430468    2.2371e-05  
 26          0.0339907    1.76647e-05 
-27          0.0268306    1.39436e-05 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>28          0.0211747    1.10043e-05 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>27          0.0268306    1.39436e-05 
+28          0.0211747    1.10043e-05 
 29          0.0167097    8.68387e-06 
-30          0.0131864    6.85287e-06 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>31          0.0104071    5.40846e-06 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30          0.0131864    6.85287e-06 
+31          0.0104071    5.40846e-06 
 32          0.00821482   4.26916e-06 
 </pre></div>
 </div>
@@ -2112,8 +2127,8 @@ Iteration   Residual     Relative Residual
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f7a52cf7dd326692df6da33788a344010dd66d6d9b02e7ce41eea770d871753c.png" src="../_images/f7a52cf7dd326692df6da33788a344010dd66d6d9b02e7ce41eea770d871753c.png" />
-<img alt="../_images/90ad74e873077bee25aca3f176bfa07a26bcf7ceaafbb7e5a08c8c30847f3fac.png" src="../_images/90ad74e873077bee25aca3f176bfa07a26bcf7ceaafbb7e5a08c8c30847f3fac.png" />
+<img alt="../_images/15bbed541d52dae6368f962e45ea803eb4b391910baf753a37b750fe914aff12.png" src="../_images/15bbed541d52dae6368f962e45ea803eb4b391910baf753a37b750fe914aff12.png" />
+<img alt="../_images/2446bf0c183d824a9b83c435b30e862f10d228fc12ca4b3f5221527dc120a2d2.png" src="../_images/2446bf0c183d824a9b83c435b30e862f10d228fc12ca4b3f5221527dc120a2d2.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -2179,6 +2194,7 @@ Iteration   Residual     Relative Residual
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load">Load</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#higher-resolution">Higher Resolution</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-1">Case 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#case-2">Case 2</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#global-suite">Global Suite</a><ul class="nav section-nav flex-column">
@@ -2219,7 +2235,7 @@ By Cian Wilson
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Jun 01, 2024.
+  Last updated on Jun 02, 2024.
   <br/>
 </p>
   </div>

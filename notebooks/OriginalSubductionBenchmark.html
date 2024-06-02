@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=87e54e7c" />
   
@@ -52,7 +52,7 @@
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
@@ -62,7 +62,7 @@
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 01, 2024"/>
+    <meta name="docbuild:last-update" content="Jun 02, 2024"/>
   </head>
   
   
@@ -793,7 +793,7 @@ Info    : [100%] Meshing curve 92 (Line)
 Info    : [100%] Meshing curve 93 (Line)
 Info    : [100%] Meshing curve 95 (Line)
 Info    : [100%] Meshing curve 96 (Line)
-Info    : Done meshing 1D (Wall 0.0157386s, CPU 0.017927s)
+Info    : Done meshing 1D (Wall 0.0159893s, CPU 0.01792s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Plane, Frontal-Delaunay)
@@ -801,7 +801,7 @@ Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 50%] Meshing surface 4 (Plane, Frontal-Delaunay)
 Info    : [ 70%] Meshing surface 5 (Plane, Frontal-Delaunay)
 Info    : [ 90%] Meshing surface 6 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.0442479s, CPU 0.044293s)
+Info    : Done meshing 2D (Wall 0.046157s, CPU 0.043718s)
 Info    : 1474 nodes 3239 elements
 </pre></div>
 </div>
@@ -1309,9 +1309,15 @@ Info    : 1474 nodes 3239 elements
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_(200,-100) = 517.17 deg C
-T_slab = 451.94 deg C
-T_wedge = 927.02 deg C
-V_rms,w = 34.64 mm/yr
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_slab = 451.94 deg C
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T_wedge = 927.02 deg C
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>V_rms,w = 34.64 mm/yr
 </pre></div>
 </div>
 </div>
@@ -1580,11 +1586,13 @@ V_rms,w = 34.64 mm/yr
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2 469.34687183132434 0.033431538217973907
-3 235.55176355731294 0.01677833231305216
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4 131.2271284062641 0.009347297322833011
-5 79.43711092369998 0.005658298732042099
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3 235.55176355731294 0.01677833231305216
+4 131.2271284062641 0.009347297322833011
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5 79.43711092369998 0.005658298732042099
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6 52.909770296970166 0.0037687584896125108
@@ -1592,11 +1600,13 @@ V_rms,w = 34.64 mm/yr
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8 27.676982885936546 0.001971429163891241
-9 21.16963414344291 0.001507911260099726
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10 16.55993753638834 0.0011795629583614036
-11 13.157319653803924 0.0009371947726762031
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>9 21.16963414344291 0.001507911260099726
+10 16.55993753638834 0.0011795629583614036
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11 13.157319653803924 0.0009371947726762031
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>12 10.575944261726537 0.0007533236205399487
@@ -1605,57 +1615,47 @@ V_rms,w = 34.64 mm/yr
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14 7.001454091895827 0.0004987129862851752
 15 5.746095900485873 0.0004092939278612569
+16 4.735652549695005 0.0003373201329422556
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16 4.735652549695005 0.0003373201329422556
-17 3.916030123816781 0.0002789384964606048
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18 3.2469728815756933 0.00023128160534994303
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>17 3.916030123816781 0.0002789384964606048
+18 3.2469728815756933 0.00023128160534994303
 19 2.697968060566083 0.0001921760381096209
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20 2.2455345325142684 0.00015994923594699162
 21 1.8713684466701068 0.0001332974171121059
+22 1.5610417851938774 0.00011119287510734461
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>22 1.5610417851938774 0.00011119287510734461
-23 1.3030695805960986 9.281753666408531e-05
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>24 1.0882298278115239 7.751451913691445e-05
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>23 1.3030695805960986 9.281753666408531e-05
+24 1.0882298278115239 7.751451913691445e-05
 25 0.9090604828354995 6.475230175878737e-05
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>26 0.7594827394837925 5.409789167630572e-05
 27 0.6345156078403169 4.519649339654712e-05
+28 0.5300572655142252 3.775593445549173e-05
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>28 0.5300572655142252 3.775593445549173e-05
-29 0.44271574514500267 3.1534605303245894e-05
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>30 0.36967643565136327 2.6332021429141415e-05
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>29 0.44271574514500267 3.1534605303245894e-05
+30 0.36967643565136327 2.6332021429141415e-05
 31 0.30859733125358935 2.1981361958404288e-05
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>32 0.2575254142871172 1.834351360699689e-05
 33 0.21482931086000742 1.5302273749761893e-05
+34 0.17914461478498828 1.2760455848698884e-05
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>34 0.17914461478498828 1.2760455848698884e-05
-35 0.14932918235664525 1.063670510370235e-05
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>36 0.12442635727132609 8.862878966698568e-06
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>35 0.14932918235664525 1.063670510370235e-05
+36 0.12442635727132609 8.862878966698568e-06
 37 0.10363456499340927 7.381881350911413e-06
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>38 0.08628206804289451 6.145864452119989e-06
 39 0.07180593586831327 5.114730774474255e-06
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>40 0.05973447970018752 4.254881966583769e-06
+40 0.05973447970018752 4.254881966583769e-06
 </pre></div>
 </div>
 </div>
@@ -1784,7 +1784,7 @@ By Cian Wilson
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Jun 01, 2024.
+  Last updated on Jun 02, 2024.
   <br/>
 </p>
   </div>
