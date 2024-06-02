@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
   
@@ -427,18 +427,25 @@ Docker is a software that uses <em>containers</em> to supply software across dif
 <section id="docker-images">
 <h3>Docker images<a class="headerlink" href="#docker-images" title="Link to this heading">#</a></h3>
 <p>Compatible images are available in the <a class="reference external" href="https://github.com/users/cianwilson/packages/container/package/fenicsx_subduction">Github Packages</a>.</p>
-<p>To use the notebooks in this tutorial with DOLFINx on your own computer, you should use the docker image obtained using the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>--init<span class="w"> </span>--rm<span class="w"> </span>-p<span class="w"> </span>&lt;<span class="nb">local</span><span class="w"> </span>port&gt;:8888<span class="w"> </span>--workdir<span class="w"> </span>/root/shared<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>:/root/shared<span class="w"> </span>ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+<p>To use the notebooks in this tutorial with DOLFINx on your own computer, you should (using a terminal) clone the repository and change into that directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/cianwilson/fenicsx_subduction.git
+<span class="nb">cd</span><span class="w"> </span>fenicsx_subduction
 </pre></div>
 </div>
-<p>This image can also be used as a normal docker container by adding:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>-p<span class="w"> </span>&lt;<span class="nb">local</span><span class="w"> </span>port&gt;:8888<span class="w"> </span>--workdir<span class="w"> </span>/root/shared<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>:/root/shared<span class="w">  </span>--entrypoint<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span><span class="w"> </span>ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+<p>Then run the following docker command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>--init<span class="w"> </span>--rm<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span>--workdir<span class="w"> </span>/root/shared<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>:/root/shared<span class="w"> </span>ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
 </pre></div>
 </div>
-<p>and then to start jupyter lab from within the docker container:</p>
+<p>Finally, copy and paste the URL printed in the terminal into a web-browser.</p>
+<p>Alternatively, this image can used as an interactive terminal by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>-p<span class="w"> </span><span class="m">8888</span>:8888<span class="w"> </span>--workdir<span class="w"> </span>/root/shared<span class="w"> </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>:/root/shared<span class="w">  </span>--entrypoint<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span><span class="w"> </span>ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+</pre></div>
+</div>
+<p>Jupyter lab can then be started from within the docker container:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">  </span>jupyter<span class="w"> </span>lab<span class="w"> </span>--ip<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8888</span><span class="w"> </span>--no-browser<span class="w"> </span>--allow-root
 </pre></div>
 </div>
+<p>again copying and pasting the resulting URL into a web browser.</p>
 </section>
 </section>
 <section id="acknowledgments">

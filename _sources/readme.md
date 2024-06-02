@@ -15,21 +15,28 @@ Docker is a software that uses _containers_ to supply software across different 
 
 Compatible images are available in the [Github Packages](https://github.com/users/cianwilson/packages/container/package/fenicsx_subduction).
 
-To use the notebooks in this tutorial with DOLFINx on your own computer, you should use the docker image obtained using the following command:
+To use the notebooks in this tutorial with DOLFINx on your own computer, you should (using a terminal) clone the repository and change into that directory:
+```bash
+git clone https://github.com/cianwilson/fenicsx_subduction.git
+cd fenicsx_subduction
+```
+Then run the following docker command:
 
 ```bash
-  docker run --init --rm -p <local port>:8888 --workdir /root/shared -v "$(pwd)":/root/shared ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+  docker run --init --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
 ```
+Finally, copy and paste the URL printed in the terminal into a web-browser.
 
-This image can also be used as a normal docker container by adding:
+Alternatively, this image can used as an interactive terminal by running:
 
 ```bash
-  docker run -it --rm -p <local port>:8888 --workdir /root/shared -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+  docker run -it --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
 ```
-and then to start jupyter lab from within the docker container:
+Jupyter lab can then be started from within the docker container:
 ```bash
   jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --allow-root
 ```
+again copying and pasting the resulting URL into a web browser.
 
 ## Acknowledgments
 
