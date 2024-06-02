@@ -149,7 +149,7 @@ def plot_mesh(mesh, tags=None):
     
     plotter = pv.Plotter(window_size=[800,800])
     plotter.add_mesh(grid, show_edges=True, show_scalar_bar=False)
-    plotter.show_bounds()
+    #plotter.show_bounds()
     plotter.view_xy()
     plotter.show()
 
@@ -184,7 +184,7 @@ def plot_scalar(scalar, show_edges=False, log_scale=False, scale=1.0):
     
     plotter = pv.Plotter(window_size=[800,800])
     plotter.add_mesh(grid, show_edges=show_edges, show_scalar_bar=True, cmap='coolwarm')
-    plotter.show_bounds()
+    #plotter.show_bounds()
     plotter.view_xy()
     plotter.show()
 
@@ -213,6 +213,6 @@ def plot_vector(vector, show_edges=False, glyph_factor=4, scale=1.0):
     plotter = pv.Plotter(window_size=[800,800])
     plotter.add_mesh(grid, show_edges=show_edges, show_scalar_bar=False, cmap='coolwarm')
     plotter.add_mesh(glyphs, cmap='coolwarm', show_scalar_bar=True)
-    plotter.show_bounds()
+    #plotter.show_bounds()
     plotter.view_xy()
     plotter.show()
