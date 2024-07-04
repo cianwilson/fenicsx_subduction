@@ -16,6 +16,7 @@ dependencies = [
     "fenics-dolfinx>=0.8.0",
     "jdc",
     "ipdb",
+    "ipylab",
 ]
 
 [project.optional-dependencies]

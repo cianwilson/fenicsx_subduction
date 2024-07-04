@@ -2,6 +2,7 @@ from mpi4py import MPI
 import dolfinx as df
 import pyvista as pv
 import numpy as np
+import pathlib
 
 try:
     pv.start_xvfb()
@@ -115,15 +116,17 @@ def get_first_cells(x, mesh):
         first_cells.append(cell[0])
     return first_cells
 
-def plot_mesh(mesh, tags=None):
+def plot_mesh(mesh, tags=None, plotter=None, **pv_kwargs):
     """
     Plot a dolfinx mesh using pyvista.
 
     Arguments:
-      * mesh - the mesh to plot
+      * mesh        - the mesh to plot
 
     Keyword Arguments:
-      * tags - mesh tags to color plot by (either cell or facet, default=None)
+      * tags        - mesh tags to color plot by (either cell or facet, default=None)
+      * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
     # Create VTK mesh
     cells, types, x = df.plot.vtk_mesh(mesh)
@@ -147,23 +150,26 @@ def plot_mesh(mesh, tags=None):
         grid.cell_data["Marker"] = marker
         grid.set_active_scalars("Marker")
     
-    plotter = pv.Plotter(window_size=[800,800])
-    plotter.add_mesh(grid, show_edges=True, show_scalar_bar=False)
-    #plotter.show_bounds()
-    plotter.view_xy()
-    plotter.show()
+    if plotter is None: plotter = pv.Plotter()
+    plotter.add_mesh(grid, **pv_kwargs)
 
-def plot_scalar(scalar, show_edges=False, log_scale=False, scale=1.0):
+    if mesh.geometry.dim == 2:
+        plotter.enable_parallel_projection()
+        plotter.view_xy()
+
+    return plotter
+
+def plot_scalar(scalar, scale=1.0, plotter=None, **pv_kwargs):
     """
     Plot a dolfinx scalar Function using pyvista.
 
     Arguments:
-      * scalar     - the dolfinx Function to plot
+      * scalar      - the dolfinx scalar Function to plot
 
     Keyword Arguments:
-      * show_edges - plot the mesh facets (default=False)
-      * log_scale  - use a log scale colormap (default=False)
-      * scale      - a scalar scale factor that the values are multipled by (default=1.0)
+      * scale       - a scalar scale factor that the values are multipled by (default=1.0)
+      * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
     # Create VTK mesh
     if scalar.function_space.element.space_dimension==1:
@@ -177,28 +183,110 @@ def plot_scalar(scalar, show_edges=False, log_scale=False, scale=1.0):
         cell_imap = scalar.function_space.mesh.topology.index_map(tdim)
         num_cells = cell_imap.size_local + cell_imap.num_ghosts
         perm = [scalar.function_space.dofmap.cell_dofs(c)[0] for c in range(num_cells)]
-        grid.cell_data[scalar.name] = scalar.x.array.real[perm]*scale if not log_scale else np.log10(scalar.x.array.real[perm]*scale)
+        grid.cell_data[scalar.name] = scalar.x.array.real[perm]*scale
     else:
-        grid.point_data[scalar.name] = scalar.x.array.real*scale if not log_scale else np.log10(scalar.x.array.real*scale)
+        grid.point_data[scalar.name] = scalar.x.array.real*scale
     grid.set_active_scalars(scalar.name)
-    
-    plotter = pv.Plotter(window_size=[800,800])
-    plotter.add_mesh(grid, show_edges=show_edges, show_scalar_bar=True, cmap='coolwarm')
-    #plotter.show_bounds()
-    plotter.view_xy()
-    plotter.show()
 
-def plot_vector(vector, show_edges=False, glyph_factor=4, scale=1.0):
+    if plotter is None: plotter = pv.Plotter()
+    plotter.add_mesh(grid, **pv_kwargs)
+
+    if scalar.function_space.mesh.geometry.dim == 2:
+        plotter.enable_parallel_projection()
+        plotter.view_xy()
+
+    return plotter
+
+def plot_scalar_values(scalar, scale=1.0, fmt=".2f", plotter=None, **pv_kwargs):
+    """
+    Print values of a dolfinx scalar Function using pyvista.
+
+    Arguments:
+      * scalar  - the dolfinx scalar Function to plot
+
+    Keyword Arguments:
+      * scale       - a scalar scale factor that the values are multipled by (default=1.0)
+      * fmt         - string formatting (default='.2f')
+      * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * **pv_kwargs - kwargs for the point labels
+    """
+    # based on plot_function_dofs in febug
+    V = scalar.function_space
+
+    x = V.tabulate_dof_coordinates()
+    if x.shape[0] == 0:
+        return plotter
+
+    size_local = V.dofmap.index_map.size_local
+    num_ghosts = V.dofmap.index_map.num_ghosts
+    bs = V.dofmap.bs
+    values = scalar.x.array.reshape((-1, bs))*scale
+    formatter = lambda x: "\n".join((f"{u_:{fmt}}" for u_ in x))
+
+    if plotter is None: plotter = pv.Plotter()
+    if size_local > 0:
+        x_local_polydata = pv.PolyData(x[:size_local])
+        x_local_polydata["labels"] = list(
+            map(formatter, values[:size_local]))
+        plotter.add_point_labels(
+            x_local_polydata, "labels", **pv_kwargs,
+            point_color="black")
+
+    if num_ghosts > 0:
+        x_ghost_polydata = pv.PolyData(x[size_local:size_local+num_ghosts])
+        x_ghost_polydata["labels"] = list(
+            map(formatter, values[size_local:size_local+num_ghosts]))
+        plotter.add_point_labels(
+            x_ghost_polydata, "labels", **pvkwargs,
+            point_color="pink")
+
+    if V.mesh.geometry.dim == 2:
+        plotter.enable_parallel_projection()
+        plotter.view_xy()
+
+    return plotter
+
+def plot_vector(vector, scale=1.0, plotter=None, **pv_kwargs):
     """
     Plot a dolfinx vector Function using pyvista.
 
     Arguments:
-      * vector       - the dolfinx Function to plot
+      * vector      - the dolfinx vector Function to plot
 
     Keyword Arguments:
-      * show_edges   - plot the mesh facets (default=False)
-      * glyph_factor - scale for glyph size (default=4)
-      * scale        - a scalar scale factor that the values are multipled by (default=1.0)
+      * scale       - a scalar scale factor that the values are multipled by (default=1.0)
+      * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * **pv_kwargs - kwargs for adding the mesh to the plotter
+    """
+    # Create VTK mesh
+    cells, types, x = df.plot.vtk_mesh(vector.function_space)
+    grid = pv.UnstructuredGrid(cells, types, x)
+
+    values = np.zeros((x.shape[0], 3))
+    values[:, :len(vector)] = vector.x.array.real.reshape((x.shape[0], len(vector)))*scale
+    grid[vector.name] = values
+    
+    if plotter is None: plotter = pv.Plotter()
+    plotter.add_mesh(grid, **pv_kwargs)
+
+    if vector.function_space.mesh.geometry.dim == 2:
+        plotter.enable_parallel_projection()
+        plotter.view_xy()
+
+    return plotter
+
+def plot_vector_glyphs(vector, factor=1.0, scale=1.0, plotter=None, **pv_kwargs):
+    """
+    Plot dolfinx vector Function as glyphs using pyvista.
+
+    Arguments:
+      * vector      - the dolfinx vector Function to plot
+
+    Keyword Arguments:
+      * factor      - scale for glyph size (default=1.0)
+      * scale       - a scalar scale factor that the values are multipled by (default=1.0)
+      * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
     # Create VTK mesh
     cells, types, x = df.plot.vtk_mesh(vector.function_space)
@@ -208,11 +296,31 @@ def plot_vector(vector, show_edges=False, glyph_factor=4, scale=1.0):
     values[:, :len(vector)] = vector.x.array.real.reshape((x.shape[0], len(vector)))*scale
     grid[vector.name] = values
     geom = pv.Arrow()
-    glyphs = grid.glyph(orient=vector.name, factor=glyph_factor, geom=geom)
+    glyphs = grid.glyph(orient=vector.name, factor=factor, geom=geom)
     
-    plotter = pv.Plotter(window_size=[800,800])
-    plotter.add_mesh(grid, show_edges=show_edges, show_scalar_bar=False, cmap='coolwarm')
-    plotter.add_mesh(glyphs, cmap='coolwarm', show_scalar_bar=True)
-    #plotter.show_bounds()
-    plotter.view_xy()
-    plotter.show()
+    if plotter is None: plotter = pv.Plotter()
+    plotter.add_mesh(glyphs, **pv_kwargs)
+
+    if vector.function_space.mesh.geometry.dim == 2:
+        plotter.enable_parallel_projection()
+        plotter.view_xy()
+
+    return plotter
+
+def show(plotter, filename=None):
+    """
+    Display a pyvista plotter.
+
+    Arguments:
+      * plotter  - the pyvista plotter
+
+    Keyword Arguments:
+      * filename - filename to save image to (default=None)
+    """    
+    if not pv.OFF_SCREEN:
+        plotter.show()
+    
+    if filename is not None:
+        output_folder = pathlib.Path("output")
+        output_folder.mkdir(exist_ok=True, parents=True)
+        figure = plotter.screenshot(output_folder / filename)
