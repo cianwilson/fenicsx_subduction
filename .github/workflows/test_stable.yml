@@ -27,6 +27,7 @@ jobs:
       - name: Check scripts
         working-directory: notebooks
         run: |
+           git config --global --add safe.directory "$GITHUB_WORKSPACE"
            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson1D.ipynb
            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2D.ipynb
            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2DSolutions.ipynb
