@@ -122,7 +122,6 @@ import pathlib
 import sys, os
 sys.path.append(os.path.join(os.path.pardir, 'python'))
 import utils
-import febug
 import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
     pv.OFF_SCREEN = True

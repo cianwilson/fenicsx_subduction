@@ -64,7 +64,6 @@ import json
 import copy
 import pathlib
 import pyvista
-import febug
 import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
     pv.OFF_SCREEN = True
