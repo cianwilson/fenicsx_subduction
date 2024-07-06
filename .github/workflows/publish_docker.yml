@@ -1,4 +1,4 @@
-name: Publish tutorial docker image
+name: Publish docker image
 on:
   push:
     branches: ["main", "release"]
@@ -45,7 +45,7 @@ jobs:
       - name: Build (arm) and push (amd/arm) Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: docker
           push: true
           file: docker/Dockerfile
           platforms: linux/amd64,linux/arm64
