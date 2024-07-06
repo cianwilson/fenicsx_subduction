@@ -21,24 +21,35 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
 
-      - name: Check scripts
+      - name: Initialize
+        run: |
+            git config --global --add safe.directory "$GITHUB_WORKSPACE"
+            python3 -c "from pyvista import start_xvfb; start_xvfb(0.1)"
+
+      - name: Check scripts are up to date
         working-directory: notebooks
         run: |
-           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-           jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson1D.ipynb
-           jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2D.ipynb
-           jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2DSolutions.ipynb
-           jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True SubductionBenchmark.ipynb
-           jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True SubductionBenchmarkSolutions.ipynb
-           git diff --name-only --exit-code
+            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson1D.ipynb
+            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2D.ipynb
+            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2DSolutions.ipynb
+            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True SubductionBenchmark.ipynb
+            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True SubductionBenchmarkSolutions.ipynb
+            git diff --name-only --exit-code || { retcode=$?; echo "Python scripts not up to date with notebook files.  Please update."; exit $retcode; }
+
+      - name: Check notebooks are clean
+        working-directory: notebooks
+        run: |
+            jupyter nbconvert --clear-output --inplace Poisson1D.ipynb
+            jupyter nbconvert --clear-output --inplace Poisson2D.ipynb
+            jupyter nbconvert --clear-output --inplace Poisson2DSolutions.ipynb
+            jupyter nbconvert --clear-output --inplace SubductionBenchmark.ipynb
+            jupyter nbconvert --clear-output --inplace SubductionBenchmarkSolutions.ipynb
+            git diff --name-only --exit-code || { retcode=$?; echo "Jupyter notebooks are not clear.  Please clear output."; exit $retcode; }
 
       - name: Test background
         working-directory: notebooks
         run: |
-            python3 -c "from pyvista import start_xvfb; start_xvfb(0.1)"
             mpirun -n 2 python3 Poisson1D.py
             mpirun -n 2 python3 Poisson2DSolutions.py
 
