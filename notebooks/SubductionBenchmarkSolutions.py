@@ -50,11 +50,10 @@ sz_case1_resscale2.solve_steadystate_isoviscous()
 
 
 diag_resscale2 = sz_case1_resscale2.get_diagnostics()
-T_ndof_resscale2 = sz_case1_resscale2.V_T.dofmap.index_map.size_global * sz_case1_resscale2.V_T.dofmap.index_map_bs
 
 print('')
 print('{:<12} {:<12} {:<12} {:<12} {:<12} {:<12}'.format('resscale', 'T_ndof', 'T_{200,-100}', 'Tbar_s', 'Tbar_w', 'Vrmsw'))
-print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale2, T_ndof_resscale2, diag_resscale2[0], diag_resscale2[1], diag_resscale2[2], diag_resscale2[3]))
+print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale2, *diag_resscale2))
 
 
 # For comparison here are the values reported for case 1 using [TerraFERMA](https://terraferma.github.io) in [Wilson & van Keken, 2023](http://dx.doi.org/10.1186/s40645-023-00588-6):
@@ -68,10 +67,11 @@ print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscal
 # In[ ]:
 
 
-plotter_case1_resscale2 = utils.plot_scalar(sz_case1_resscale2.T_i, scale=sz_case1_resscale2.T0, cmap='coolwarm')
-utils.plot_vector_glyphs(sz_case1_resscale2.vw_i, plotter=plotter_case1_resscale2, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
-utils.plot_vector_glyphs(sz_case1_resscale2.vs_i, plotter=plotter_case1_resscale2, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
-utils.show(plotter_case1_resscale2, filename="case_1_resscale2_solution.png")
+plotter_case1_resscale2 = utils.plot_scalar(sz_case1_resscale2.T_i, scale=sz_case1_resscale2.T0, gather=True, cmap='coolwarm')
+utils.plot_vector_glyphs(sz_case1_resscale2.vw_i, plotter=plotter_case1_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
+utils.plot_vector_glyphs(sz_case1_resscale2.vs_i, plotter=plotter_case1_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
+utils.plot_show(plotter_case1_resscale2)
+utils.plot_save(plotter_case1_resscale2, "case_1_resscale2_solution.png")
 
 
 # ### Case 2
@@ -91,11 +91,10 @@ sz_case2_resscale2.solve_steadystate_dislocationcreep()
 
 
 diag_case2_resscale2 = sz_case2_resscale2.get_diagnostics()
-T_ndof_case2_resscale2 = sz_case2_resscale2.V_T.dofmap.index_map.size_global * sz_case2_resscale2.V_T.dofmap.index_map_bs
 
 print('')
 print('{:<12} {:<12} {:<12} {:<12} {:<12} {:<12}'.format('resscale', 'T_ndof', 'T_{200,-100}', 'Tbar_s', 'Tbar_w', 'Vrmsw'))
-print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale2, T_ndof_case2_resscale2, diag_case2_resscale2[0], diag_case2_resscale2[1], diag_case2_resscale2[2], diag_case2_resscale2[3]))
+print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale2, *diag_case2_resscale2))
 
 
 # For comparison here are the values reported for case 2 using [TerraFERMA](https://terraferma.github.io) in [Wilson & van Keken, 2023](http://dx.doi.org/10.1186/s40645-023-00588-6):
@@ -109,10 +108,11 @@ print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscal
 # In[ ]:
 
 
-plotter_case2_resscale2 = utils.plot_scalar(sz_case2_resscale2.T_i, scale=sz_case2_resscale2.T0, cmap='coolwarm')
-utils.plot_vector_glyphs(sz_case2_resscale2.vw_i, plotter=plotter_case2_resscale2, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
-utils.plot_vector_glyphs(sz_case2_resscale2.vs_i, plotter=plotter_case2_resscale2, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
-utils.show(plotter_case2_resscale2, filename="case_2_resscale2_solution.png")
+plotter_case2_resscale2 = utils.plot_scalar(sz_case2_resscale2.T_i, scale=sz_case2_resscale2.T0, gather=True, cmap='coolwarm')
+utils.plot_vector_glyphs(sz_case2_resscale2.vw_i, plotter=plotter_case2_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
+utils.plot_vector_glyphs(sz_case2_resscale2.vs_i, plotter=plotter_case2_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
+utils.plot_show(plotter_case2_resscale2)
+utils.plot_save(plotter_case2_resscale2, "case_2_resscale2_solution.png")
 
 
 # ## Global Suite
@@ -145,10 +145,11 @@ sz_ak.solve_steadystate_dislocationcreep()
 # In[ ]:
 
 
-plotter_ak = utils.plot_scalar(sz_ak.T_i, scale=sz_ak.T0, cmap='coolwarm')
-utils.plot_vector_glyphs(sz_ak.vw_i, plotter=plotter_ak, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
-utils.plot_vector_glyphs(sz_ak.vs_i, plotter=plotter_ak, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
-utils.show(plotter_ak, filename="ak_solution.png")
+plotter_ak = utils.plot_scalar(sz_ak.T_i, scale=sz_ak.T0, gather=True, cmap='coolwarm')
+utils.plot_vector_glyphs(sz_ak.vw_i, plotter=plotter_ak, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
+utils.plot_vector_glyphs(sz_ak.vs_i, plotter=plotter_ak, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
+utils.plot_show(plotter_ak)
+utils.plot_save(plotter_ak, "ak_solution.png")
 
 
 # In[ ]:
@@ -156,7 +157,8 @@ utils.show(plotter_ak, filename="ak_solution.png")
 
 eta_ak = sz_ak.project_dislocationcreep_viscosity()
 plotter_eta_ak = utils.plot_scalar(eta_ak, scale=sz_ak.eta0, log_scale=True, show_edges=True)
-utils.show(plotter_eta_ak, filename="ak_eta.png")
+utils.plot_show(plotter_eta_ak)
+utils.plot_save(plotter_eta_ak, "ak_eta.png")
 
 
 # ### N Antilles (dislocation creep, low res)
@@ -177,10 +179,11 @@ sz_ant.solve_steadystate_dislocationcreep()
 # In[ ]:
 
 
-plotter_ant = utils.plot_scalar(sz_ant.T_i, scale=sz_ant.T0, cmap='coolwarm')
-utils.plot_vector_glyphs(sz_ant.vw_i, plotter=plotter_ant, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
-utils.plot_vector_glyphs(sz_ant.vs_i, plotter=plotter_ant, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
-utils.show(plotter_ant, filename="ant_solution.png")
+plotter_ant = utils.plot_scalar(sz_ant.T_i, scale=sz_ant.T0, gather=True, cmap='coolwarm')
+utils.plot_vector_glyphs(sz_ant.vw_i, plotter=plotter_ant, gather=True, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
+utils.plot_vector_glyphs(sz_ant.vs_i, plotter=plotter_ant, gather=True, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
+utils.plot_show(plotter_ant)
+utils.plot_save(plotter_ant, "ant_solution.png")
 
 
 # In[ ]:
@@ -188,7 +191,8 @@ utils.show(plotter_ant, filename="ant_solution.png")
 
 eta_ant = sz_ant.project_dislocationcreep_viscosity()
 plotter_eta_ant = utils.plot_scalar(eta_ant, scale=sz_ant.eta0, log_scale=True, show_edges=True)
-utils.show(plotter_eta_ant, filename="ant_eta.png")
+utils.plot_show(plotter_eta_ant)
+utils.plot_save(plotter_eta_ant, "ant_eta.png")
 
 
 # ## Finish up

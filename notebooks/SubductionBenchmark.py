@@ -88,10 +88,11 @@ with open(params_filename, "r") as fp:
 
 
 if __name__ == "__main__":
-    print("{:<35} {:<10}".format('Key','Value'))
-    print("-"*45)
-    for k, v in default_params.items():
-        print("{:<35} {:<10}".format(k, v))
+    if MPI.COMM_WORLD.rank == 0:
+        print("{:<35} {:<10}".format('Key','Value'))
+        print("-"*45)
+        for k, v in default_params.items():
+            print("{:<35} {:<10}".format(k, v))
 
 
 # ### Describing the geometry
@@ -506,8 +507,9 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    plotter_mesh = utils.plot_mesh(mesh, tags=cell_tags, show_edges=True, line_width=1)
-    utils.show(plotter_mesh, filename="case_1_mesh.png")
+    plotter_mesh = utils.plot_mesh(mesh, tags=cell_tags, gather=True, show_edges=True, line_width=1)
+    utils.plot_show(plotter_mesh)
+    utils.plot_save(plotter_mesh, "case_1_mesh.png")
 
 
 # It's also possible to output the geometry to file using:
@@ -616,6 +618,9 @@ class SubductionProblem:
     cell_tags  = None
     facet_tags = None
 
+    # MPI communicator
+    comm       = None
+
     # dimensions and mesh statistics
     gdim = None
     tdim = None
@@ -721,6 +726,7 @@ class SubductionProblem(SubductionProblem):
         # generate the mesh using gmsh
         # this command also returns cell and facets tags identifying regions and boundaries in the mesh
         self.mesh, self.cell_tags, self.facet_tags = self.geom.generatemesh()
+        self.comm = self.mesh.comm
 
         # record the dimensions
         self.gdim = self.mesh.geometry.dim
@@ -1293,9 +1299,10 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    plotter_ic = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, cmap='coolwarm')
-    utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_ic, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
-    utils.show(plotter_ic, filename="case_1_ics.png")
+    plotter_ic = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_ic, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
+    utils.plot_show(plotter_ic)
+    utils.plot_save(plotter_ic, "case_1_ics.png")
 
 
 # We can then plot our temperature and velocity Functions to see if their boundary (and initial in the case of temperature) conditions look correct.
@@ -1560,15 +1567,20 @@ class SubductionProblem(SubductionProblem):
         Retrieve the benchmark diagnostics.
 
         Returns:
+          * Tndof     - number of degrees of freedom for temperature
           * Tpt       - spot temperature on the slab at 100 km depth
           * Tslab     - average temperature along the diagnostic region of the slab surface
           * Twedge    - average temperature in the diagnostic region of the wedge
           * vrmswedge - average rms velocity in the diagnostic region of the wedge
         """
+        # work out number of T dofs
+        Tndof = self.V_T.dofmap.index_map.size_global * self.V_T.dofmap.index_map_bs
+        
         # work out location of spot tempeterature on slab and evaluate T
         xpt = np.asarray(self.geom.slab_spline.intersecty(-100.0)+[0.0])
-        Tpt = self.T0*self.T_i.eval(xpt, utils.get_first_cells(xpt, self.mesh)[0])[0]
-        print("T_(200,-100) = {:.2f} deg C".format(Tpt,))
+        cinds, cells = utils.get_cell_collisions(xpt, self.mesh)
+        Tpt = self.T0*self.T_i.eval(xpt, cells[0])[0]
+        if self.comm.rank == 0: print("T_(200,-100) = {:.2f} deg C".format(Tpt,))
 
         # a unit constant to evaluate slab length and wedge area
         one_c = df.fem.Constant(self.mesh, df.default_scalar_type(1.0))
@@ -1577,7 +1589,7 @@ class SubductionProblem(SubductionProblem):
         slab_diag_sids = tuple([self.geom.wedge_dividers['WedgeFocused']['slab_sid']])
         Tslab = self.T0*df.fem.assemble_scalar(df.fem.form(self.T_i*self.dS(slab_diag_sids)))\
                         /df.fem.assemble_scalar(df.fem.form(one_c*self.dS(slab_diag_sids)))
-        print("T_slab = {:.2f} deg C".format(Tslab,))
+        if self.comm.rank == 0: print("T_slab = {:.2f} deg C".format(Tslab,))
         
         wedge_diag_rids = tuple([self.geom.wedge_dividers['WedgeFocused']['rid']])
         wedge_diag_area = df.fem.assemble_scalar(df.fem.form(one_c*self.dx(wedge_diag_rids)))
@@ -1585,15 +1597,15 @@ class SubductionProblem(SubductionProblem):
         # evaluate average T in wedge diagnostic region
         Twedge = self.T0*df.fem.assemble_scalar(df.fem.form(self.T_i*self.dx(wedge_diag_rids)))\
                          /wedge_diag_area
-        print("T_wedge = {:.2f} deg C".format(Twedge,))
+        if self.comm.rank == 0: print("T_wedge = {:.2f} deg C".format(Twedge,))
 
         # evaluate average vrms in wedge diagnostic region
         vrmswedge = np.sqrt(df.fem.assemble_scalar(df.fem.form(ufl.inner(self.vw_i, self.vw_i)*self.dx(wedge_diag_rids)))\
                             /wedge_diag_area)*utils.mps_to_mmpyr(self.v0)
-        print("V_rms,w = {:.2f} mm/yr".format(vrmswedge,))
+        if self.comm.rank == 0: print("V_rms,w = {:.2f} mm/yr".format(vrmswedge,))
 
         # return results
-        return Tpt, Tslab, Twedge, vrmswedge
+        return Tndof, Tpt, Tslab, Twedge, vrmswedge
 
 
 # Because we have added functions to the class we need to re-instantiate it, which unfortunately means a lot of output again during mesh generation.
@@ -1621,11 +1633,11 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     diag = sz_case1.get_diagnostics()
-    T_ndof = sz_case1.V_T.dofmap.index_map.size_global * sz_case1.V_T.dofmap.index_map_bs
-    
-    print('')
-    print('{:<12} {:<12} {:<12} {:<12} {:<12} {:<12}'.format('resscale', 'T_ndof', 'T_{200,-100}', 'Tbar_s', 'Tbar_w', 'Vrmsw'))
-    print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale, T_ndof, diag[0], diag[1], diag[2], diag[3]))
+
+    if sz_case1.comm.rank == 0:
+        print('')
+        print('{:<12} {:<12} {:<12} {:<12} {:<12} {:<12}'.format('resscale', 'T_ndof', 'T_{200,-100}', 'Tbar_s', 'Tbar_w', 'Vrmsw'))
+        print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale, *diag))
 
 
 # For comparison here are the values reported for case 1 using [TerraFERMA](https://terraferma.github.io) in [Wilson & van Keken, 2023](http://dx.doi.org/10.1186/s40645-023-00588-6):
@@ -1642,10 +1654,11 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    plotter_iso = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, cmap='coolwarm')
-    utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_iso, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
-    utils.plot_vector_glyphs(sz_case1.vs_i, plotter=plotter_iso, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
-    utils.show(plotter_iso, filename="case_1_solution.png")
+    plotter_iso = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
+    utils.plot_vector_glyphs(sz_case1.vs_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
+    utils.plot_show(plotter_iso)
+    utils.plot_save(plotter_iso, filename="case_1_solution.png")
 
 
 # The output can also be saved to disk and opened with other visualization software (e.g. [Paraview](https://www.paraview.org/) using code like:
@@ -1681,9 +1694,11 @@ def plot_slab_temperatures(sz):
     fig = pl.figure()
     ax = fig.gca()
     # plot the slab temperatures
-    ax.plot(sz.T_i.eval(slabpoints, utils.get_first_cells(slabpoints, sz.mesh))[:,0], -slabpoints[:,1], label='slab surface')
+    cinds, cells = utils.get_cell_collisions(slabpoints, sz.mesh)
+    ax.plot(sz.T_i.eval(slabpoints, cells)[:,0], -slabpoints[:,1], label='slab surface')
     # plot the moho temperatures
-    ax.plot(sz.T_i.eval(slabmohopoints, utils.get_first_cells(slabmohopoints, sz.mesh))[:,0], -slabmohopoints[:,1], label='slab moho')
+    mcinds, mcells = utils.get_cell_collisions(slabmohopoints, sz.mesh)
+    ax.plot(sz.T_i.eval(slabmohopoints, mcells)[:,0], -slabmohopoints[:,1], label='slab moho')
     # labels, title etc.
     ax.set_xlabel('T ($^\circ$C)')
     ax.set_ylabel('z (km)')
@@ -1896,12 +1911,13 @@ class SubductionProblem(SubductionProblem):
         r = calculate_residual()
         r0 = r
         rrel = r/r0  # 1
-        print("{:<11} {:<12} {:<17}".format('Iteration','Residual','Relative Residual'))
-        print("-"*42)
+        if self.comm.rank == 0:
+            print("{:<11} {:<12} {:<17}".format('Iteration','Residual','Relative Residual'))
+            print("-"*42)
 
         # iterate until the residual converges (hopefully)
         it = 0
-        print("{:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
+        if self.comm.rank == 0: print("{:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
         while rrel > rtol and r > atol:
             if it > maxits: break
             # solve for v & p and interpolate it
@@ -1915,7 +1931,7 @@ class SubductionProblem(SubductionProblem):
             r = calculate_residual()
             rrel = r/r0
             it += 1
-            print("{:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
+            if self.comm.rank == 0: print("{:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
 
         # check for convergence failures
         if it > maxits:
@@ -1942,7 +1958,7 @@ if __name__ == "__main__":
     geom_case2 = create_sz_geometry(slab, resscale, sztype, io_depth_2, extra_width, 
                                     coast_distance, lc_depth, uc_depth)
     sz_case2 = SubductionProblem(geom_case2, A=A, Vs=Vs, sztype=sztype, qs=qs)
-    print("\nSolving steady state flow with dislocation creep rheology...")
+    if sz_case2.comm.rank == 0: print("\nSolving steady state flow with dislocation creep rheology...")
     sz_case2.solve_steadystate_dislocationcreep()
 
 
@@ -1953,11 +1969,11 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     diag_case2 = sz_case2.get_diagnostics()
-    T_ndof_case2 = sz_case2.V_T.dofmap.index_map.size_global * sz_case2.V_T.dofmap.index_map_bs
-    
-    print('')
-    print('{:<12} {:<12} {:<12} {:<12} {:<12} {:<12}'.format('resscale', 'T_ndof', 'T_{200,-100}', 'Tbar_s', 'Tbar_w', 'Vrmsw'))
-    print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale, T_ndof_case2, diag_case2[0], diag_case2[1], diag_case2[2], diag_case2[3]))
+
+    if sz_case2.comm.rank == 0:
+        print('')
+        print('{:<12} {:<12} {:<12} {:<12} {:<12} {:<12}'.format('resscale', 'T_ndof', 'T_{200,-100}', 'Tbar_s', 'Tbar_w', 'Vrmsw'))
+        print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscale, *diag_case2))
 
 
 # For comparison here are the values reported for case 2 using [TerraFERMA](https://terraferma.github.io) in [Wilson & van Keken, 2023](http://dx.doi.org/10.1186/s40645-023-00588-6):
@@ -1974,10 +1990,11 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    plotter_dis = utils.plot_scalar(sz_case2.T_i, scale=sz_case2.T0, cmap='coolwarm')
-    utils.plot_vector_glyphs(sz_case2.vw_i, plotter=plotter_dis, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
-    utils.plot_vector_glyphs(sz_case2.vs_i, plotter=plotter_dis, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
-    utils.show(plotter_dis, filename="case_2_solution.png")
+    plotter_dis = utils.plot_scalar(sz_case2.T_i, scale=sz_case2.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    utils.plot_vector_glyphs(sz_case2.vw_i, plotter=plotter_dis, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
+    utils.plot_vector_glyphs(sz_case2.vs_i, plotter=plotter_dis, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
+    utils.plot_show(plotter_dis)
+    utils.plot_save(plotter_dis, "case_2_solution.png")
 
 
 # In addition, we can also now visualize the viscosity (note that we are using a log scale).
@@ -1987,8 +2004,9 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     eta_i = sz_case2.project_dislocationcreep_viscosity()
-    plotter_eta = utils.plot_scalar(eta_i, scale=sz_case2.eta0, log_scale=True, show_edges=True)
-    utils.show(plotter_eta, filename="case_2_eta.png")
+    plotter_eta = utils.plot_scalar(eta_i, scale=sz_case2.eta0, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa) [log scale]'})
+    utils.plot_show(plotter_eta)
+    utils.plot_save(plotter_eta, "case_2_eta.png")
 
 
 # We can also reuse our slab temperature function to see their behavior in case 2.

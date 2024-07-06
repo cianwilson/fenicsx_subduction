@@ -41,6 +41,7 @@ def evaluate_error(T_i):
 if __name__ == "__main__":
     # Open a figure for plotting
     fig = pl.figure()
+    ax = fig.gca()
     
     # Make an output folder
     output_folder = pathlib.Path("output")
@@ -62,37 +63,44 @@ if __name__ == "__main__":
             T_i = solve_poisson_2d(ne, p)
             # Evaluate the error in the approximate solution
             l2error = evaluate_error(T_i)
-            # Print to screen and save
-            print('ne = ', ne, ', l2error = ', l2error)
+            # Print to screen and save if on rank 0
+            if T_i.function_space.mesh.comm.rank == 0:
+                print('ne = ', ne, ', l2error = ', l2error)
             errors_l2_a.append(l2error)
         
         # Work out the order of convergence at this p
         hs = 1./np.array(nelements)/p
         
         # Write the errors to disk
-        with open(output_folder / '2d_poisson_convergence_p{}.csv'.format(p), 'w') as f:
-            np.savetxt(f, np.c_[nelements, hs, errors_l2_a], delimiter=',', 
-                    header='nelements, hs, l2errs')
+        if T_i.function_space.mesh.comm.rank == 0:
+            with open(output_folder / '2d_poisson_convergence_p{}.csv'.format(p), 'w') as f:
+                np.savetxt(f, np.c_[nelements, hs, errors_l2_a], delimiter=',', 
+                        header='nelements, hs, l2errs')
         
         # Fit a line to the convergence data
         fit = np.polyfit(np.log(hs), np.log(errors_l2_a),1)
-        print("***********  order of accuracy p={}, order={:.2f}".format(p,fit[0]))
+        if T_i.function_space.mesh.comm.rank == 0:
+            print("***********  order of accuracy p={}, order={:.2f}".format(p,fit[0]))
         
         # log-log plot of the error  
-        pl.loglog(hs,errors_l2_a,'o-',label='p={}, order={:.2f}'.format(p,fit[0]))
+        ax.loglog(hs,errors_l2_a,'o-',label='p={}, order={:.2f}'.format(p,fit[0]))
         
         # Test if the order of convergence is as expected
         test_passes = test_passes and fit[0] > p+0.9
     
     # Tidy up the ploy
-    pl.xlabel('h')
-    pl.ylabel('||e||_2')
-    pl.grid()
-    pl.title('Convergence')
-    pl.legend()
-    pl.savefig(output_folder / '2d_poisson_convergence.pdf')
+    ax.set_xlabel('h')
+    ax.set_ylabel('||e||_2')
+    ax.grid()
+    ax.set_title('Convergence')
+    ax.legend()
     
-    print("***********  convergence figure in output/poisson_convergence.pdf")
+    # Write convergence to disk
+    if T_i.function_space.mesh.comm.rank == 0:
+        fig.savefig(output_folder / '2d_poisson_convergence.pdf')
+        
+        print("***********  convergence figure in output/poisson_convergence.pdf")
+    
     # Check if we passed the test
     assert(test_passes)
 

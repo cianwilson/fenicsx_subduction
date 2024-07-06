@@ -3,6 +3,7 @@ import dolfinx as df
 import pyvista as pv
 import numpy as np
 import pathlib
+import functools
 
 try:
     pv.start_xvfb()
@@ -94,7 +95,7 @@ def create_submesh(mesh, cell_indices, cell_tags=None, facet_tags=None):
     
     return submesh, submesh_cell_tags, submesh_facet_tags, submesh_cell_map
 
-def get_first_cells(x, mesh):
+def get_cell_collisions(x, mesh):
     """
     Given a list of points and a mesh, return the first cells that each point lies in in the mesh.
 
@@ -108,15 +109,60 @@ def get_first_cells(x, mesh):
     tree = df.geometry.bb_tree(mesh, mesh.geometry.dim)
     xl = x
     if len(x.shape)==1: xl = [x]
-    first_cells = []
-    for x0 in xl:
+    cinds = []
+    cells = []
+    for i, x0 in enumerate(xl):
         cell_candidates = df.geometry.compute_collisions_points(tree, x0)
         cell = df.geometry.compute_colliding_cells(mesh, cell_candidates, x0).array
-        assert len(cell) > 0
-        first_cells.append(cell[0])
-    return first_cells
+        if len(cell) > 0:
+            cinds.append(i)
+            cells.append(cell[0])
+    return cinds, cells
 
-def plot_mesh(mesh, tags=None, plotter=None, **pv_kwargs):
+@functools.singledispatch
+def vtk_mesh(mesh: df.mesh.Mesh):
+    return df.plot.vtk_mesh(mesh)
+
+@vtk_mesh.register
+def _(V: df.fem.FunctionSpace):
+    if V.ufl_element().degree == 0:
+        return vtk_mesh(V.mesh)
+    else:
+        return df.plot.vtk_mesh(V)
+
+@vtk_mesh.register
+def _(u: df.fem.Function):
+    return vtk_mesh(u.function_space)
+
+
+@functools.singledispatch
+def pyvista_grids(cells: np.ndarray, types: np.ndarray, x: np.ndarray, 
+                  comm: MPI.Intracomm=None, gather: bool=False):
+    grids = []
+    if gather:
+        cells_g = comm.gather(cells, root=0)
+        types_g = comm.gather(types, root=0)
+        x_g = comm.gather(x, root=0)
+        if comm.rank == 0:
+            for r in range(comm.size):
+                grids.append(pv.UnstructuredGrid(cells_g[r], types_g[r], x_g[r]))
+    else:
+        grids.append(pv.UnstructuredGrid(cells, types, x))
+    return grids
+
+@pyvista_grids.register
+def _(mesh: df.mesh.Mesh, gather=False):
+    return pyvista_grids(*vtk_mesh(mesh), comm=mesh.comm, gather=gather)
+
+@pyvista_grids.register
+def _(V: df.fem.FunctionSpace, gather=False):
+    return pyvista_grids(*vtk_mesh(V), comm=V.mesh.comm, gather=gather)
+
+@pyvista_grids.register
+def _(u: df.fem.Function, gather=False):
+    return pyvista_grids(*vtk_mesh(u), comm=u.function_space.mesh.comm, gather=gather)
+
+def plot_mesh(mesh, tags=None, plotter=None, gather=False, **pv_kwargs):
     """
     Plot a dolfinx mesh using pyvista.
 
@@ -126,16 +172,20 @@ def plot_mesh(mesh, tags=None, plotter=None, **pv_kwargs):
     Keyword Arguments:
       * tags        - mesh tags to color plot by (either cell or facet, default=None)
       * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * gather      - gather plot to rank 0 (default=False)
       * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
-    # Create VTK mesh
-    cells, types, x = df.plot.vtk_mesh(mesh)
-    grid = pv.UnstructuredGrid(cells, types, x)
+
+    comm = mesh.comm
+
+    grids = pyvista_grids(mesh, gather=gather)
 
     tdim = mesh.topology.dim
     fdim = tdim - 1
     if tags is not None:
-        marker = np.zeros(mesh.topology.index_map(2).size_local)
+        cell_imap = mesh.topology.index_map(tdim)
+        num_cells = cell_imap.size_local + cell_imap.num_ghosts
+        marker = np.zeros(num_cells)
         if tags.dim == tdim:
             for i, ind in enumerate(tags.indices):
                 marker[ind] = tags.values[i]
@@ -146,20 +196,28 @@ def plot_mesh(mesh, tags=None, plotter=None, **pv_kwargs):
                 for c in fcc.links(tags.indices[f]):
                     marker[c] = v
         else:
-            raise Exception("Unknown tag dimension!") 
-        grid.cell_data["Marker"] = marker
+            raise Exception("Unknown tag dimension!")
+
+        if gather:
+            marker_g = comm.gather(marker, root=0)
+        else:
+            marker_g = [marker]
+
+        for r, grid in enumerate(grids):
+            grid.cell_data["Marker"] = marker_g[r]
         grid.set_active_scalars("Marker")
     
-    if plotter is None: plotter = pv.Plotter()
-    plotter.add_mesh(grid, **pv_kwargs)
+    if len(grids) > 0 and plotter is None: plotter = pv.Plotter()
 
-    if mesh.geometry.dim == 2:
-        plotter.enable_parallel_projection()
-        plotter.view_xy()
+    if plotter is not None:
+        for grid in grids: plotter.add_mesh(grid, **pv_kwargs)
+        if mesh.geometry.dim == 2:
+            plotter.enable_parallel_projection()
+            plotter.view_xy()
 
     return plotter
 
-def plot_scalar(scalar, scale=1.0, plotter=None, **pv_kwargs):
+def plot_scalar(scalar, scale=1.0, plotter=None, gather=False, **pv_kwargs):
     """
     Plot a dolfinx scalar Function using pyvista.
 
@@ -169,35 +227,46 @@ def plot_scalar(scalar, scale=1.0, plotter=None, **pv_kwargs):
     Keyword Arguments:
       * scale       - a scalar scale factor that the values are multipled by (default=1.0)
       * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * gather      - gather plot to rank 0 (default=False)
       * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
-    # Create VTK mesh
-    if scalar.function_space.element.space_dimension==1:
-        cells, types, x = df.plot.vtk_mesh(scalar.function_space.mesh)
-    else:
-        cells, types, x = df.plot.vtk_mesh(scalar.function_space)
-    grid = pv.UnstructuredGrid(cells, types, x)
+    
+    comm = scalar.function_space.mesh.comm
+    
+    grids = pyvista_grids(scalar, gather=gather)
 
-    if scalar.function_space.element.space_dimension==1:
+    if scalar.function_space.ufl_element().degree == 0:
         tdim = scalar.function_space.mesh.topology.dim
         cell_imap = scalar.function_space.mesh.topology.index_map(tdim)
         num_cells = cell_imap.size_local + cell_imap.num_ghosts
         perm = [scalar.function_space.dofmap.cell_dofs(c)[0] for c in range(num_cells)]
-        grid.cell_data[scalar.name] = scalar.x.array.real[perm]*scale
+        values = scalar.x.array.real[perm]*scale
     else:
-        grid.point_data[scalar.name] = scalar.x.array.real*scale
-    grid.set_active_scalars(scalar.name)
+        values = scalar.x.array.real*scale
+        
+    if gather:
+        values_g = comm.gather(values, root=0)
+    else:
+        values_g = [values]
 
-    if plotter is None: plotter = pv.Plotter()
-    plotter.add_mesh(grid, **pv_kwargs)
+    for r, grid in enumerate(grids):
+        if scalar.function_space.element.space_dimension==1:
+            grid.cell_data[scalar.name] = values_g[r]
+        else:
+            grid.point_data[scalar.name] = values_g[r]
+        grid.set_active_scalars(scalar.name)
 
-    if scalar.function_space.mesh.geometry.dim == 2:
-        plotter.enable_parallel_projection()
-        plotter.view_xy()
+    if len(grids) > 0 and plotter is None: plotter = pv.Plotter()
+
+    if plotter is not None:
+        for grid in grids: plotter.add_mesh(grid, **pv_kwargs)
+        if scalar.function_space.mesh.geometry.dim == 2:
+            plotter.enable_parallel_projection()
+            plotter.view_xy()
 
     return plotter
 
-def plot_scalar_values(scalar, scale=1.0, fmt=".2f", plotter=None, **pv_kwargs):
+def plot_scalar_values(scalar, scale=1.0, fmt=".2f", plotter=None, gather=False, **pv_kwargs):
     """
     Print values of a dolfinx scalar Function using pyvista.
 
@@ -208,45 +277,62 @@ def plot_scalar_values(scalar, scale=1.0, fmt=".2f", plotter=None, **pv_kwargs):
       * scale       - a scalar scale factor that the values are multipled by (default=1.0)
       * fmt         - string formatting (default='.2f')
       * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * gather      - gather plot to rank 0 (default=False)
       * **pv_kwargs - kwargs for the point labels
     """
+
+    comm = scalar.function_space.mesh.comm
+    
     # based on plot_function_dofs in febug
     V = scalar.function_space
 
     x = V.tabulate_dof_coordinates()
-    if x.shape[0] == 0:
-        return plotter
 
     size_local = V.dofmap.index_map.size_local
     num_ghosts = V.dofmap.index_map.num_ghosts
     bs = V.dofmap.bs
     values = scalar.x.array.reshape((-1, bs))*scale
+
+    if gather:
+        # only gather the local entries
+        x_g = comm.gather(x[:size_local], root=0)
+        values_g = comm.gather(values[:size_local], root=0)
+        size_local = None
+        num_ghosts = 0
+    else:
+        x_g = [x]
+        values_g = [values]
+    
     formatter = lambda x: "\n".join((f"{u_:{fmt}}" for u_ in x))
 
-    if plotter is None: plotter = pv.Plotter()
-    if size_local > 0:
-        x_local_polydata = pv.PolyData(x[:size_local])
-        x_local_polydata["labels"] = list(
-            map(formatter, values[:size_local]))
-        plotter.add_point_labels(
-            x_local_polydata, "labels", **pv_kwargs,
-            point_color="black")
-
-    if num_ghosts > 0:
-        x_ghost_polydata = pv.PolyData(x[size_local:size_local+num_ghosts])
-        x_ghost_polydata["labels"] = list(
-            map(formatter, values[size_local:size_local+num_ghosts]))
-        plotter.add_point_labels(
-            x_ghost_polydata, "labels", **pvkwargs,
-            point_color="pink")
-
-    if V.mesh.geometry.dim == 2:
-        plotter.enable_parallel_projection()
-        plotter.view_xy()
+    if values_g is not None and plotter is None: plotter = pv.Plotter()
+    
+    if plotter is not None:
+        if size_local is None or size_local > 0:
+            for r in range(len(values_g)):
+                x_local_polydata = pv.PolyData(x_g[r][:size_local])
+                x_local_polydata["labels"] = list(
+                    map(formatter, values_g[r][:size_local]))
+                plotter.add_point_labels(
+                    x_local_polydata, "labels", **pv_kwargs,
+                    point_color="black")
+    
+        # we only get here if gather is False so can use x and values
+        if num_ghosts > 0:
+            x_ghost_polydata = pv.PolyData(x[size_local:size_local+num_ghosts])
+            x_ghost_polydata["labels"] = list(
+                map(formatter, values[size_local:size_local+num_ghosts]))
+            plotter.add_point_labels(
+                x_ghost_polydata, "labels", **pv_kwargs,
+                point_color="pink")
+    
+        if V.mesh.geometry.dim == 2:
+            plotter.enable_parallel_projection()
+            plotter.view_xy()
 
     return plotter
 
-def plot_vector(vector, scale=1.0, plotter=None, **pv_kwargs):
+def plot_vector(vector, scale=1.0, plotter=None, gather=False, **pv_kwargs):
     """
     Plot a dolfinx vector Function using pyvista.
 
@@ -256,26 +342,39 @@ def plot_vector(vector, scale=1.0, plotter=None, **pv_kwargs):
     Keyword Arguments:
       * scale       - a scalar scale factor that the values are multipled by (default=1.0)
       * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * gather      - gather plot to rank 0 (default=False)
       * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
-    # Create VTK mesh
-    cells, types, x = df.plot.vtk_mesh(vector.function_space)
-    grid = pv.UnstructuredGrid(cells, types, x)
 
-    values = np.zeros((x.shape[0], 3))
-    values[:, :len(vector)] = vector.x.array.real.reshape((x.shape[0], len(vector)))*scale
-    grid[vector.name] = values
+    comm = vector.function_space.mesh.comm
+
+    grids = pyvista_grids(vector, gather=gather)
+
+    imap = vector.function_space.dofmap.index_map
+    nx = imap.size_local + imap.num_ghosts
+    values = np.zeros((nx, 3))
+    values[:, :len(vector)] = vector.x.array.real.reshape((nx, len(vector)))*scale
+
+    if gather:
+        values_g = comm.gather(values, root=0)
+    else:
+        values_g = [values]
+
+    for r, grid in enumerate(grids):
+        grid[vector.name] = values_g[r]
     
-    if plotter is None: plotter = pv.Plotter()
-    plotter.add_mesh(grid, **pv_kwargs)
+    if len(grids) > 0 and plotter is None: plotter = pv.Plotter()
 
-    if vector.function_space.mesh.geometry.dim == 2:
-        plotter.enable_parallel_projection()
-        plotter.view_xy()
+    if plotter is not None:
+        for grid in grids: plotter.add_mesh(grid, **pv_kwargs)
+
+        if vector.function_space.mesh.geometry.dim == 2:
+            plotter.enable_parallel_projection()
+            plotter.view_xy()
 
     return plotter
 
-def plot_vector_glyphs(vector, factor=1.0, scale=1.0, plotter=None, **pv_kwargs):
+def plot_vector_glyphs(vector, factor=1.0, scale=1.0, plotter=None, gather=False, **pv_kwargs):
     """
     Plot dolfinx vector Function as glyphs using pyvista.
 
@@ -286,41 +385,60 @@ def plot_vector_glyphs(vector, factor=1.0, scale=1.0, plotter=None, **pv_kwargs)
       * factor      - scale for glyph size (default=1.0)
       * scale       - a scalar scale factor that the values are multipled by (default=1.0)
       * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * gather      - gather plot to rank 0 (default=False)
       * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
-    # Create VTK mesh
-    cells, types, x = df.plot.vtk_mesh(vector.function_space)
-    grid = pv.UnstructuredGrid(cells, types, x)
 
-    values = np.zeros((x.shape[0], 3))
-    values[:, :len(vector)] = vector.x.array.real.reshape((x.shape[0], len(vector)))*scale
-    grid[vector.name] = values
-    geom = pv.Arrow()
-    glyphs = grid.glyph(orient=vector.name, factor=factor, geom=geom)
+    comm = vector.function_space.mesh.comm
+
+    grids = pyvista_grids(vector, gather=gather)
+
+    imap = vector.function_space.dofmap.index_map
+    nx = imap.size_local + imap.num_ghosts
+    values = np.zeros((nx, 3))
+    values[:, :len(vector)] = vector.x.array.real.reshape((nx, len(vector)))*scale
+
+    if gather:
+        values_g = comm.gather(values, root=0)
+    else:
+        values_g = [values]
+
+    glyphs_g = []
+    for r, grid in enumerate(grids):
+        grid[vector.name] = values_g[r]
+        geom = pv.Arrow()
+        glyphs_g.append(grid.glyph(orient=vector.name, factor=factor, geom=geom))
     
-    if plotter is None: plotter = pv.Plotter()
-    plotter.add_mesh(glyphs, **pv_kwargs)
+    if len(grids) > 0 and plotter is None: plotter = pv.Plotter()
 
-    if vector.function_space.mesh.geometry.dim == 2:
-        plotter.enable_parallel_projection()
-        plotter.view_xy()
+    if plotter is not None:
+        for glyphs in glyphs_g: plotter.add_mesh(glyphs, **pv_kwargs)
+    
+        if vector.function_space.mesh.geometry.dim == 2:
+            plotter.enable_parallel_projection()
+            plotter.view_xy()
 
     return plotter
 
-def show(plotter, filename=None):
+def plot_show(plotter):
     """
     Display a pyvista plotter.
 
     Arguments:
       * plotter  - the pyvista plotter
-
-    Keyword Arguments:
-      * filename - filename to save image to (default=None)
     """    
-    if not pv.OFF_SCREEN:
+    if plotter is not None and not pv.OFF_SCREEN:
         plotter.show()
-    
-    if filename is not None:
+
+def plot_save(plotter, filename):
+    """
+    Display a pyvista plotter.
+
+    Arguments:
+      * plotter  - the pyvista plotter
+      * filename - filename to save image to
+    """
+    if plotter is not None:
         output_folder = pathlib.Path("output")
         output_folder.mkdir(exist_ok=True, parents=True)
         figure = plotter.screenshot(output_folder / filename)

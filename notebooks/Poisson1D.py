@@ -127,6 +127,9 @@ import pathlib
 import sys, os
 sys.path.append(os.path.join(os.path.pardir, 'python'))
 import utils
+if __name__ == "__main__":
+    output_folder = pathlib.Path("output")
+    output_folder.mkdir(exist_ok=True, parents=True)
 
 
 # ### Solution
@@ -202,7 +205,41 @@ def solve_poisson_1d(ne, p=1):
 
 if __name__ == "__main__":
     ne = 4
-    T_P1 = solve_poisson_1d(ne)
+    p = 1
+    T_P1 = solve_poisson_1d(ne, p=p)
+    T_P1.name = "T (P1)"
+
+
+# In order to visualize the solution, let's create a python function that evaluates and plots it.
+
+# In[ ]:
+
+
+def plot_1d(T, x, filename=None):
+    nx = len(x)
+    xyz = np.stack((x, np.zeros_like(x), np.zeros_like(x)), axis=1)
+    mesh = T.function_space.mesh
+    cinds, cells = utils.get_cell_collisions(xyz, mesh)
+    T_x = T.eval(xyz[cinds], cells)[:,0]
+    cinds_g = mesh.comm.gather(cinds, root=0)
+    T_x_g = mesh.comm.gather(T_x, root=0)
+    if mesh.comm.rank == 0:
+        T_x = np.empty_like(x)
+        for r, cinds_p in enumerate(cinds_g):
+            for i, cind in enumerate(cinds_p):
+                T_x[cind] = T_x_g[r][i]
+        # plot
+        fig = pl.figure()
+        ax = fig.gca()
+        ax.plot(x, T_x, label='$\\tilde{T}$ (P1)')
+        ax.plot(x[::int(nx/ne/p)], T_x[::int(nx/ne/p)], 'o')
+        ax.plot(x, np.sin(np.pi*x/2), '--g', label='$T$')
+        ax.legend()
+        ax.set_xlabel('$x$')
+        ax.set_ylabel(T.name)
+        ax.set_title('Numerical and exact solutions')
+        if filename is not None:
+            fig.savefig(output_folder / filename)
 
 
 # Comparing the numerical, $\tilde{T}$, and analytical, $T$, solutions we can see that even at this small number of elements we do a good job at reproducing the correct answer.
@@ -212,15 +249,7 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     x = np.linspace(0, 1, 201)
-    xyz = np.stack((x, np.zeros_like(x), np.zeros_like(x)), axis=1)
-    T_P1_x = T_P1.eval(xyz, utils.get_first_cells(xyz, T_P1.function_space.mesh))[:,0]
-    pl.plot(x, T_P1_x, label='$\\tilde{T}$ (P1)')
-    pl.plot(x[::50], T_P1_x[::50], 'o')
-    pl.plot(x, np.sin(np.pi*x/2), '--g', label='$T$')
-    pl.gca().legend()
-    pl.gca().set_xlabel('$x$')
-    pl.gca().set_ylabel('$T$')
-    _ = pl.gca().set_title('Numerical (P1) and exact solutions')
+    plot_1d(T_P1, x, filename='1d_poisson_P1_solution.pdf')
 
 
 # We can also try with a higher order element and see how it improves the solution.
@@ -229,7 +258,10 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    T_P2 = solve_poisson_1d(4, p=2)
+    ne = 4
+    p = 2
+    T_P2 = solve_poisson_1d(ne, p=p)
+    T_P2.name = "T (P2)"
 
 
 # The higher polynomial degree qualitatively appears to have a dramatic improvement in the solution accuracy.
@@ -239,15 +271,7 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     x = np.linspace(0, 1, 201)
-    xyz = np.stack((x, np.zeros_like(x), np.zeros_like(x)), axis=1)
-    T_P2_x = T_P2.eval(xyz, utils.get_first_cells(xyz, T_P2.function_space.mesh))[:,0]
-    pl.plot(x, T_P2_x, label='$\\tilde{T}$ (P2)')
-    pl.plot(x[::25], T_P2_x[::25], 'o')
-    pl.plot(x, np.sin(np.pi*x/2), '--g', label='$T$')
-    pl.gca().legend()
-    pl.gca().set_xlabel('$x$')
-    pl.gca().set_ylabel('$T$')
-    _ = pl.gca().set_title('Numerical (P2) and exact solutions')
+    plot_1d(T_P2, x, filename='1d_poisson_P2_solution.pdf')
 
 
 # ### Testing
@@ -289,10 +313,7 @@ def evaluate_error(T_i):
 if __name__ == "__main__":
     # Open a figure for plotting
     fig = pl.figure()
-    
-    # Make an output folder
-    output_folder = pathlib.Path("output")
-    output_folder.mkdir(exist_ok=True, parents=True)
+    ax = fig.gca()
     
     # List of polynomial orders to try
     ps = [1, 2]
@@ -310,38 +331,45 @@ if __name__ == "__main__":
             T_i = solve_poisson_1d(ne, p)
             # Evaluate the error in the approximate solution
             l2error = evaluate_error(T_i)
-            # Print to screen and save
-            print('ne = ', ne, ', l2error = ', l2error)
+            # Print to screen and save if on rank 0
+            if T_i.function_space.mesh.comm.rank == 0:
+                print('ne = ', ne, ', l2error = ', l2error)
             errors_l2_a.append(l2error)
     
         # Work out the order of convergence at this p
         hs = 1./np.array(nelements)/p
         
         # Write the errors to disk
-        with open(output_folder / '1d_poisson_convergence_p{}.csv'.format(p), 'w') as f:
-            np.savetxt(f, np.c_[nelements, hs, errors_l2_a], delimiter=',', 
-                       header='nelements, hs, l2errs')
-        
+        if T_i.function_space.mesh.comm.rank == 0:
+            with open(output_folder / '1d_poisson_convergence_p{}.csv'.format(p), 'w') as f:
+                np.savetxt(f, np.c_[nelements, hs, errors_l2_a], delimiter=',', 
+                           header='nelements, hs, l2errs')
+            
         # Fit a line to the convergence data
         fit = np.polyfit(np.log(hs), np.log(errors_l2_a),1)
-        print("***********  order of accuracy p={}, order={:.2f}".format(p,fit[0]))
+        
+        if T_i.function_space.mesh.comm.rank == 0:
+            print("***********  order of accuracy p={}, order={:.2f}".format(p,fit[0]))
         
         # log-log plot of the error  
-        pl.loglog(hs,errors_l2_a,'o-',label='p={}, order={:.2f}'.format(p,fit[0]))
+        ax.loglog(hs,errors_l2_a,'o-',label='p={}, order={:.2f}'.format(p,fit[0]))
         
         # Test if the order of convergence is as expected
         test_passes = test_passes and fit[0] > p+0.9
     
     # Tidy up the plot
-    pl.xlabel('h')
-    pl.ylabel('||e||_2')
-    pl.grid()
-    pl.title('Convergence')
-    pl.legend()
+    ax.set_xlabel('h')
+    ax.set_ylabel('||e||_2')
+    ax.grid()
+    ax.set_title('Convergence')
+    ax.legend()
     
-    pl.savefig(output_folder / '1d_poisson_convergence.pdf')
+    # Write convergence to disk
+    if T_i.function_space.mesh.comm.rank == 0:
+        fig.savefig(output_folder / '1d_poisson_convergence.pdf')
+        
+        print("***********  convergence figure in output/poisson_convergence.pdf")
     
-    print("***********  convergence figure in output/poisson_convergence.pdf")
     # Check if we passed the test
     assert(test_passes)
 
