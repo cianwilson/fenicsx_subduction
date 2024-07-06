@@ -99,7 +99,7 @@ if __name__ == "__main__":
     if T_i.function_space.mesh.comm.rank == 0:
         fig.savefig(output_folder / '2d_poisson_convergence.pdf')
         
-        print("***********  convergence figure in output/poisson_convergence.pdf")
+        print("***********  convergence figure in output/2d_poisson_convergence.pdf")
     
     # Check if we passed the test
     assert(test_passes)
