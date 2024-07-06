@@ -355,7 +355,7 @@ if __name__ == "__main__":
         ax.loglog(hs,errors_l2_a,'o-',label='p={}, order={:.2f}'.format(p,fit[0]))
         
         # Test if the order of convergence is as expected
-        test_passes = test_passes and fit[0] > p+0.9
+        test_passes = test_passes and fit[0] > p+1.9
     
     # Tidy up the plot
     ax.set_xlabel('h')
