@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+usage()
+{
+    echo "usage: update_python [-h] "
+}
+
+while [ -n "$1" ]; do
+    case $1 in
+        -h | --help )           usage
+                                exit
+                                ;;
+        * )                     echo "ERROR: Unknown option $1"
+                                usage
+                                exit 1
+                                ;;
+    esac
+    shift
+done
+
+full_path=$(realpath $0)
+script_path=$(dirname $full_path)
+repo_path=$(dirname $script_path)
+
+for f in `ls $repo_path/notebooks/*.ipynb`;
+do
+  jupyter nbconvert --NbConvertApp.use_output_suffix=False \
+                    --NbConvertApp.export_format=script \
+                    --FilesWriter.build_directory= \
+                    --ClearOutputPreprocessor.enabled=True \
+                    $f
+done
+
+

@@ -30,21 +30,13 @@ jobs:
       - name: Check scripts are up to date
         working-directory: notebooks
         run: |
-            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson1D.ipynb
-            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2D.ipynb
-            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson2DSolutions.ipynb
-            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True SubductionBenchmark.ipynb
-            jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True SubductionBenchmarkSolutions.ipynb
+            ../scripts/update_python
             git diff --exit-code || { retcode=$?; echo "Python scripts not up to date with notebook files.  Please update."; exit $retcode; }
 
       - name: Check notebooks are clean
         working-directory: notebooks
         run: |
-            jupyter nbconvert --clear-output --inplace Poisson1D.ipynb
-            jupyter nbconvert --clear-output --inplace Poisson2D.ipynb
-            jupyter nbconvert --clear-output --inplace Poisson2DSolutions.ipynb
-            jupyter nbconvert --clear-output --inplace SubductionBenchmark.ipynb
-            jupyter nbconvert --clear-output --inplace SubductionBenchmarkSolutions.ipynb
+            ../scripts/clear_notebooks
             git diff --exit-code || { retcode=$?; echo "Jupyter notebooks are not clear.  Please clear output."; exit $retcode; }
 
       - name: Test background
