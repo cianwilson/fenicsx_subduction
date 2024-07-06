@@ -1,0 +1,23 @@
+name: Test stable release
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  pull_request:
+    branches: ["release"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test background
+        working-directory: notebooks
+        run: |
+            mpirun -n 2 python3 Poisson1D.py
+            mpirun -n 2 python3 Poisson2DSolutions.py
+
