@@ -156,7 +156,7 @@ utils.plot_save(plotter_ak, "ak_solution.png")
 
 
 eta_ak = sz_ak.project_dislocationcreep_viscosity()
-plotter_eta_ak = utils.plot_scalar(eta_ak, scale=sz_ak.eta0, log_scale=True, show_edges=True)
+plotter_eta_ak = utils.plot_scalar(eta_ak, scale=sz_ak.eta0, gather=True, log_scale=True, show_edges=True)
 utils.plot_show(plotter_eta_ak)
 utils.plot_save(plotter_eta_ak, "ak_eta.png")
 
@@ -190,7 +190,7 @@ utils.plot_save(plotter_ant, "ant_solution.png")
 
 
 eta_ant = sz_ant.project_dislocationcreep_viscosity()
-plotter_eta_ant = utils.plot_scalar(eta_ant, scale=sz_ant.eta0, log_scale=True, show_edges=True)
+plotter_eta_ant = utils.plot_scalar(eta_ant, scale=sz_ant.eta0, gather=True, log_scale=True, show_edges=True)
 utils.plot_show(plotter_eta_ant)
 utils.plot_save(plotter_eta_ant, "ant_eta.png")
 
