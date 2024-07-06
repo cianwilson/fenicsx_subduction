@@ -92,16 +92,16 @@
 # and [Rhea](https://doi.org/10.1093/gji/ggs070).
 # A number of these are distributed as open-source
 # software and many among those are currently maintained through the 
-# [Computational Infrastructure for Geodynamics](geodynamics.org). 
+# [Computational Infrastructure for Geodynamics](https://geodynamics.org). 
 # These implementations can be shown to be accurate using intercomparisons
 # and benchmarks and make use of advances in parallel computing and efficient linear algebra solver techniques. Yet, modifications to the existing code requires deep insight into the structure of the Fortran/C/C++ code which is not trivial for experienced, let alone beginning, users.
 # 
 # In recent years an alternative approach for FEM has become available which elevates the user interface to simply specifying the FEM problem and solution method with the high-level approach. 
-# Python code is used to automatically build a finite element model that can be executed in a variety of environments ranging from [Jupyter notebooks](jupyter.org) and desktop computers to massively parallel high performance computers.
-# Two prominent examples of this approach are [Firedrake](www.firedrakeproject.org) and [FEniCS](www.fenicsproject.org). Examples of the use of these two approaches in geodynamical
+# Python code is used to automatically build a finite element model that can be executed in a variety of environments ranging from [Jupyter notebooks](https://jupyter.org) and desktop computers to massively parallel high performance computers.
+# Two prominent examples of this approach are [Firedrake](https://www.firedrakeproject.org) and [FEniCS](https://www.fenicsproject.org). Examples of the use of these two approaches in geodynamical
 # applications are in [Davies et al., 2022](https://doi.org/10.5194/gmd-15-5127-2022) and [Vynnytska et al., 2013](https://doi.org/10.1016/j.cageo.2012.05.012).
 # 
-# This and following examples were presented by [Wilson & van Keken, 2023](http://dx.doi.org/10.1186/s40645-023-00588-6) using FEniCS v2019.1.0 and [TerraFERMA](terraferma.github.io), a GUI-based model building framework that also uses FEniCS v2019.1.0.  These simulations are publicly available in a [zenodo](doi.org/10.5281/zenodo.7843967) archive and can be run using a [docker](https://github.com/users/cianwilson/packages/container/package/vankeken_wilson_peps_2023) image.
+# This and following examples were presented by [Wilson & van Keken, 2023](http://dx.doi.org/10.1186/s40645-023-00588-6) using FEniCS v2019.1.0 and [TerraFERMA](https://terraferma.github.io), a GUI-based model building framework that also uses FEniCS v2019.1.0.  These simulations are publicly available in a [zenodo](https://doi.org/10.5281/zenodo.7843967) archive and can be run using a [docker](https://github.com/users/cianwilson/packages/container/package/vankeken_wilson_peps_2023) image.
 # 
 # Here we will focus on reproducing the results of [Wilson & van Keken, 2023](http://dx.doi.org/10.1186/s40645-023-00588-6) using the latest version of FEniCS, FEniCSx.
 # [FEniCS](https://doi.org/10.11588/ans.2015.100.20553) is a suite of open-source numerical libraries for the description of finite element problems.  Most importantly it provides a high-level, human-readable language 
