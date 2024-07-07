@@ -3,11 +3,18 @@ root: notebooks/index
 parts:
   - caption: Introduction
     chapters:
-      - file: readme
+      - file: notebooks/overview
+      - file: notebooks/usage
   - caption: Background
     chapters:
-      - file: notebooks/Poisson1D
-      - file: notebooks/Poisson2D
+      - file: notebooks/background
+      - file: notebooks/poisson_1d_intro
+        sections:
+          - file: notebooks/poisson_1d
+      - file: notebooks/poisson_2d_intro
+        sections:
+          - file: notebooks/poisson_2d
+          - file: notebooks/poisson_2d_tests
   - caption: Subduction
     chapters:
       - file: notebooks/SubductionBenchmark

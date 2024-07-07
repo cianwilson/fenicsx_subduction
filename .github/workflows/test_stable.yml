@@ -43,6 +43,6 @@ jobs:
       - name: Test background
         working-directory: notebooks
         run: |
-            mpirun -n 2 python3 Poisson1D.py
-            mpirun -n 2 python3 Poisson2DSolutions.py
+            mpirun -n 2 python3 poisson_1d.py
+            mpirun -n 2 python3 poisson_2d_tests.py
 

@@ -2,14 +2,16 @@
 # coding: utf-8
 
 # # Poisson Example 1D
+# 
+# Authors: Kidus Teshome, Cian Wilson
 
 # ## Description
 
-# As an introductory and simplified example we will solve the Poisson equation on a 1D domain of unit length, $\Omega = [0,1]$, by seeking the approximate solution of
+# As a reminder we are seeking the approximate solution of the Poisson equation
 # \begin{align}
 # -\frac{d^2 T}{dx^2} &= h  % && \text{in }\Omega
 # \end{align}
-# where we choose for this example $h=\frac{1}{4}\pi^2 \sin\left(\frac{\pi x}{2} \right)$.
+# on a 1D domain of unit length, $\Omega = [0,1]$, where we choose for this example $h=\frac{1}{4}\pi^2 \sin\left(\frac{\pi x}{2} \right)$.
 
 # At the boundaries, $x$=0 and $x$=1, we apply as boundary conditions \begin{align}
 # T &= 0 && \text{at } x=0  \\
@@ -23,59 +25,6 @@
 #   T = \sin\left(\frac{\pi x}{2}\right)
 # \end{equation}
 # but we will still solve this numerically as a verification test of our implementation.
-
-# Finite element methods are formulated by writing out the weak form of the equation.  In the case of 1D Poisson, we multiply the equation by an arbitrary "test" function, $T_t$, and integrate over the domain:
-# \begin{equation}
-# -\int_0^1 T_t \frac{d^2 T}{dx^2} dx = \int_0^1 h dx
-# \end{equation}
-# To lower the continuity requirements on the discrete form of $T$ we can integrate the first term by parts giving us the **weak form** of the equation
-# \begin{equation}
-# \int_0^1 \frac{d T_t}{dx} \frac{d T}{dx} dx - \left[T_t \frac{dT}{dx} \right]_0^1  = \int_0^1 h dx
-# \end{equation}
-
-# To discretize the equation, the FEM approximates $T$ by $\tilde{T}$, the solution's representation in a **function space** on the mesh where
-# \begin{equation}
-# \tilde{T}(\vec{x}, t) = \sum_j \phi_j(\vec{x}) T_j(t) 
-# \end{equation}
-# Here, $T_j$ are coefficients that as indicated can be time-dependent if the problem is time-dependent (not the case in this example) but do not depend on space. The shape functions $\phi_j$ are a function of space but generally independent of time. The index $j$ indicates the number of the shape function on the mesh and is associated with the number of the nodal point or element number it is associated with.
-# In this tutorial, we will principally discuss so-called  Lagrange shape functions which define $\phi_j$ as a polynomial over an element with a value of 1 at a single nodal point and a value of 0 at all other points associated with the degrees of freedom such that $\sum_j\phi_j=1$.  The shape functions can be of arbitrary order and can have various conditions on their continuity across or in between elements. We will focus principally on linear Lagrange shape functions (denoted by P1) and quadratic Lagrange shape functions (denoted by P2) that are continuous between mesh elements.
-# ![Lagrange shape functions in 1D](images/shapefunctions1d.png)
-# 
-# Our choice of Lagrange shape functions means that $T_j$ are the actual values of the solution.  With other forms of the shape function (see, e.g., [DefElement](https://defelement.com/))
-# $T_j$ are instead interpolation weights that are used to construct the solution values. 
-# The split of temporal and spatial dependence above is typical in geodynamic applications but not required.  
-
-# The test functions $T_t$ can be independent of the functions 
-# that span the function space of the trial function,
-# but in the widely used Galerkin approach the test functions 
-# are restricted to be in the same function space such that
-# \begin{equation}
-# \tilde{T}_t(\vec{x}, t) = \sum_i\phi_i(\vec{x})  T_{ti}(t) 
-# \end{equation}
-# Since the method is valid for all $\tilde{T}_t$ we can dispense with the test function values at the DOFs, $T_{ti}$ and, through substitution of $T = \tilde{T}$ and $T_t = \tilde{T}_t$ write the **discrete weak form** as
-# \begin{equation}
-# \sum_j\int_0^1 \frac{d \phi_i}{dx} \frac{d \phi_j}{dx} dx T_j - \sum_j\left[\phi_i \frac{d\phi_j}{dx} \right]_0^1 T_j = \int_0^1 h dx, \quad\quad i = 1,\ldots, n
-# \end{equation}
-# The second term can be dropped because we require $\frac{d\tilde{T}}{dx} = 0$ at $x=1$ and the solution at $x=0$ ($i=0$) is known ($T_0=0$)
-# \begin{equation}
-# \sum_j\int_0^1 \frac{d \phi_i}{dx} \frac{d \phi_j}{dx} dx T_j = \int_0^1 h dx, \quad\quad i = 1,\ldots, n
-# \end{equation}
-
-# Given a domain with $n$ DOFs such that $i,j=1, \ldots, n$, the discrete weak form can be assembled into a matrix-vector system of the form
-# \begin{equation}
-# {\bf S} {\bf u} = {\bf f}
-# \end{equation}
-# where $\bf{S}$ is a $n \times n$ matrix, $\bf{f}$ is the right-hand side vector of length $n$ and $\bf{u}$ is the solution vector of values at the DOFs
-# \begin{align}
-# {\bf S} &= S_{ij} = \int_0^1 \frac{d\phi_i}{dx} \frac{d\phi_j}{dx} ~dx  \\
-# {\bf f} &= f_i = \int_0^1 \phi_i  h ~dx \\
-# {\bf u} &= {\bf T} = T_j
-# \end{align}
-# where ${\bf T}$ has components $T_j$ that define the continuous approximate solution 
-# \begin{equation}
-# \tilde{T}(x) = \sum_{j=1}^n  \phi_j(x) T_j
-# \end{equation}
-# and $T_0 = 0$.
 
 # ## Implementation
 
@@ -112,7 +61,7 @@
 
 # ### Preamble
 
-# We start by loading all the modules we will require.
+# We start by loading all the modules we will require and setting up an output folder.
 
 # In[ ]:
 
@@ -136,7 +85,7 @@ if __name__ == "__main__":
 
 # We then declare a python function `solve_poisson_1d` that contains a complete description of the discrete Poisson equation problem.
 # 
-# This function follows much the same flow as described above:
+# This function follows much the same flow as described in the introduction
 # 1. we describe the domain $\Omega$ and discretize it into `ne` elements or cells to make a `mesh`
 # 2. we declare the **function space**, `V`, to use Lagrange polynomials of degree `p`
 # 3. using this function space we declare trial, `T_a`, and test, `T_t`, functions
@@ -191,14 +140,15 @@ def solve_poisson_1d(ne, p=1):
     # Compute the solution (given the boundary condition, bc)
     problem = df.fem.petsc.LinearProblem(S, f, bcs=[bc], \
                                          petsc_options={"ksp_type": "preonly", \
-                                                        "pc_type": "lu"})
+                                                        "pc_type": "lu",
+                                                        "pc_factor_mat_solver_type": "mumps"})
     T_i = problem.solve()
 
     # Return the solution
     return T_i
 
 
-# We can then use `solve_poisson_1d` to solve on, for example, 4 elements with (the default) P1 elements.
+# We can then use `solve_poisson_1d` to solve on, for example, `ne = 4` elements with P1, `p = 1` elements.
 
 # In[ ]:
 
@@ -210,19 +160,28 @@ if __name__ == "__main__":
     T_P1.name = "T (P1)"
 
 
-# In order to visualize the solution, let's create a python function that evaluates and plots it.
+# ```{admonition} __main__
+# Note that this code block starts with `if __name__ == "__main__":` to prevent it from being run unless being run as a script or in a Jupyter notebook.  This prevents unecessary computations when this code is used as a python module.
+# ```
+
+# In order to visualize the solution, we write a python function that evaluates both the numerical and analytical solutions at a series of points and plots them both using [matplotlib](https://matplotlib.org/).
 
 # In[ ]:
 
 
 def plot_1d(T, x, filename=None):
     nx = len(x)
+    # convert 1d points to 3d points (necessary for eval call)
     xyz = np.stack((x, np.zeros_like(x), np.zeros_like(x)), axis=1)
+    # work out which cells those points are in
     mesh = T.function_space.mesh
     cinds, cells = utils.get_cell_collisions(xyz, mesh)
+    # evaluate the numerical solution
     T_x = T.eval(xyz[cinds], cells)[:,0]
+    # if running in parallel gather the solution to the rank-0 process
     cinds_g = mesh.comm.gather(cinds, root=0)
     T_x_g = mesh.comm.gather(T_x, root=0)
+    # only plot on the rank-0 process
     if mesh.comm.rank == 0:
         T_x = np.empty_like(x)
         for r, cinds_p in enumerate(cinds_g):
@@ -231,15 +190,15 @@ def plot_1d(T, x, filename=None):
         # plot
         fig = pl.figure()
         ax = fig.gca()
-        ax.plot(x, T_x, label='$\\tilde{T}$ (P1)')
-        ax.plot(x[::int(nx/ne/p)], T_x[::int(nx/ne/p)], 'o')
-        ax.plot(x, np.sin(np.pi*x/2), '--g', label='$T$')
+        ax.plot(x, T_x, label='$\\tilde{T}$ (P1)')           # numerical solution
+        ax.plot(x[::int(nx/ne/p)], T_x[::int(nx/ne/p)], 'o') # nodal points (uses globally defined ne and p)
+        ax.plot(x, np.sin(np.pi*x/2), '--g', label='$T$')    # analytical solution
         ax.legend()
         ax.set_xlabel('$x$')
         ax.set_ylabel(T.name)
         ax.set_title('Numerical and exact solutions')
-        if filename is not None:
-            fig.savefig(output_folder / filename)
+        # save the figure
+        if filename is not None: fig.savefig(output_folder / filename)
 
 
 # Comparing the numerical, $\tilde{T}$, and analytical, $T$, solutions we can see that even at this small number of elements we do a good job at reproducing the correct answer.
@@ -274,7 +233,7 @@ if __name__ == "__main__":
     plot_1d(T_P2, x, filename='1d_poisson_P2_solution.pdf')
 
 
-# ### Testing
+# ## Testing
 
 # We can quantify the error in cases where the analytical solution is known by taking the L2 norm of the difference between the numerical and exact solutions.
 
@@ -374,6 +333,8 @@ if __name__ == "__main__":
     assert(test_passes)
 
 
+# The convergence tests show that we achieve the expected orders of convergence for all polynomial degrees.
+
 # ## Finish up
 
 # Convert this notebook to a python script (making sure to save first)
@@ -385,7 +346,7 @@ if __name__ == "__main__" and "__file__" not in globals():
     from ipylab import JupyterFrontEnd
     app = JupyterFrontEnd()
     app.commands.execute('docmanager:save')
-    get_ipython().system('jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True Poisson1D.ipynb')
+    get_ipython().system('jupyter nbconvert --NbConvertApp.export_format=script --ClearOutputPreprocessor.enabled=True poisson_1d.ipynb')
 
 
 # In[ ]:

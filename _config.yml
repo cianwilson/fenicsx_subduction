@@ -61,4 +61,9 @@ html:
 #        provide a link to the Creative Commons license and indicate if changes were made.
 #    </div>
 
-exclude_patterns: [README.md]
+exclude_patterns: [readme.md, 
+                   notebooks/BenchmarkGeometry.ipynb, 
+                   notebooks/DataExample.ipynb, 
+                   notebooks/ExampleGeometry.ipynb, 
+                   notebooks/OriginalSubductionBenchmark.ipynb, 
+                   notebooks/SubductionBenchmarkSolutions.ipynb]
