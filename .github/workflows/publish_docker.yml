@@ -1,12 +1,14 @@
 name: Publish docker image
+
 on:
-  push:
-    branches: ["main"]
-    tags:
-      - "v*"
+  workflow_dispatch: # this is the only way to publish a docker image (takes too long to be in auto workflow)
+  workflow_call:
   pull_request:
     branches: ["main", "release"]
-  workflow_dispatch:
+  push:
+    branches: ["main"] # called by deploy on push into release
+    tags:
+      - "v*"
 
 env:
   REGISTRY: ghcr.io
@@ -55,7 +57,7 @@ jobs:
 
       - name: Build (arm) and push (amd/arm) Docker image
         uses: docker/build-push-action@v6
-        if: github.event_name == 'push'
+        if: github.event_name == 'workflow_dispatch'
         with:
           context: docker
           push: true

@@ -5,6 +5,7 @@ on:
   workflow_call:
   pull_request:
     branches: ["main", "release"]
+
 env:
   HDF5_MPI: "ON"
   HDF5_DIR: "/usr/local/"
