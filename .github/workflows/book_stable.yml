@@ -17,7 +17,7 @@ env:
 jobs:
   build-book:
     runs-on: ubuntu-latest
-    container: ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+    container: ghcr.io/cianwilson/fenicsx_subduction:release
 
     env:
       PYVISTA_TRAME_SERVER_PROXY_PREFIX: "/proxy/"

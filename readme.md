@@ -23,14 +23,14 @@ cd fenicsx_subduction
 Then run the following docker command:
 
 ```bash
-  docker run --init --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+  docker run --init --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared ghcr.io/cianwilson/fenicsx_subduction:release
 ```
 Finally, copy and paste the URL printed in the terminal into a web-browser.
 
 Alternatively, this image can used as an interactive terminal by running:
 
 ```bash
-  docker run -it --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+  docker run -it --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenicsx_subduction:release
 ```
 Jupyter lab can then be started from within the docker container:
 ```bash

@@ -1,4 +1,4 @@
-FROM ghcr.io/cianwilson/fenicsx_subduction:v0.8.0
+FROM ghcr.io/cianwilson/fenicsx_subduction:release
 
 # create user with a home directory
 ARG NB_USER=jovyan
