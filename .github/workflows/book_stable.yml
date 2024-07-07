@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: ["main", "release"]
   push:
-    branches: ["main", "release"]
+    branches: ["main"]
 env:
   HDF5_MPI: "ON"
   HDF5_DIR: "/usr/local/"

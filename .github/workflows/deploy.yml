@@ -16,6 +16,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  publish-docker:
+    uses: ./.github/workflows/publish_docker.yml
+
   run-tests:
     uses: ./.github/workflows/test_stable.yml
 
