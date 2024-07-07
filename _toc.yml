@@ -11,10 +11,13 @@ parts:
       - file: notebooks/poisson_1d_intro
         sections:
           - file: notebooks/poisson_1d
+            title: Implementation
       - file: notebooks/poisson_2d_intro
         sections:
           - file: notebooks/poisson_2d
+            title: Implementation
           - file: notebooks/poisson_2d_tests
+            title: Themes and variations
   - caption: Subduction
     chapters:
       - file: notebooks/SubductionBenchmark
