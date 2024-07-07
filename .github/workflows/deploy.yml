@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-docker:
+  test-docker-build:
     uses: ./.github/workflows/publish_docker.yml
 
   run-tests:
@@ -28,7 +28,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
-    needs: [build-book, run-tests]
+    needs: [test-docker-build, build-book, run-tests]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
