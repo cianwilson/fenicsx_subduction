@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+
+from string import Template
+import os
+import json
+
+fdir = os.path.dirname(__file__)
+rdir = os.path.join(fdir, os.pardir)
+
+toctemp = Template("""          - file: $filename
+            title: $title""")
+
+def substitute(filename):
+  with open(filename, 'r') as fp:
+    temp = Template(fp.read())
+
+  allsz_filename = os.path.join(rdir, "data", "all_sz.json")
+  with open(allsz_filename, 'r') as fp:
+      allsz_params = json.load(fp)
+
+  suite = []
+  for name in allsz_params.keys():
+    subs = {}
+    subs['name'] = name
+    subs['index'] = name.split('_')[0]
+    subs['name_sub'] = ' '.join(name.split('_'))
+    newfilename = filename.replace('template', subs['index'])
+    with open(newfilename, 'w') as fp:
+      fp.write(temp.substitute(subs))
+    suite.append((subs['name_sub'], newfilename.rstrip('.ipynb')))
+
+  return suite
+
+
+if __name__ == "__main__":
+  import argparse
+  parser = argparse.ArgumentParser( \
+                         description="""This takes a template jupyter notebook and generates the global suite.""")
+  parser.add_argument('filename', metavar='filename', type=str,
+                      help='specify the name of the template notebook')
+  args = parser.parse_args()
+
+  suite = substitute(args.filename)
+
+  print("Please copy the following into the _toc.yml file...")
+  print("")
+  for name, filename in suite:
+    print(toctemp.substitute({'title':name, 'filename':filename}))
+
+
+
+    
+      
+      
+    
+  
+
