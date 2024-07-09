@@ -68,51 +68,51 @@
 # This provides simple scaling arguments to allow for understanding which terms in the equations are dominant, 
 # avoids computer algebra that mixes very large and very small numbers, and provides for the formation of a matrix-vector system where the condition number of the matrix is more optimal.
 
-# \begin{array}{llll}
-# \hline
-# \text{Quantity} & \text{Symbol} & \text{Nominal value} & \text{Nondimensional value} \\
-# \hline
-# \text{Reference temperature scale} &  T_0 & 1~\text{K}=1^\circ \text{C} & - \\
-# \text{Surface temperature} & T^*_s & 273~\text{K}=0^\circ \text{C} &  T_s=0\\
-# \text{Mantle temperature} & T^*_m & 1623~\text{K}=1350^\circ \text{C}  & T_m=1350\\
-# \text{Surface heat flow}^\text{c} & q^*_s & ^{\S} \text{W/m}^2  & q_s^{\S}\\
-# \text{Reference density} & \rho_0 & 3300~\text{kg/m}^3 & - \\
-# \text{Crustal density}^\text{c} & \rho^*_c & 2750~\text{kg/m}^3 & \rho_c=0.833333\\
-# \text{Mantle density} & \rho^*_m & 3300~\text{kg/m}^3 & \rho_m=1 \\
-# \text{Reference thermal conductivity} & k_0 & 3.1 ~\text{W/(m~K)} & - \\
-# \text{Crustal thermal conductivity}^\text{c} & k^*_c & 2.5 ~\text{W/(m~K)} & k_c=0.8064516\\
-# \text{Mantle thermal conductivity} & k^*_m & 3.1 ~\text{W/(m~K)} & k_m=1 \\
-# \text{Volumetric heat production (upper crust)}^\text{c} & H^*_1 & 1.3 \mu \text{W/m}^3 & H_1=0.419354\\
-# \text{Volumetric heat production (lower crust)}^\text{c} & H_2^* & 0.27 \mu \text{W/m}^3 & H_2=0.087097\\
-# \text{Age of overriding crust}^\text{o} & A_c^* & ^{\S}~\text{Myr} & A_c^{\S} \\
-# \text{Age of subduction}^\text{t} & A_s^* & ^{\S}~\text{Myr }& A_s^{\S} \\
-# \text{Age of subducting slab} & A^* & ^{\S}~\text{Myr} & A^{\S} \\
-# \text{Reference length scale} & h_0 & 1~\text{km} & - \\
-# \text{Depth of base of upper crust}^\text{c} & z_1^* & 15~\text{km} & z_1=15 \\
-# \text{Depth of base of lower crust (Moho)} & z_2^* & ^{\S}~\text{km} & z_2^{\S} \\
-# \text{Trench depth} & z_\text{trench}^* & ^{\S}~\text{km} & z_\text{trench}^{\S} \\
-# \text{Position of the coast line} & x_\text{coast}^* & ^{\S}~\text{km} & x_\text{coast}^{\S} \\
-# \text{Wedge inflow/outflow transition depth} & z_\text{io}^* & ^{\S}~\text{km} & z_\text{io}^{\S} \\
-# \text{Depth of domain} & D^* & ^{\S}~\text{km} & D^{\S} \\
-# \text{Width of domain} & L^* & ^{\S}~\text{km} & L^{\S} \\
-# \text{Depth of change from decoupling to coupling} & d_c^* & 80~\text{km} & d_c=80 \\
-# \text{Reference heat capacity} & {c_p}_0 & 1250~\text{J/(kg~K)} & - \\
-# \text{Reference thermal diffusivity} & \kappa_0 & 0.7515\times10^{\text{-6}}~\text{m}^2\text{/s} & - \\
-# \text{Activation energy} & E & 540~\text{kJ/mol} & -\\
-# \text{Powerlaw exponent} & n & 3.5 & -\\
-# \text{Pre-exponential constant} & A^*_\eta & 28968.6~\text{Pa~s}^{1/n} & - \\
-# \text{Reference viscosity scale} & \eta_0 & 10^{\textrm{21}}~\text{Pa~s} & -\\
-# \text{Viscosity cap} & \eta^*_\text{max} & 10^{\textrm{25}}~\text{Pa~s} & - \\
-# \text{Gas constant} & R^* & 8.3145~\text{J/(mol~K)} & - \\
-# \text{Derived velocity scale} & {v}_0& 23.716014~\text{mm/yr} & - \\
-# \text{Convergence velocity} & V_s^* & ^{\S}~\text{mm/yr} & V_s^{\S} \\
-# \end{array}
-# \begin{array}{rl}
-# ^\text{c} & \text{ocean-continent subduction only} \\
-# ^\text{o} & \text{ocean-ocean subduction only} \\
-# ^\text{t} & \text{time-dependent simulations only} \\
-# ^\S       & \text{varies between models} \\
-# \end{array}
+# 
+# | **Quantity**                                      | **Symbol**          | **Nominal value**                        | **Nondimensional value**    |
+# |---------------------------------------------------|---------------------|------------------------------------------|-----------------------------|
+# | Reference temperature scale                       | $ T_0$              | 1 K=1$^\circ$C                           | -                           |
+# | Surface temperature                               | $T^*_s$             | 273 K=0$^\circ$C                         | $T_s$=0                     |
+# | Mantle temperature                                | $T^*_m$             | 1623 K=1350$^\circ$C                     | $T_m$=1350                  |
+# | Surface heat flow	note{c}                         | $q^*_s$             | $^\S$ W/m$^2$                       | $q_s$$^\S$             |
+# | Reference density                                 | $\rho_0$            | 3300 kg/m$^3$                            | -                           |
+# | Crustal density$^\text{c}$                          | $\rho^*_c$          | 2750 kg/m$^3$                            | $\rho_c$=0.833333           |
+# | Mantle density                                    | $\rho^*_m$          | 3300 kg/m$^3$                            | $\rho_m$=1                  |
+# | Reference thermal conductivity                    | $k_0$               | 3.1  W/(m K)                             | -                           |
+# | Crustal thermal conductivity$^\text{c}$             | $k^*_c$             | 2.5  W/(m K)                             | $k_c$=0.8064516             |
+# | Mantle thermal conductivity                       | $k^*_m$             | 3.1  W/(m K)                             | $k_m$=1                     |
+# | Volumetric heat production (upper crust)$^\text{c}$ | $H^*_1$             | 1.3 $\mu$W/m$^3$                       | $H_1$=0.419354              |
+# | Volumetric heat production (lower crust)$^\text{c}$ | $H_2^*$             | 0.27 $\mu$W/m$^3$                      | $H_2$=0.087097              |
+# | Age of overriding crust$^\text{o}$                  | $A_c^*$             | $^\S$ Myr                           | $A_c$$^\S$             |
+# | Age of subduction$^\text{t}$                        | $A_s^*$             | $^\S$ Myr                           | $A_s$$^\S$             |
+# | Age of subducting slab                            | $A^*$               | $^\S$ Myr                           | $A$$^\S$               |
+# | Reference length scale                            | $h_0$               | 1 km                                     | -                           |
+# | Depth of base of upper crust$^\text{c}$             | $z_1^*$             | 15 km                                    | $z_1$=15                    |
+# | Depth of base of lower crust (Moho)               | $z_2^*$             | $^\S$ km                            | $z_2$$^\S$             |
+# | Trench depth                                      | $z_\text{trench}^*$ | $^\S$ km                            | $z_\text{trench}$$^\S$ |
+# | Position of the coast line                        | $x_\text{coast}^*$  | $^\S$ km                            | $x_\text{coast}$$^\S$  |
+# | Wedge inflow/outflow transition depth             | $z_\text{io}^*$     | $^\S$ km                            | $z_\text{io}$$^\S$     |
+# | Depth of domain                                   | $D^*$               | $^\S$ km                            | $D$$^\S$               |
+# | Width of domain                                   | $L^*$               | $^\S$ km                            | $L$$^\S$               |
+# | Depth of change from decoupling to coupling       | $d_c^*$             | 80 km                                    | $d_c$=80                    |
+# | Reference heat capacity                           | ${c_p}_0$           | 1250 J/(kg K)                            | -                           |
+# | Reference thermal diffusivity                     | $\kappa_0$          | 0.7515$\times$10$^{\textrm{-6}}$ m$^2$/s | -                           |
+# | Activation energy                                 | $E$                 | 540 kJ/mol                               | -                           |
+# | Powerlaw exponent                                 | $n$                 | 3.5                                      | -                           |
+# | Pre-exponential constant                          | $A^*_\eta$          | 28968.6 Pa s$^{1/n}$                     | -                           |
+# | Reference viscosity scale                         | $\eta_0$            | 10$^{\textrm{21}}$ Pa s                  | -                           |
+# | Viscosity cap                                     | $\eta^*_\text{max}$ | 10$^{\textrm{25}}$ Pa s                  | -                           |
+# | Gas constant                                      | $R^*$               | 8.3145 J/(mol K)                         | -                           |
+# | Derived velocity scale                            | ${v}_0$             | 23.716014 mm/yr                          | -                           |
+# | Convergence velocity                              | $V_s^*$             | $^\S$ mm/yr                         | $V_s$$^\S$             |
+# 
+# |            |                                 |
+# |------------|---------------------------------|
+# |$^\text{c}$ | ocean-continent subduction only |
+# |$^\text{o}$ | ocean-ocean subduction only     |
+# |$^\text{t}$ | time-dependent simulations only |
+# |$^\S$       | varies between models           |
+# 
 # *Table 1: Nomenclature and reference values*
 
 # Table 1 provides a list of dimensional reference values, dimensional parameters, and their nondimensional equivalents.

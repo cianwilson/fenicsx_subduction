@@ -44,116 +44,116 @@ parts:
       - file: notebooks/sz_suite_ss
         title: Global suite
         sections:
-          - file: notebooks/sz_suite_ss_01
+          - file: notebooks/sz_suite_ss/01_Alaska_Peninsula
             title: 01 Alaska Peninsula
-          - file: notebooks/sz_suite_ss_02
+          - file: notebooks/sz_suite_ss/02_Alaska
             title: 02 Alaska
-          - file: notebooks/sz_suite_ss_03
+          - file: notebooks/sz_suite_ss/03_British_Columbia
             title: 03 British Columbia
-          - file: notebooks/sz_suite_ss_04
+          - file: notebooks/sz_suite_ss/04_Cascadia
             title: 04 Cascadia
-          - file: notebooks/sz_suite_ss_05
+          - file: notebooks/sz_suite_ss/05_Mexico
             title: 05 Mexico
-          - file: notebooks/sz_suite_ss_06
+          - file: notebooks/sz_suite_ss/06_GuatElSal
             title: 06 GuatElSal
-          - file: notebooks/sz_suite_ss_07
+          - file: notebooks/sz_suite_ss/07_Nicaragua
             title: 07 Nicaragua
-          - file: notebooks/sz_suite_ss_08
+          - file: notebooks/sz_suite_ss/08_Costa_Rica
             title: 08 Costa Rica
-          - file: notebooks/sz_suite_ss_09
+          - file: notebooks/sz_suite_ss/09_Colombia_Ecuador
             title: 09 Colombia Ecuador
-          - file: notebooks/sz_suite_ss_10
+          - file: notebooks/sz_suite_ss/10_N_Peru_Gap
             title: 10 N Peru Gap
-          - file: notebooks/sz_suite_ss_11
+          - file: notebooks/sz_suite_ss/11_C_Peru_Gap
             title: 11 C Peru Gap
-          - file: notebooks/sz_suite_ss_12
+          - file: notebooks/sz_suite_ss/12_Peru
             title: 12 Peru
-          - file: notebooks/sz_suite_ss_13
+          - file: notebooks/sz_suite_ss/13_N_Chile
             title: 13 N Chile
-          - file: notebooks/sz_suite_ss_14
+          - file: notebooks/sz_suite_ss/14_NC_Chile
             title: 14 NC Chile
-          - file: notebooks/sz_suite_ss_15
+          - file: notebooks/sz_suite_ss/15_C_Chile_Gap
             title: 15 C Chile Gap
-          - file: notebooks/sz_suite_ss_16
+          - file: notebooks/sz_suite_ss/16_C_Chile
             title: 16 C Chile
-          - file: notebooks/sz_suite_ss_17
+          - file: notebooks/sz_suite_ss/17_SC_Chile
             title: 17 SC Chile
-          - file: notebooks/sz_suite_ss_18
+          - file: notebooks/sz_suite_ss/18_S_Chile
             title: 18 S Chile
-          - file: notebooks/sz_suite_ss_19
+          - file: notebooks/sz_suite_ss/19_N_Antilles
             title: 19 N Antilles
-          - file: notebooks/sz_suite_ss_20
+          - file: notebooks/sz_suite_ss/20_S_Antilles
             title: 20 S Antilles
-          - file: notebooks/sz_suite_ss_21
+          - file: notebooks/sz_suite_ss/21_Scotia
             title: 21 Scotia
-          - file: notebooks/sz_suite_ss_22
+          - file: notebooks/sz_suite_ss/22_Aegean
             title: 22 Aegean
-          - file: notebooks/sz_suite_ss_23
+          - file: notebooks/sz_suite_ss/23_N_Sumatra
             title: 23 N Sumatra
-          - file: notebooks/sz_suite_ss_24
+          - file: notebooks/sz_suite_ss/24_C_Sumatra
             title: 24 C Sumatra
-          - file: notebooks/sz_suite_ss_25
+          - file: notebooks/sz_suite_ss/25_S_Sumatra
             title: 25 S Sumatra
-          - file: notebooks/sz_suite_ss_26
+          - file: notebooks/sz_suite_ss/26_Sunda_Strait
             title: 26 Sunda Strait
-          - file: notebooks/sz_suite_ss_27
+          - file: notebooks/sz_suite_ss/27_Java
             title: 27 Java
-          - file: notebooks/sz_suite_ss_28
+          - file: notebooks/sz_suite_ss/28_Bali_Lombok
             title: 28 Bali Lombok
-          - file: notebooks/sz_suite_ss_29
+          - file: notebooks/sz_suite_ss/29_W_Banda_Sea
             title: 29 W Banda Sea
-          - file: notebooks/sz_suite_ss_30
+          - file: notebooks/sz_suite_ss/30_E_Banda_Sea
             title: 30 E Banda Sea
-          - file: notebooks/sz_suite_ss_31
+          - file: notebooks/sz_suite_ss/31_New_Britain
             title: 31 New Britain
-          - file: notebooks/sz_suite_ss_32
+          - file: notebooks/sz_suite_ss/32_Solomon
             title: 32 Solomon
-          - file: notebooks/sz_suite_ss_33
+          - file: notebooks/sz_suite_ss/33_N_Vanuatu
             title: 33 N Vanuatu
-          - file: notebooks/sz_suite_ss_34
+          - file: notebooks/sz_suite_ss/34_S_Vanuatu
             title: 34 S Vanuatu
-          - file: notebooks/sz_suite_ss_35
+          - file: notebooks/sz_suite_ss/35_Tonga
             title: 35 Tonga
-          - file: notebooks/sz_suite_ss_36
+          - file: notebooks/sz_suite_ss/36_Kermadec
             title: 36 Kermadec
-          - file: notebooks/sz_suite_ss_37
+          - file: notebooks/sz_suite_ss/37_New_Zealand
             title: 37 New Zealand
-          - file: notebooks/sz_suite_ss_38
+          - file: notebooks/sz_suite_ss/38_S_Philippines
             title: 38 S Philippines
-          - file: notebooks/sz_suite_ss_39
+          - file: notebooks/sz_suite_ss/39_N_Philippines
             title: 39 N Philippines
-          - file: notebooks/sz_suite_ss_40
+          - file: notebooks/sz_suite_ss/40_S_Marianas
             title: 40 S Marianas
-          - file: notebooks/sz_suite_ss_41
+          - file: notebooks/sz_suite_ss/41_N_Marianas
             title: 41 N Marianas
-          - file: notebooks/sz_suite_ss_42
+          - file: notebooks/sz_suite_ss/42_Bonin
             title: 42 Bonin
-          - file: notebooks/sz_suite_ss_43
+          - file: notebooks/sz_suite_ss/43_Izu
             title: 43 Izu
-          - file: notebooks/sz_suite_ss_44
+          - file: notebooks/sz_suite_ss/44_Kyushu
             title: 44 Kyushu
-          - file: notebooks/sz_suite_ss_45
+          - file: notebooks/sz_suite_ss/45_Ryukyu
             title: 45 Ryukyu
-          - file: notebooks/sz_suite_ss_46
+          - file: notebooks/sz_suite_ss/46_Nankai
             title: 46 Nankai
-          - file: notebooks/sz_suite_ss_47
+          - file: notebooks/sz_suite_ss/47_C_Honshu
             title: 47 C Honshu
-          - file: notebooks/sz_suite_ss_48
+          - file: notebooks/sz_suite_ss/48_N_Honshu
             title: 48 N Honshu
-          - file: notebooks/sz_suite_ss_49
+          - file: notebooks/sz_suite_ss/49_Hokkaido
             title: 49 Hokkaido
-          - file: notebooks/sz_suite_ss_50
+          - file: notebooks/sz_suite_ss/50_S_Kurile
             title: 50 S Kurile
-          - file: notebooks/sz_suite_ss_51
+          - file: notebooks/sz_suite_ss/51_N_Kurile
             title: 51 N Kurile
-          - file: notebooks/sz_suite_ss_52
+          - file: notebooks/sz_suite_ss/52_Kamchatka
             title: 52 Kamchatka
-          - file: notebooks/sz_suite_ss_53
+          - file: notebooks/sz_suite_ss/53_W_Aleutians
             title: 53 W Aleutians
-          - file: notebooks/sz_suite_ss_54
+          - file: notebooks/sz_suite_ss/54_C_Aleutians
             title: 54 C Aleutians
-          - file: notebooks/sz_suite_ss_55
+          - file: notebooks/sz_suite_ss/55_E_Aleutians
             title: 55 E Aleutians
-          - file: notebooks/sz_suite_ss_56
+          - file: notebooks/sz_suite_ss/56_Calabria
             title: 56 Calabria
 

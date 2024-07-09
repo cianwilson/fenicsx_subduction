@@ -61,5 +61,5 @@ html:
 #        provide a link to the Creative Commons license and indicate if changes were made.
 #    </div>
 
-exclude_patterns: [readme.md, 
-                   notebooks/sz_suite_ss_template.ipynb]
+exclude_patterns: [readme.md, typos.md,
+                   notebooks/sz_suite_ss/template.ipynb]

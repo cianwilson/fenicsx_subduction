@@ -24,10 +24,10 @@ def substitute(filename):
     subs['name'] = name
     subs['index'] = name.split('_')[0]
     subs['name_sub'] = ' '.join(name.split('_'))
-    newfilename = filename.replace('template', subs['index'])
+    newfilename = filename.replace('template', subs['name'])
     with open(newfilename, 'w') as fp:
       fp.write(temp.substitute(subs))
-    suite.append((subs['name_sub'], newfilename.rstrip('.ipynb')))
+    suite.append((subs['name_sub'], os.path.splitext(newfilename)[0]))
 
   return suite
 

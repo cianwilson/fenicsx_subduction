@@ -22,7 +22,7 @@ full_path=$(realpath $0)
 script_path=$(dirname $full_path)
 repo_path=$(dirname $script_path)
 
-for f in `ls $repo_path/notebooks/*.ipynb`;
+for f in `find $repo_path/notebooks -not -path "*/.ipynb_checkpoints/*" -type f -name '*.ipynb'`;
 do
   jupyter nbconvert --NbConvertApp.use_output_suffix=False \
                     --NbConvertApp.export_format=script \

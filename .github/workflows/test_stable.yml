@@ -50,4 +50,5 @@ jobs:
             python3 sz_geometry.py
             python3 sz_problem.py
             python3 sz_tests.py
+            python3 sz_benchmark.py
 

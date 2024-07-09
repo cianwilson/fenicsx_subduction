@@ -13,6 +13,7 @@ class GmshFile:
     self.sindex = 1
     gmsh.initialize()
     gmsh.model.add(modelname)
+    gmsh.option.setNumber('General.Verbosity', 3)
 
   def __exit__(self, exc_type, exc_value, traceback):
     gmsh.finalize()
