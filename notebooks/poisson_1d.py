@@ -72,12 +72,14 @@ import dolfinx.fem.petsc
 import numpy as np
 import ufl
 import matplotlib.pyplot as pl
-import pathlib
 import sys, os
-sys.path.append(os.path.join(os.path.pardir, 'python'))
+basedir = ''
+if "__file__" in globals(): basedir = os.path.dirname(__file__)
+sys.path.append(os.path.join(basedir, os.path.pardir, 'python'))
 import utils
+import pathlib
 if __name__ == "__main__":
-    output_folder = pathlib.Path("output")
+    output_folder = pathlib.Path(os.path.join(basedir, "output"))
     output_folder.mkdir(exist_ok=True, parents=True)
 
 
@@ -198,7 +200,7 @@ def plot_1d(T, x, filename=None):
         ax.set_ylabel(T.name)
         ax.set_title('Numerical and exact solutions')
         # save the figure
-        if filename is not None: fig.savefig(output_folder / filename)
+        if filename is not None: fig.savefig(filename)
 
 
 # Comparing the numerical, $\tilde{T}$, and analytical, $T$, solutions we can see that even at this small number of elements we do a good job at reproducing the correct answer.
@@ -208,7 +210,7 @@ def plot_1d(T, x, filename=None):
 
 if __name__ == "__main__":
     x = np.linspace(0, 1, 201)
-    plot_1d(T_P1, x, filename='1d_poisson_P1_solution.pdf')
+    plot_1d(T_P1, x, filename=output_folder / '1d_poisson_P1_solution.pdf')
 
 
 # We can also try with a higher order element and see how it improves the solution.
@@ -230,7 +232,7 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     x = np.linspace(0, 1, 201)
-    plot_1d(T_P2, x, filename='1d_poisson_P2_solution.pdf')
+    plot_1d(T_P2, x, filename=output_folder / '1d_poisson_P2_solution.pdf')
 
 
 # ## Testing

@@ -36,13 +36,18 @@ import dolfinx.fem.petsc
 import numpy as np
 import ufl
 import matplotlib.pyplot as pl
-import pathlib
 import sys, os
-sys.path.append(os.path.join(os.path.pardir, 'python'))
+basedir = ''
+if "__file__" in globals(): basedir = os.path.dirname(__file__)
+sys.path.append(os.path.join(basedir, os.path.pardir, 'python'))
 import utils
 import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
     pv.OFF_SCREEN = True
+import pathlib
+if __name__ == "__main__":
+    output_folder = pathlib.Path(os.path.join(basedir, "output"))
+    output_folder.mkdir(exist_ok=True, parents=True)
 
 
 # ### Solution
@@ -151,14 +156,14 @@ if __name__ == "__main__":
     # show the plot
     utils.plot_show(plotter_P1)
     # save the plot
-    utils.plot_save(plotter_P1, "2d_poisson_P1_solution.png")
+    utils.plot_save(plotter_P1, output_folder / "2d_poisson_P1_solution.png")
     comm = T_P1.function_space.mesh.comm
     if comm.size > 1:
         # if we're running in parallel (e.g. from a script) then save an image per process as well
         plotter_P1_p = utils.plot_scalar(T_P1)
         utils.plot_mesh(T_P1.function_space.mesh, plotter=plotter_P1_p, show_edges=True, style="wireframe", color='k', line_width=2)
         utils.plot_scalar_values(T_P1, plotter=plotter_P1_p, point_size=15, font_size=22, shape_color='w', text_color='k', bold=False)
-        utils.plot_save(plotter_P1_p, "2d_poisson_P1_solution_p{:d}.png".format(comm.rank,))
+        utils.plot_save(plotter_P1_p, output_folder / "2d_poisson_P1_solution_p{:d}.png".format(comm.rank,))
 
 
 # Similarly, we can solve the equation using quadratic elements (`p=2`).
@@ -186,14 +191,14 @@ if __name__ == "__main__":
     # show the plot
     utils.plot_show(plotter_P2)
     # save the plot
-    utils.plot_save(plotter_P2, "2d_poisson_P2_solution.png")
+    utils.plot_save(plotter_P2, output_folder / "2d_poisson_P2_solution.png")
     comm = T_P2.function_space.mesh.comm
     if comm.size > 1:
         # if we're running in parallel (e.g. from a script) then save an image per process as well
         plotter_P2_p = utils.plot_scalar(T_P2)
         utils.plot_mesh(T_P2.function_space.mesh, plotter=plotter_P2_p, show_edges=True, style="wireframe", color='k', line_width=2)
         utils.plot_scalar_values(T_P2, plotter=plotter_P2_p, point_size=15, font_size=12, shape_color='w', text_color='k', bold=False)
-        utils.plot_save(plotter_P2_p, "2d_poisson_P2_solution_p{:d}.png".format(comm.rank,))
+        utils.plot_save(plotter_P2_p, output_folder / "2d_poisson_P2_solution_p{:d}.png".format(comm.rank,))
 
 
 # ## Themes and variations

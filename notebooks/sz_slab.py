@@ -29,7 +29,7 @@ sys.path.append(os.path.join(basedir, os.path.pardir, 'python'))
 # In[ ]:
 
 
-from sz_base import *
+from sz_base import default_params, allsz_params
 
 
 # Then let's load all the remaining required modules at the beginning and set up a default output directory.
@@ -42,7 +42,7 @@ from mpi4py import MPI
 import matplotlib.pyplot as pl
 import pathlib
 if __name__ == "__main__":
-    output_folder = pathlib.Path("output")
+    output_folder = pathlib.Path(os.path.join(basedir, "output"))
     output_folder.mkdir(exist_ok=True, parents=True)
 
 
@@ -206,15 +206,27 @@ if __name__ == "__main__":
 # In[ ]:
 
 
-if __name__ == "__main__":
+def plot_slab(slab):
     interpx = [curve.points[0].x for curve in slab.interpcurves]+[slab.interpcurves[-1].points[1].x]
     interpy = [curve.points[0].y for curve in slab.interpcurves]+[slab.interpcurves[-1].points[1].y]
-    pl.plot(interpx, interpy)
-    pl.gca().set_xlabel('x (km)')
-    pl.gca().set_ylabel('y (km)')
-    pl.gca().set_aspect('equal')
-    pl.gca().set_title('Benchmark Slab Geometry')
+    fig = pl.figure()
+    ax = fig.gca()
+    ax.plot(interpx, interpy)
+    ax.set_xlabel('x (km)')
+    ax.set_ylabel('y (km)')
+    ax.set_aspect('equal')
+    ax.set_title('Slab Geometry')
+    return fig
     pl.savefig(output_folder / 'sz_slab_benchmark.png')
+
+
+# In[ ]:
+
+
+if __name__ == "__main__":
+    fig = plot_slab(slab)
+    fig.gca().set_title('Benchmark Slab Geometry')
+    fig.savefig(output_folder / 'sz_slab_benchmark.png')
 
 
 # #### Demonstration - Alaska Peninsula
@@ -236,13 +248,8 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    interpx = [curve.points[0].x for curve in slab_ak.interpcurves]+[slab_ak.interpcurves[-1].points[1].x]
-    interpy = [curve.points[0].y for curve in slab_ak.interpcurves]+[slab_ak.interpcurves[-1].points[1].y]
-    pl.plot(interpx, interpy)
-    pl.gca().set_xlabel('x (km)')
-    pl.gca().set_ylabel('y (km)')
-    pl.gca().set_aspect('equal')
-    pl.gca().set_title('01_Alaska_Peninsula Slab Geometry')
+    fig = plot_slab(slab_ak)
+    fig.gca().set_title('Alaska Peninsula Slab Geometry')
     pl.savefig(output_folder / 'sz_slab_ak.png')
 
 

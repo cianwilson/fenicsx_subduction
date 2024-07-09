@@ -2,7 +2,6 @@ from mpi4py import MPI
 import dolfinx as df
 import pyvista as pv
 import numpy as np
-import pathlib
 import functools
 
 try:
@@ -439,6 +438,4 @@ def plot_save(plotter, filename):
       * filename - filename to save image to
     """
     if plotter is not None:
-        output_folder = pathlib.Path("output")
-        output_folder.mkdir(exist_ok=True, parents=True)
-        figure = plotter.screenshot(output_folder / filename)
+        figure = plotter.screenshot(filename)

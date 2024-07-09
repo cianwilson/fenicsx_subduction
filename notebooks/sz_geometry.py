@@ -27,8 +27,8 @@ sys.path.append(os.path.join(basedir, os.path.pardir, 'python'))
 # In[ ]:
 
 
-from sz_base import *
-from sz_slab import *
+from sz_base import default_params, allsz_params
+from sz_slab import create_slab
 
 
 # Then let's load all the remaining required modules at the beginning and set up our plotting preferences and a default output directory.
@@ -39,12 +39,12 @@ from sz_slab import *
 import geometry as geo
 import utils
 from mpi4py import MPI
-import pathlib
 import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
     pv.OFF_SCREEN = True
+import pathlib
 if __name__ == "__main__":
-    output_folder = pathlib.Path("output")
+    output_folder = pathlib.Path(os.path.join(basedir, "output"))
     output_folder.mkdir(exist_ok=True, parents=True)
 
 
@@ -307,7 +307,7 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     plotter_mesh = utils.plot_mesh(mesh, tags=cell_tags, gather=True, show_edges=True, line_width=1)
     utils.plot_show(plotter_mesh)
-    utils.plot_save(plotter_mesh, "sz_geometry_benchmark_mesh.png")
+    utils.plot_save(plotter_mesh, output_folder / "sz_geometry_benchmark_mesh.png")
 
 
 # It's also possible to output the geometry to file using:
@@ -377,7 +377,7 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     plotter_mesh_ak = utils.plot_mesh(mesh_ak, tags=cell_tags_ak, gather=True, show_edges=True, line_width=1)
     utils.plot_show(plotter_mesh_ak)
-    utils.plot_save(plotter_mesh_ak, "sz_geometry_ak_mesh.png")
+    utils.plot_save(plotter_mesh_ak, output_folder / "sz_geometry_ak_mesh.png")
 
 
 # In[ ]:
@@ -444,7 +444,7 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     plotter_mesh_ant = utils.plot_mesh(mesh_ant, tags=cell_tags_ant, gather=True, show_edges=True, line_width=1)
     utils.plot_show(plotter_mesh_ant)
-    utils.plot_save(plotter_mesh_ant, "sz_geometry_ant_mesh.png")
+    utils.plot_save(plotter_mesh_ant, output_folder / "sz_geometry_ant_mesh.png")
 
 
 # In[ ]:

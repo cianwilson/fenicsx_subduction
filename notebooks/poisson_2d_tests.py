@@ -28,14 +28,30 @@
 
 # ### Preamble
 
-# Start by loading everything we did in `notebooks/poisson_2d.ipynb`.
+# Start by loading `solve_poisson_2d` from `notebooks/poisson_2d.ipynb` and setting up some paths.
 
 # In[ ]:
 
 
-from poisson_2d import *
+from poisson_2d import solve_poisson_2d
+from mpi4py import MPI
+import dolfinx as df
+import dolfinx.fem.petsc
+import numpy as np
+import ufl
+import sys, os
+basedir = ''
+if "__file__" in globals(): basedir = os.path.dirname(__file__)
+sys.path.append(os.path.join(basedir, os.path.pardir, 'python'))
+import utils
+import matplotlib.pyplot as pl
+import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
     pv.OFF_SCREEN = True
+import pathlib
+if __name__ == "__main__":
+    output_folder = pathlib.Path(os.path.join(basedir, "output"))
+    output_folder.mkdir(exist_ok=True, parents=True)
 
 
 # ### Error analysis
@@ -201,14 +217,14 @@ if __name__ == "__main__":
     # plot g as glyphs
     utils.plot_vector_glyphs(gh, plotter=plotter_g, gather=True, factor=0.03, cmap='coolwarm')
     utils.plot_show(plotter_g)
-    utils.plot_save(plotter_g, "2d_poisson_gradient.png")
+    utils.plot_save(plotter_g, output_folder / "2d_poisson_gradient.png")
     comm = mesh.comm
     if comm.size > 1:
         # if we're running in parallel (e.g. from a script) then save an image per process as well
         plotter_g_p = utils.plot_scalar(T)
         # plot g as glyphs
         utils.plot_vector_glyphs(gh, plotter=plotter_g_p, factor=0.03, cmap='coolwarm')
-        utils.plot_save(plotter_g_p, "2d_poisson_gradient_p{:d}.png".format(comm.rank,))
+        utils.plot_save(plotter_g_p, output_folder / "2d_poisson_gradient_p{:d}.png".format(comm.rank,))
 
 
 # ## Finish up

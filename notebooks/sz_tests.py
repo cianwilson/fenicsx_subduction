@@ -14,15 +14,33 @@
 
 # ### Preamble
 
-# Start by loading everything we need from `sz_problem` and also set our default plotting preferences.
+# Let's start by adding the path to the modules in the `python` folder to the system path (so we can find the our custom modules).
 
 # In[ ]:
 
 
-from sz_problem import *
+import sys, os
+basedir = ''
+if "__file__" in globals(): basedir = os.path.dirname(__file__)
+sys.path.append(os.path.join(basedir, os.path.pardir, 'python'))
+
+
+# Then load everything we need from `sz_problem` and also set our default plotting preferences.
+
+# In[ ]:
+
+
+import utils
+from sz_base import default_params, allsz_params
+from sz_slab import create_slab
+from sz_geometry import create_sz_geometry
+from sz_problem import SubductionProblem, plot_slab_temperatures
 import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
     pv.OFF_SCREEN = True
+import pathlib
+output_folder = pathlib.Path(os.path.join(basedir, "output"))
+output_folder.mkdir(exist_ok=True, parents=True)
 
 
 # ### Higher Resolution
@@ -87,7 +105,7 @@ plotter_case1_resscale2 = utils.plot_scalar(sz_case1_resscale2.T_i, scale=sz_cas
 utils.plot_vector_glyphs(sz_case1_resscale2.vw_i, plotter=plotter_case1_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
 utils.plot_vector_glyphs(sz_case1_resscale2.vs_i, plotter=plotter_case1_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
 utils.plot_show(plotter_case1_resscale2)
-utils.plot_save(plotter_case1_resscale2, "sz_tests_case1_resscale2_solution.png")
+utils.plot_save(plotter_case1_resscale2, output_folder / "sz_tests_case1_resscale2_solution.png")
 
 
 # #### Benchmark case 2
@@ -133,7 +151,7 @@ plotter_case2_resscale2 = utils.plot_scalar(sz_case2_resscale2.T_i, scale=sz_cas
 utils.plot_vector_glyphs(sz_case2_resscale2.vw_i, plotter=plotter_case2_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
 utils.plot_vector_glyphs(sz_case2_resscale2.vs_i, plotter=plotter_case2_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
 utils.plot_show(plotter_case2_resscale2)
-utils.plot_save(plotter_case2_resscale2, "sz_tests_case2_resscale2_solution.png")
+utils.plot_save(plotter_case2_resscale2, output_folder / "sz_tests_case2_resscale2_solution.png")
 
 
 # ### Global suite
@@ -165,7 +183,7 @@ plotter_ak = utils.plot_scalar(sz_ak.T_i, scale=sz_ak.T0, gather=True, cmap='coo
 utils.plot_vector_glyphs(sz_ak.vw_i, plotter=plotter_ak, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
 utils.plot_vector_glyphs(sz_ak.vs_i, plotter=plotter_ak, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
 utils.plot_show(plotter_ak)
-utils.plot_save(plotter_ak, "sz_tests_ak_solution.png")
+utils.plot_save(plotter_ak, output_folder / "sz_tests_ak_solution.png")
 
 
 # In[ ]:
@@ -174,7 +192,7 @@ utils.plot_save(plotter_ak, "sz_tests_ak_solution.png")
 eta_ak = sz_ak.project_dislocationcreep_viscosity()
 plotter_eta_ak = utils.plot_scalar(eta_ak, scale=sz_ak.eta0, gather=True, log_scale=True, show_edges=True)
 utils.plot_show(plotter_eta_ak)
-utils.plot_save(plotter_eta_ak, "sz_tests_ak_eta.png")
+utils.plot_save(plotter_eta_ak, output_folder / "sz_tests_ak_eta.png")
 
 
 # #### N Antilles (dislocation creep, low res)
@@ -204,7 +222,7 @@ plotter_ant = utils.plot_scalar(sz_ant.T_i, scale=sz_ant.T0, gather=True, cmap='
 utils.plot_vector_glyphs(sz_ant.vw_i, plotter=plotter_ant, gather=True, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
 utils.plot_vector_glyphs(sz_ant.vs_i, plotter=plotter_ant, gather=True, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
 utils.plot_show(plotter_ant)
-utils.plot_save(plotter_ant, "sz_tests_ant_solution.png")
+utils.plot_save(plotter_ant, output_folder / "sz_tests_ant_solution.png")
 
 
 # In[ ]:
@@ -213,7 +231,7 @@ utils.plot_save(plotter_ant, "sz_tests_ant_solution.png")
 eta_ant = sz_ant.project_dislocationcreep_viscosity()
 plotter_eta_ant = utils.plot_scalar(eta_ant, scale=sz_ant.eta0, gather=True, log_scale=True, show_edges=True)
 utils.plot_show(plotter_eta_ant)
-utils.plot_save(plotter_eta_ant, "sz_tests_ant_eta.png")
+utils.plot_save(plotter_eta_ant, output_folder / "sz_tests_ant_eta.png")
 
 
 # ## Finish up

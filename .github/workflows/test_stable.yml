@@ -5,6 +5,8 @@ on:
   workflow_call:
   pull_request:
     branches: ["main", "release"]
+  push:
+    branches: ["main"] # this also gets called by deploy on push into release
 
 env:
   HDF5_MPI: "ON"

@@ -39,9 +39,9 @@ sys.path.append(os.path.join(basedir, os.path.pardir, 'python'))
 # In[ ]:
 
 
-from sz_base import *
-from sz_slab import *
-from sz_geometry import *
+from sz_base import default_params, allsz_params
+from sz_slab import create_slab
+from sz_geometry import create_sz_geometry
 
 
 # Then let's load all the required modules at the beginning.
@@ -60,12 +60,12 @@ import ufl
 import basix.ufl as bu
 import matplotlib.pyplot as pl
 import copy
-import pathlib
 import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
     pv.OFF_SCREEN = True
+import pathlib
 if __name__ == "__main__":
-    output_folder = pathlib.Path("output")
+    output_folder = pathlib.Path(os.path.join(basedir, "output"))
     output_folder.mkdir(exist_ok=True, parents=True)
 
 
@@ -885,7 +885,7 @@ if __name__ == "__main__":
     plotter_ic = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
     utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_ic, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
     utils.plot_show(plotter_ic)
-    utils.plot_save(plotter_ic, "sz_problem_case1_ics.png")
+    utils.plot_save(plotter_ic, output_folder / "sz_problem_case1_ics.png")
 
 
 # #### 5-6. Equations - isoviscous, steady-state
@@ -1248,7 +1248,7 @@ if __name__ == "__main__":
     utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
     utils.plot_vector_glyphs(sz_case1.vs_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
     utils.plot_show(plotter_iso)
-    utils.plot_save(plotter_iso, filename="sz_problem_case1_solution.png")
+    utils.plot_save(plotter_iso, output_folder / "sz_problem_case1_solution.png")
 
 
 # The output can also be saved to disk and opened with other visualization software (e.g. [Paraview](https://www.paraview.org/)).
@@ -1597,7 +1597,7 @@ if __name__ == "__main__":
     utils.plot_vector_glyphs(sz_case2.vw_i, plotter=plotter_dis, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
     utils.plot_vector_glyphs(sz_case2.vs_i, plotter=plotter_dis, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
     utils.plot_show(plotter_dis)
-    utils.plot_save(plotter_dis, "sz_problem_case2_solution.png")
+    utils.plot_save(plotter_dis, output_folder / "sz_problem_case2_solution.png")
 
 
 # Where we can see that the wedge velocity is much more "pinched" near the coupling depth with the dislocation creep viscosity.  This likely explains our poor performance in the benchmark at the low resolution we selected.  
@@ -1622,7 +1622,7 @@ if __name__ == "__main__":
     eta_i = sz_case2.project_dislocationcreep_viscosity()
     plotter_eta = utils.plot_scalar(eta_i, scale=sz_case2.eta0, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa) [log scale]'})
     utils.plot_show(plotter_eta)
-    utils.plot_save(plotter_eta, "sz_problem_case2_eta.png")
+    utils.plot_save(plotter_eta, output_folder / "sz_problem_case2_eta.png")
 
 
 # Clearly the velocity is constrained by the much higher viscosities in the low temperature or low strain rate regions of the domain.

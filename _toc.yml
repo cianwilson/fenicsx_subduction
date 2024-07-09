@@ -21,7 +21,7 @@ parts:
             title: Implementation
           - file: notebooks/poisson_2d_tests
             title: Themes and variations
-  - caption: Subduction Zone
+  - caption: Subduction Zone Problems
     chapters:
       - file: notebooks/sz_intro
         title: Setup
@@ -41,8 +41,10 @@ parts:
         sections:
           - file: notebooks/sz_benchmark
             title: Convergence
+  - caption: Global Suites
+    chapters:
       - file: notebooks/sz_suite_ss
-        title: Global suite
+        title: Steady State
         sections:
           - file: notebooks/sz_suite_ss/01_Alaska_Peninsula
             title: 01 Alaska Peninsula
