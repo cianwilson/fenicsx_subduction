@@ -192,12 +192,12 @@ def plot_1d(T, x, filename=None):
         # plot
         fig = pl.figure()
         ax = fig.gca()
-        ax.plot(x, T_x, label='$\\tilde{T}$ (P1)')           # numerical solution
+        ax.plot(x, T_x, label=T.name)           # numerical solution
         ax.plot(x[::int(nx/ne/p)], T_x[::int(nx/ne/p)], 'o') # nodal points (uses globally defined ne and p)
-        ax.plot(x, np.sin(np.pi*x/2), '--g', label='$T$')    # analytical solution
+        ax.plot(x, np.sin(np.pi*x/2), '--g', label='T (exact)')    # analytical solution
         ax.legend()
         ax.set_xlabel('$x$')
-        ax.set_ylabel(T.name)
+        ax.set_ylabel('$T$')
         ax.set_title('Numerical and exact solutions')
         # save the figure
         if filename is not None: fig.savefig(filename)
