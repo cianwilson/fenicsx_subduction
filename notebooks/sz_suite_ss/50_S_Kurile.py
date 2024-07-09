@@ -140,9 +140,13 @@ utils.plot_save(plotter, output_folder / "{}_ss_solution_resscale_{:.2f}.png".fo
 # In[ ]:
 
 
-filename = output_folder / "{}_ss_solution_resscale_{:.2f}".format(name, resscale)
-with df.io.VTXWriter(sz.mesh.comm, filename.with_suffix(".bp"), [sz.T_i, sz.vs_i, sz.vw_i]) as vtx:
+filename = output_folder / "{}_ss_solution_resscale_{:.2f}.bp".format(name, resscale)
+with df.io.VTXWriter(sz.mesh.comm, filename, [sz.T_i, sz.vs_i, sz.vw_i]) as vtx:
     vtx.write(0.0)
+# zip the .bp folder so that it can be downloaded from Jupyter lab
+if __name__ == "__main__" and "__file__" not in globals():
+    zipfilename = filename.with_suffix(".zip")
+    get_ipython().system('zip -r $zipfilename $filename')
 
 
 # ## Finish up

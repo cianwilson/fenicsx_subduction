@@ -26,7 +26,7 @@ def substitute(filename):
     subs['name_sub'] = ' '.join(name.split('_'))
     newfilename = filename.replace('template', subs['name'])
     with open(newfilename, 'w') as fp:
-      fp.write(temp.substitute(subs))
+      fp.write(temp.safe_substitute(subs))
     suite.append((subs['name_sub'], os.path.splitext(newfilename)[0]))
 
   return suite
