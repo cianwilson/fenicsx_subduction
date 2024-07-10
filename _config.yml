@@ -3,7 +3,7 @@
 
 title: FEniCSx Subduction
 author: Cian Wilson
-#logo: fenics_logo.png
+logo: notebooks/images/fenicssz_logo.svg
 # Auto-exclude files not in the toc
 only_build_toc_files        : false
 
