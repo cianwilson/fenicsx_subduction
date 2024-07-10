@@ -2,7 +2,7 @@
 
 Authors: Cian Wilson, Cameron Seebeck, Kidus Teshome, Nathan Sime, Peter van Keken
 
-Welcome to the [_FEniCSx Subduction_ Jupyter Book](https://cianwilson.github.io/fenicsx_subduction), an online resource for modeling subduction zones!
+Welcome to the [_FEniCS Subduction Zone_ Jupyter Book](https://cianwilson.github.io/fenicsx_subduction), an online resource for modeling subduction zones!
 
 This repository was developed by undergraduate interns Kidus Teshome and Cameron Seebeck at the [Carnegie Science Earth & Planets Laboratory](https://epl.carnegiescience.edu).  It is based on [Wilson & van Keken, PEPS, 2023 (II)](http://dx.doi.org/10.1186/s40645-023-00588-6), which is part II of a three part introductory review of the thermal structure of subduction zones by Peter van Keken and Cian Wilson.
 
