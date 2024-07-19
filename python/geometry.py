@@ -13,6 +13,7 @@ class GmshFile:
     self.sindex = 1
     gmsh.initialize()
     gmsh.model.add(modelname)
+    gmsh.option.setNumber('General.Verbosity', 3)
 
   def __exit__(self, exc_type, exc_value, traceback):
     gmsh.finalize()
@@ -593,7 +594,9 @@ class Geometry:
     return gmshfile
 
   def pylabplot(self, curvelabels=False, surfacelabels=False, lineres=100):
-    import pylab
+    import matplotlib.pyplot as pl
+    fig = pl.figure()
+    ax = fig.gca()
     #for interpcurve in self.interpcurves:
     #  unew = numpy.arange(interpcurve.u[0], interpcurve.u[-1]+((interpcurve.u[-1]-interpcurve.u[0])/(2.*lineres)), 1./lineres)
     #  unewx = numpy.zeros_like(unew)
@@ -602,30 +605,31 @@ class Geometry:
     #    xy = interpcurve(delu)
     #    unewx = xy[0]
     #    unewy = xy[1]
-    #  #pylab.plot(unewx, unewy, 'b')
-    #  #pylab.plot(interpcurve.x, interpcurve.y, 'ob')
+    #  #ax.plot(unewx, unewy, 'b')
+    #  #ax.plot(interpcurve.x, interpcurve.y, 'ob')
     #  for curve in interpcurve.interpcurves:
     #    unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
-    #    pylab.plot(curve(unew)[0], curve(unew)[1], 'k')
-    #    #pylab.plot(curve.x, curve.y, '+k')
+    #    ax.plot(curve(unew)[0], curve(unew)[1], 'k')
+    #    #ax.plot(curve.x, curve.y, '+k')
     #for curve in self.curves:
     #  unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
-    #  pylab.plot(curve(unew)[0], curve(unew)[1])
-    #  pylab.plot(curve.x, curve.y, 'ok')
+    #  ax.plot(curve(unew)[0], curve(unew)[1])
+    #  ax.plot(curve.x, curve.y, 'ok')
     for surface in self.surfaces:
       for curve in surface.curves:
         unew = numpy.arange(curve.u[0], curve.u[-1]+((curve.u[-1]-curve.u[0])/(2.*lineres)), 1./lineres)
-        pylab.plot(curve(unew)[0], curve(unew)[1])
-        pylab.plot(curve.x, curve.y, 'ok')
+        ax.plot(curve(unew)[0], curve(unew)[1])
+        ax.plot(curve.x, curve.y, 'ok')
         if curvelabels and curve.pid is not None: 
-          pylab.annotate(repr(curve.pid), (sum(curve.x)/len(curve.x), sum(curve.y)/len(curve.y)), color='b')
+          ax.annotate(repr(curve.pid), (sum(curve.x)/len(curve.x), sum(curve.y)/len(curve.y)), color='b')
       if surfacelabels and surface.pid is not None:
         labelx = sum([curve.x.min() for curve in surface.curves])/len(surface.curves)
         labely = sum([curve.y.min() for curve in surface.curves])/len(surface.curves)
-        pylab.annotate(repr(surface.pid), (labelx, labely), color='k')
-    pylab.gca().set_aspect('equal', 'datalim')
+        ax.annotate(repr(surface.pid), (labelx, labely), color='k')
+    ax.set_aspect('equal', 'datalim')
     #for point in self.points:
-    #  pylab.plot(point.x, point.y, 'ok')
+    #  ax.plot(point.x, point.y, 'ok')
+    return fig
 
   def cleareid(self):
     for surface in self.surfaces: surface.cleareid()
@@ -662,43 +666,6 @@ class SlabSpline(InterpolatedCubicSpline):
 
 
 class SubductionGeometry:
-  slab_spline = None
-
-  coast_distance      = 0.0 
-  extra_width         = 0.0 
-
-  slab_side_sid       = None 
-  wedge_side_sid      = None
-  slab_base_sid       = None
-  wedge_base_sid      = None
-  coast_sid           = None
-  top_sid             = None
-
-  slab_rid            = None
-  wedge_rid           = None
-
-  coast_res           = None
-  slab_side_base_res  = None
-  wedge_side_top_res  = None
-  wedge_side_base_res = None
-
-  slab_side_lines   = []
-  wedge_side_lines  = []
-  wedge_base_lines  = []
-  slab_base_lines   = []
-  wedge_top_lines   = []
-
-  crustal_layers    = {}
-  crustal_lines     = []
-
-  wedge_dividers    = {}
-  wedge_lines       = []
-
-  wedge_side_points = {}
-
-  slab_surfaces  = []
-  wedge_surfaces = []
-
   def __init__(self, slab_spline, **kwargs):
     """
     Initialize the subduction geometry with the current values of:
@@ -722,8 +689,50 @@ class SubductionGeometry:
     * wedge_side_top_res:   resolution of top of wedge vertical side
     * wedge_side_base_res:  resoltuion of base of wedge vertical side
     """
+    self.members()
     self.slab_spline = slab_spline
     self.update(**kwargs)
+
+  def members(self):
+    """
+    Reset all class instance members.
+    """
+    self.slab_spline = None
+
+    self.coast_distance      = 0.0 
+    self.extra_width         = 0.0 
+
+    self.slab_side_sid       = None 
+    self.wedge_side_sid      = None
+    self.slab_base_sid       = None
+    self.wedge_base_sid      = None
+    self.coast_sid           = None
+    self.top_sid             = None
+
+    self.slab_rid            = None
+    self.wedge_rid           = None
+
+    self.coast_res           = None
+    self.slab_side_base_res  = None
+    self.wedge_side_top_res  = None
+    self.wedge_side_base_res = None
+
+    self.slab_side_lines   = []
+    self.wedge_side_lines  = []
+    self.wedge_base_lines  = []
+    self.slab_base_lines   = []
+    self.wedge_top_lines   = []
+
+    self.crustal_layers    = {}
+    self.crustal_lines     = []
+
+    self.wedge_dividers    = {}
+    self.wedge_lines       = []
+
+    self.wedge_side_points = {}
+
+    self.slab_surfaces  = []
+    self.wedge_surfaces = []
 
   def update(self, **kwargs):
     """
@@ -998,7 +1007,7 @@ class SubductionGeometry:
     for surfaces in [self.wedge_surfaces, self.slab_surfaces]:
       for surface in surfaces:
         geom.addsurface(surface)
-    geom.pylabplot(curvelabels=label_sids, surfacelabels=label_rids)
+    return geom.pylabplot(curvelabels=label_sids, surfacelabels=label_rids)
 
   def gmshfile(self):
     geom = Geometry()

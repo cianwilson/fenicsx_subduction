@@ -1,0 +1,56 @@
+name: Test stable release
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  pull_request:
+    branches: ["main", "release"]
+  push:
+    branches: ["main"] # this also gets called by deploy on push into release
+
+env:
+  HDF5_MPI: "ON"
+  HDF5_DIR: "/usr/local/"
+  DISPLAY: ":99.0"
+  DEB_PYTHON_INSTALL_LAYOUT: deb_system
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cianwilson/fenicsx_subduction:release
+    env:
+      PYVISTA_OFF_SCREEN: true
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize
+        run: |
+            git config --global --add safe.directory "$GITHUB_WORKSPACE"
+            python3 -c "from pyvista import start_xvfb; start_xvfb(0.1)"
+
+      - name: Check scripts are up to date
+        working-directory: notebooks
+        run: |
+            ../scripts/update_python
+            git diff --exit-code || { retcode=$?; echo "Python scripts not up to date with notebook files.  Please update."; exit $retcode; }
+
+      - name: Check notebooks are clean
+        working-directory: notebooks
+        run: |
+            ../scripts/clear_notebooks
+            git diff --exit-code || { retcode=$?; echo "Jupyter notebooks are not clear.  Please clear output."; exit $retcode; }
+
+      - name: Test background
+        working-directory: notebooks
+        run: |
+            mpirun -n 2 python3 poisson_1d.py
+            mpirun -n 2 python3 poisson_2d_tests.py
+            python3 sz_base.py
+            python3 sz_slab.py
+            python3 sz_geometry.py
+            python3 sz_problem.py
+            python3 sz_tests.py
+            python3 sz_benchmark.py
+
