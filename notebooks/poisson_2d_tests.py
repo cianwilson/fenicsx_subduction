@@ -92,10 +92,6 @@ if __name__ == "__main__":
     fig = pl.figure()
     ax = fig.gca()
     
-    # Make an output folder
-    output_folder = pathlib.Path("output")
-    output_folder.mkdir(exist_ok=True, parents=True)
-    
     # List of polynomial orders to try
     ps = [1, 2]
     # List of resolutions to try
@@ -104,7 +100,7 @@ if __name__ == "__main__":
     test_passes = True
     # Loop over the polynomial orders
     for p in ps:
-    # Accumulate the errors
+        # Accumulate the errors
         errors_l2_a = []
         # Loop over the resolutions
         for ne in nelements:
@@ -137,7 +133,7 @@ if __name__ == "__main__":
         # Test if the order of convergence is as expected
         test_passes = test_passes and fit[0] > p+0.9
     
-    # Tidy up the ploy
+    # Tidy up the plot
     ax.set_xlabel('h')
     ax.set_ylabel('||e||_2')
     ax.grid()
