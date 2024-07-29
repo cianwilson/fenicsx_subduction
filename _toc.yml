@@ -21,6 +21,11 @@ parts:
             title: Implementation
           - file: notebooks/poisson_2d_tests
             title: Themes and variations
+      - file: notebooks/batchelor_intro
+        title: Batchelor cornerflow
+        sections:
+          - file: notebooks/batchelor
+            title: Implementation
   - caption: Subduction Zone Problems
     chapters:
       - file: notebooks/sz_intro
