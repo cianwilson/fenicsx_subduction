@@ -9,16 +9,16 @@
 
 # As a reminder we are seeking the approximate velocity and pressure solution of the Stokes equation
 # \begin{align}
-# -\nabla\cdot \left(\frac{\nabla\vec{v} + \nabla\vec{v}^T}{2}\right) + \nabla P &= 0 && \text{in }\Upomega \\
-# \nabla\cdot\vec{v} &= 0 && \text{in }\Upomega
+# -\nabla\cdot \left(\frac{\nabla\vec{v} + \nabla\vec{v}^T}{2}\right) + \nabla P &= 0 && \text{in }\Omega \\
+# \nabla\cdot\vec{v} &= 0 && \text{in }\Omega
 # \end{align}
 # in a unit square domain, $\Omega = [0,1]\times[0,1]$.
 # 
 # We apply strong Dirichlet boundary conditions for velocity on all four boundaries
 # \begin{align}
-#   \vec{v} &= (0,0)^T && \text{on } \partial\Upomega \text{ where } x=0  \\
-#   \vec{v} &= (U, 0)^T  && \text{on } \partial\Upomega \text{ where } y=0 \\
-#   \vec{v} &= \vec{v} && \text{on } \partial\Upomega \text{ where } x=1 \text{ or } y = 1
+#   \vec{v} &= (0,0)^T && \text{on } \partial\Omega \text{ where } x=0  \\
+#   \vec{v} &= (U, 0)^T  && \text{on } \partial\Omega \text{ where } y=0 \\
+#   \vec{v} &= \vec{v} && \text{on } \partial\Omega \text{ where } x=1 \text{ or } y = 1
 # \end{align}
 # and an additional point constraint on pressure
 # \begin{align}
