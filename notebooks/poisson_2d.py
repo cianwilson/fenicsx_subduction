@@ -125,7 +125,7 @@ def solve_poisson_2d(ne, p=1):
     return T_i
 
 
-# We can now numerically solve the equations using, e.g. 4 elements and piecewise linear polynomials.
+# We can now numerically solve the equations using, e.g., 4 elements and piecewise linear polynomials.
 
 # In[ ]:
 
