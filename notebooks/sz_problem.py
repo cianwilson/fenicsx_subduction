@@ -115,7 +115,7 @@ class SubductionProblem:
         # finite element degrees
         self.p_p = 1
         self.p_T = 2
-    
+
         # only allow these options to be set from the update and __init__ functions
         self.allowed_input_parameters = ['A', 'Vs', 'sztype', 'Ac', 'As', 'qs', \
                                          'Ts', 'Tm', 'kc', 'km', 'rhoc', 'rhom', 'cp', 'H1', 'H2', \
@@ -205,6 +205,7 @@ class SubductionProblem:
         self.slab_vps_i  = None
         self.wedge_vpw_i = None
         self.T_i         = None
+        self.T_n         = None
     
         # Functions that need interpolation
         self.vs_i      = None
@@ -234,6 +235,10 @@ class SubductionProblem:
         self.bcs_T   = None # temperature
         self.bcs_vpw = None # wedge velocity/pressure
         self.bcs_vps = None # slab velocity/pressure
+
+        # timestepping options
+        self.theta = None
+        self.dt    = None
     
 
 
@@ -411,6 +416,8 @@ class SubductionProblem(SubductionProblem):
         # create a dolfinx Function for the temperature
         self.T_i = df.fem.Function(self.V_T)
         self.T_i.name = "T"
+        self.T_n = df.fem.Function(self.V_T)
+        self.T_n.name = "T_n"
         self.T_t = ufl.TestFunction(self.V_T)
         self.T_a = ufl.TrialFunction(self.V_T)
         
@@ -762,6 +769,7 @@ class SubductionProblem(SubductionProblem):
         self.kappa0 = self.k0/self.rho0/self.cp0   # reference thermal diffusivity (m^2/s)
         self.v0     = self.kappa0/self.h0          # reference velocity (m/s)
         self.t0     = self.h0/self.v0              # reference time (s)
+        self.t0_Myr = utils.s_to_Myr(self.t0)      # reference time (Myr)
         self.e0     = self.v0/self.h0              # reference strain rate (/s)
         self.p0     = self.e0*self.eta0            # reference pressure (Pa)
         self.H0     = self.k0*self.T0/(self.h0**2) # reference heat source (W/m^3)
@@ -1655,6 +1663,307 @@ if __name__ == "__main__":
 # * Try varying some of the optional parameters, such as the coupling depth.  Note that when varying `partial_coupling_depth`, `full_coupling_depth` should also be varied to ensure it is deeper along the slab.
 # 
 # Even though this notebook set up the benchmark problem it should be valid for any of the global suite discussed in [van Keken & Wilson, 2023](http://dx.doi.org/10.1186/s40645-023-00589-5), which is itself built on the suite in [Syracuse et al., 2010](http://dx.doi.org/10.1016/j.pepi.2010.02.004), with the exception that here we have assumed a steady state.  Try running a steady-state version of one of those cases using the parameters in `allsz_params` (from `../data/all_sz.json`).
+
+# In[ ]:
+
+
+#####################################################################################################################
+
+
+# # Equations - Isoviscous, Time Dependent
+
+# In[ ]:
+
+
+class SubductionProblem(SubductionProblem):
+    def temperature_forms_time(self):
+        """
+        Return the forms ST and fT for the matrix problem ST*T = fT for the time dependent
+        temperature advection-diffusion problem.
+
+        Returns:
+          * ST - lhs bilinear form for the temperature problem
+          * fT - rhs linear form for the temperature problem
+        """
+        # integration measures that know about the cell and facet tags
+
+        # advection diffusion in the slab
+        STs = self.T_t*self.rhom*self.cp*(self.T_a+self.dt*self.theta*ufl.inner(self.vs_i, ufl.grad(self.T_a)))*self.dx(self.slab_rids) + \
+               self.dt*self.km*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.slab_rids)
+        
+        # advection diffusion in the wedge
+        STw = self.T_t*self.rhom*self.cp*(self.T_a+self.dt*self.theta*ufl.inner(self.vw_i, ufl.grad(self.T_a)))*self.dx(self.wedge_rids) + \
+               self.dt*self.km*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.wedge_rids)
+        
+        # just diffusion in the crust
+        STc = self.T_t*self.rhoc*self.cp*(self.T_a)*self.dx(self.crust_rids) + \
+               self.dt*self.kc*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.crust_rids)
+        
+        # the complete bilinear form
+        ST  = STs + STw + STc
+        
+        fTs = self.T_t*self.rhom*self.cp*(self.T_n-self.dt*(1-self.theta)*ufl.inner(self.vs_i, ufl.grad(self.T_n)))*self.dx(self.slab_rids) - \
+                (1-self.theta)*self.dt*self.km*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.slab_rids)
+        
+        fTw = self.T_t*self.rhom*self.cp*(self.T_n-self.dt*(1-self.theta)*ufl.inner(self.vw_i, ufl.grad(self.T_n)))*self.dx(self.wedge_rids) - \
+                (1-self.theta)*self.dt*self.km*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.wedge_rids)
+        
+        fTc = self.T_t*self.rhoc*self.cp*self.T_n*self.dx(self.crust_rids) - \
+                (1-self.theta)*self.dt*self.kc*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.crust_rids)
+
+        if self.sztype=='continental':
+            # if the sztype is 'continental' then put radiogenic heating in the rhs form
+            lc_rids = tuple([self.geom.crustal_layers['Crust']['rid']])
+            uc_rids = tuple([self.geom.crustal_layers['UpperCrust']['rid']])
+            
+            fTc += self.T_t*self.dt*self.H1*self.dx(uc_rids) + self.T_t*self.dt*self.H2*self.dx(lc_rids)
+        
+        fT = fTs + fTw + fTc
+
+        # return the forms
+        return ST, fT
+
+
+# In[ ]:
+
+
+##################################################################
+
+
+# In[ ]:
+
+
+class SubductionProblem(SubductionProblem):
+    def solve_time_isoviscous(self, tf, dt, theta=0.5, petsc_options=None):
+        """
+        Solve the coupled temperature-velocity-pressure problem assuming an isoviscous rheology with time dependency
+
+        Arguments:
+          * tf - final time  (in Myr)
+          * dt - the timestep (in Myr)
+          
+        Keyword Arguments:
+          * theta         - theta parameter for timestepping (0 <= theta <= 1, defaults to theta=0.5)
+          * petsc_options - a dictionary of petsc options to pass to the solver (defaults to mumps)
+        """
+        if petsc_options is None:
+            petsc_options={"ksp_type": "preonly", 
+                           "pc_type" : "lu", 
+                           "pc_factor_mat_solver_type" : "mumps"}
+
+        assert theta >= 0 and theta <= 1
+        
+        # set the timestepping options based on the arguments
+        # these need to be set before calling self.temperature_forms_time
+        self.dt = df.fem.Constant(self.mesh, df.default_scalar_type(dt/self.t0_Myr))
+        self.theta = df.fem.Constant(self.mesh, df.default_scalar_type(theta))
+
+        # first solve both Stokes systems
+        self.solve_stokes_isoviscous(petsc_options=petsc_options)
+
+        # retrieve the temperature forms
+        ST, fT = self.temperature_forms_time()
+        problem_T = df.fem.petsc.LinearProblem(ST, fT, bcs=self.bcs_T, u=self.T_i,
+                                               petsc_options=petsc_options)
+
+        # and solve the temperature problem repeatedly with time step dt
+        t = 0
+        ti = 0
+        tf_nd = tf/self.t0_Myr
+        print("\nSolving timeloop with {:d} timesteps".format(int(np.ceil(tf/dt)),))
+        while t < tf_nd:
+            self.T_n.x.array[:] = self.T_i.x.array
+            self.T_i = problem_T.solve()
+            ti+=1
+            t+=self.dt.value
+        print("Finished timeloop, t = {}".format(t*self.t0_Myr,))
+
+        # only update the pressure at the end as it is not necessary earlier
+        self.update_p_functions()
+
+
+# In[ ]:
+
+
+# Visualization and diagnostics
+
+
+# In[ ]:
+
+
+if __name__ == "__main__":
+    geom_case3 = create_sz_geometry(slab, resscale, sztype, io_depth_1, extra_width, 
+                              coast_distance, lc_depth, uc_depth)
+    sz_case3 = SubductionProblem(geom_case3, A=A, Vs=Vs, sztype=sztype, qs=qs)
+    sz_case3.solve_time_isoviscous(5, 1, theta=1.0)
+    
+    plotter_iso = utils.plot_scalar(sz_case3.T_i, scale=sz_case3.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    utils.plot_vector_glyphs(sz_case3.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
+    utils.plot_vector_glyphs(sz_case3.vs_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
+    utils.plot_show(plotter_iso)
+
+
+# # Equations, Dislocation Creep, Time Dependent
+
+# In[ ]:
+
+
+class SubductionProblem(SubductionProblem):
+    def solve_time_dislocationcreep(self, tf, dt, verbose=False, theta=0.5, rtol=5.e-6, atol=5.e-9, maxits=50,
+                                           petsc_options=None):
+        """
+        Solve the coupled temperature-velocity-pressure problem assuming a dislocation creep rheology with time dependency
+
+        Arguments:
+          * tf - final time  (in Myr)
+          * dt - the timestep (in Myr)
+          
+        Keyword Arguments:
+          * theta         - theta parameter for timestepping (0 <= theta <= 1, defaults to theta=0.5)
+          * petsc_options - a dictionary of petsc options to pass to the solver (defaults to mumps)petsc_options - a dictionary of petsc options to pass to the solver (defaults to mumps)
+        """
+        
+        if petsc_options is None:
+            petsc_options={"ksp_type": "preonly", 
+                           "pc_type" : "lu", 
+                           "pc_factor_mat_solver_type" : "mumps"}
+
+        assert theta >= 0 and theta <= 1
+
+        # set the timestepping options based on the arguments
+        # these need to be set before calling self.temperature_forms_time
+        self.dt = df.fem.Constant(self.mesh, df.default_scalar_type(dt/self.t0_Myr))
+        self.theta = df.fem.Constant(self.mesh, df.default_scalar_type(theta))
+            
+        # first solve the isoviscous problem
+        self.solve_stokes_isoviscous(petsc_options=petsc_options)
+
+        # retrieve the temperature forms
+        ST, fT = self.temperature_forms_time()
+        problem_T = df.fem.petsc.LinearProblem(ST, fT, bcs=self.bcs_T, u=self.T_i,
+                                               petsc_options=petsc_options)
+        
+        # retrive the non-linear Stokes forms for the wedge
+        Ssw, fsw = self.stokes_forms(self.wedge_vpw_t, self.wedge_vpw_a, \
+                                     self.wedge_submesh, eta=self.etadisl(self.wedge_vw_i, self.wedge_T_i))
+        problem_vpw = df.fem.petsc.LinearProblem(Ssw, fsw, bcs=self.bcs_vpw, u=self.wedge_vpw_i, 
+                                                 petsc_options=petsc_options)
+
+        # retrive the non-linear Stokes forms for the slab
+        Sss, fss = self.stokes_forms(self.slab_vps_t, self.slab_vps_a, \
+                                     self.slab_submesh, eta=self.etadisl(self.slab_vs_i, self.slab_T_i))
+        problem_vps = df.fem.petsc.LinearProblem(Sss, fss, bcs=self.bcs_vps, u=self.slab_vps_i,
+                                                 petsc_options=petsc_options)
+
+        # define the non-linear residual for the wedge velocity-pressure
+        rw = ufl.action(Ssw, self.wedge_vpw_i) - fsw
+        # define the non-linear residual for the slab velocity-pressure
+        rs = ufl.action(Sss, self.slab_vps_i) - fss
+        # define the non-linear residual for the temperature
+        rT = ufl.action(ST, self.T_i) - fT
+
+        def calculate_residual():
+            """
+            Return the total residual of the problem
+            """
+            rw_vec = df.fem.assemble_vector(df.fem.form(rw))
+            df.fem.set_bc(rw_vec.array, self.bcs_vpw, scale=0.0)
+            rs_vec = df.fem.assemble_vector(df.fem.form(rs))
+            df.fem.set_bc(rs_vec.array, self.bcs_vps, scale=0.0)
+            rT_vec = df.fem.assemble_vector(df.fem.form(rT))
+            df.fem.set_bc(rT_vec.array, self.bcs_T, scale=0.0)
+            r = np.sqrt(rw_vec.petsc_vec.norm()**2 + \
+                        rs_vec.petsc_vec.norm()**2 + \
+                        rT_vec.petsc_vec.norm()**2)
+            return r
+
+        
+        t = 0
+        ti = 0
+        tf_nd = tf/self.t0_Myr
+        # time loop
+        print("\nSolving timeloop with {:d} timesteps".format(int(np.ceil(tf/dt)),))
+        while t < tf_nd:
+            self.T_n.x.array[:] = self.T_i.x.array
+            # calculate the initial residual
+            r = calculate_residual()
+            r0 = r
+            rrel = r/r0  # 1
+            if self.comm.rank == 0:
+                if verbose:
+                    print("{:<11} {:<12} {:<17}".format('Iteration','Residual','Relative Residual'))
+                    print("-"*42)
+
+            it = 0
+            # Picard Iteration
+            while r > atol and rrel > rtol:
+                 if it > maxits: break
+                 self.T_i = problem_T.solve()
+                 self.update_T_functions()
+                 
+                 self.wedge_vpw_i = problem_vpw.solve()
+                 self.slab_vps_i  = problem_vps.solve()
+                 self.update_v_functions()
+
+                 r = calculate_residual()
+                 rrel = r/r0
+                 if self.comm.rank == 0 and verbose: print("{:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
+
+                 # increment iterations
+                 it+=1
+            # check for convergence failures
+            if it > maxits:
+                raise Exception("Nonlinear iteration failed to converge after {} iterations (maxits = {}), r = {} (atol = {}), rrel = {} (rtol = {}).".format(it, \
+                                                                                                                                                          maxits, \
+                                                                                                                                                          r, \
+                                                                                                                                                          rtol, \
+                                                                                                                                                          rrel, \
+                                                                                                                                                          rtol,))
+            # increment time
+            ti+=1
+            t+=self.dt.value
+
+        # only update the pressure at the end as it is not necessary earlier
+        self.update_p_functions()
+
+
+# In[ ]:
+
+
+# Visualization and diagnostics
+
+
+# In[ ]:
+
+
+if __name__ == "__main__":
+    geom_case4 = create_sz_geometry(slab, resscale, sztype, io_depth_1, extra_width, 
+                              coast_distance, lc_depth, uc_depth)
+    sz_case4 = SubductionProblem(geom_case4, A=A, Vs=Vs, sztype=sztype, qs=qs)
+    sz_case4.solve_time_dislocationcreep(5, 1, theta=1.0)
+    
+    plotter_iso = utils.plot_scalar(sz_case4.T_i, scale=sz_case4.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    utils.plot_vector_glyphs(sz_case4.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
+    utils.plot_vector_glyphs(sz_case4.vs_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
+    utils.plot_show(plotter_iso)
+
+
+# In[ ]:
+
+
+# Difference and Analysis
+
+
+# In[ ]:
+
+
+if __name__ == "__main__":
+    Tdiff = df.fem.Function(sz_case3.V_T)
+    Tdiff.x.array[:] = sz_case3.T_i.x.array - sz_case4.T_i.x.array
+    plotter_iso = utils.plot_scalar(Tdiff, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'difference'})
+    utils.plot_vector_glyphs(sz_case3.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
+    utils.plot_show(plotter_iso)
+
 
 # ## Finish up
 
