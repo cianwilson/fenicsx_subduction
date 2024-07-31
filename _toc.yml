@@ -26,6 +26,11 @@ parts:
         sections:
           - file: notebooks/batchelor
             title: Implementation
+      - file: notebooks/blankenbach_intro
+        title: Blankenbach thermal convection
+        sections:
+          - file: notebooks/blankenbach
+            title: Implementation
   - caption: Subduction Zone Problems
     chapters:
       - file: notebooks/sz_intro
