@@ -349,7 +349,7 @@ if __name__ == "__main__":
     if v_i.function_space.mesh.comm.rank == 0:
         fig.savefig(output_folder / 'batchelor_convergence.pdf')
     
-        print("***********  convergence figure in output/batchelor.pdf")
+        print("***********  convergence figure in output/batchelor_convergence.pdf")
     
     # Check if we passed the test
     assert(test_passes)
