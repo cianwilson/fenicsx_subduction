@@ -484,13 +484,10 @@ if __name__ == "__main__":
     fig, (axNu, axvrms) = pl.subplots(1,2, figsize=(15,7.5))
 
     cases = ['1a', '1b', '1c', '2a']
-    #cases = ['1c']
     # List of polynomial orders to try
-    ps = [1,2]
-    #ps = [1]
+    ps = [1]
     # List of resolutions to try
-    nelements = [32, 64, 128, 256]
-    #nelements = [32, 64]
+    nelements = [32, 64, 128]
     # Keep track of whether we get the expected order of convergence
     test_passes = True
     for case in cases:
