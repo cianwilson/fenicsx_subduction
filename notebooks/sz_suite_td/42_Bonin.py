@@ -27,11 +27,11 @@ sys.path.append(os.path.join(basedir, os.path.pardir, os.path.pardir, 'python'))
 
 
 import utils
-import numpy as np
 from sz_base import allsz_params
 from sz_slab import create_slab, plot_slab
 from sz_geometry import create_sz_geometry
 from sz_problem import SubductionProblem
+import numpy as np
 import dolfinx as df
 import pyvista as pv
 if __name__ == "__main__" and "__file__" in globals():
@@ -68,7 +68,7 @@ print("{}:".format(name))
 print("{:<20} {:<10}".format('Key','Value'))
 print("-"*85)
 for k, v in allsz_params[name].items():
-    if v is not None: print("{:<20} {}".format(k, v))
+    if v is not None and k not in ['z0', 'z15']: print("{:<20} {}".format(k, v))
 
 
 # Any of these can be modified in the dictionary.
@@ -123,11 +123,11 @@ sz = SubductionProblem(geom, **szdict)
 # Select the timestep based on the approximate target Courant number
 dt = cfl*resscale/szdict['Vs']
 # Reduce the timestep to get an integer number of timesteps
-dt = szdict['A']/np.ceil(szdict['A']/dt)
-sz.solve_timedependent_dislocationcreep(szdict['A'], dt, theta=0.5, rtol=1.e-1, verbosity=1)
+dt = szdict['As']/np.ceil(szdict['As']/dt)
+sz.solve_timedependent_dislocationcreep(szdict['As'], dt, theta=0.5, rtol=1.e-1, verbosity=1)
 
 
-# ### Save
+# ### Plot
 
 # Plot the solution.
 
@@ -153,6 +153,42 @@ with df.io.VTXWriter(sz.mesh.comm, filename, [sz.T_i, sz.vs_i, sz.vw_i]) as vtx:
 if __name__ == "__main__" and "__file__" not in globals():
     zipfilename = filename.with_suffix(".zip")
     get_ipython().system('zip -r $zipfilename $filename')
+
+
+# ## Comparison
+
+# Compare to the published result from [Wilson & van Keken, PEPS, 2023 (II)](http://dx.doi.org/10.1186/s40645-023-00588-6) and [van Keken & Wilson, PEPS, 2023 (III)](https://doi.org/10.1186/s40645-023-00589-5).  The original models used in these papers are also available as open-source repositories on [github](https://github.com/cianwilson/vankeken_wilson_peps_2023) and [zenodo](https://doi.org/10.5281/zenodo.7843967).
+
+# In[ ]:
+
+
+fxgrid = utils.grids_scalar(sz.T_i)[0]
+
+tffilename = os.path.join(os.pardir, os.pardir, 'data', 'sz_suite_td', szdict['dirname']+'_resscale_2.00_cfl_2.00.vtu')
+tfgrid = pv.get_reader(tffilename).read()
+
+diffgrid = utils.pv_diff(fxgrid, tfgrid, field_name_map={'T':"Temperature::PotentialTemperature"}, pass_point_data=True)
+
+
+# In[ ]:
+
+
+diffgrid.set_active_scalars('T')
+plotter_diff = pv.Plotter()
+clim = None
+plotter_diff.add_mesh(diffgrid, cmap='coolwarm', clim=clim)
+plotter_diff.enable_parallel_projection()
+plotter_diff.view_xy()
+plotter_diff.show()
+
+
+# In[ ]:
+
+
+integrated_data = diffgrid.integrate_data()
+error = integrated_data['T'][0]/integrated_data['Area'][0]
+print("Average error = {}".format(error,))
+assert np.abs(error) < 5
 
 
 # ## Finish up

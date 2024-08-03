@@ -94,13 +94,13 @@ class SubductionProblem:
         # non-dim parameters
         self.Ts      = 0.0       # surface temperature (non-dim, also deg C)
         self.Tm      = 1350.0    # mantle temperature (non-dim, also deg C)
-        self.kc      = 0.8064516 # crustal thermal conductivity (non-dim)
+        self.kc      = 0.8064516 # crustal thermal conductivity (non-dim) - continental only
         self.km      = 1.0       # mantle thermal conductivity (non-dim)
-        self.rhoc    = 0.8333333 # crustal density (non-dim)
+        self.rhoc    = 0.8333333 # crustal density (non-dim) - continental only
         self.rhom    = 1.0       # mantle density (non-dim)
         self.cp      = 1.0       # heat capacity (non-dim)
-        self.H1      = 0.419354  # upper crustal volumetric heat production (non-dim) 
-        self.H2      = 0.087097  # lower crustal volumetric heat production (non-dim)
+        self.H1      = 0.419354  # upper crustal volumetric heat production (non-dim) - continental only
+        self.H2      = 0.087097  # lower crustal volumetric heat production (non-dim) - continental only
     
         # dislocation creep parameters
         self.etamax = 1.0e25    # maximum viscosity (Pa s)
@@ -114,9 +114,10 @@ class SubductionProblem:
 
         # only allow these options to be set from the update and __init__ functions
         self.allowed_input_parameters = ['A', 'Vs', 'sztype', 'Ac', 'As', 'qs', \
-                                         'Ts', 'Tm', 'kc', 'km', 'rhoc', 'rhom', 'cp', 'H1', 'H2', \
+                                         'Ts', 'Tm', 'km', 'rhom', 'cp', \
                                          'etamax', 'nsigma', 'Aeta', 'E', \
                                          'p_p', 'p_T']
+        self.allowed_if_continental   = ['kc', 'rhoc', 'H1', 'H2']
     
         self.required_parameters     = ['A', 'Vs', 'sztype']
         self.required_if_continental = ['qs']
@@ -701,13 +702,13 @@ class SubductionProblem(SubductionProblem):
 # We also allow these non-dimensional parameters to be set    
 # * `Ts`     - surface temperature (non-dim, also deg C, $T_s$, default 0)
 # * `Tm`     - mantle temperature (non-dim, also deg C, $T_m$, default 1350)
-# * `kc`     - crustal thermal conductivity (non-dim, $k_c$, default 0.8064516)
+# * `kc`     - crustal thermal conductivity (non-dim, $k_c$, default 0.8064516) - continental only
 # * `km`     - mantle thermal conductivity (non-dim, $k_m$, default 1)
-# * `rhoc`   - crustal density (non-dim, $\rho_c$, default 0.833333)
+# * `rhoc`   - crustal density (non-dim, $\rho_c$, default 0.833333) - continental only
 # * `rhom`   - mantle density (non-dim, $\rho_m$, default 1)
 # * `cp`     - heat capacity (non-dim, $c_p$, default 1)
-# * `H1`     - upper crustal volumetric heat production (non-dim, $H_1$, default 0.419354) 
-# * `H2`     - lower crustal volumetric heat production (non-dim, $H_2$, default 0.087097)
+# * `H1`     - upper crustal volumetric heat production (non-dim, $H_1$, default 0.419354) - continental only
+# * `H2`     - lower crustal volumetric heat production (non-dim, $H_2$, default 0.087097) - continental only
 # 
 # As well as the dislocation creep parameters that we will need later:
 # * `etamax` - maximum viscosity (Pa s, $\eta_\text{max}$, default $10^{25}$)
@@ -731,10 +732,18 @@ class SubductionProblem(SubductionProblem):
         """
 
         # loop over the keyword arguments and apply any that are allowed as input parameters
+        # this loop happens before conditional loops to make sure sztype gets set
         for k,v in kwargs.items():
             if k in self.allowed_input_parameters and hasattr(self, k):
                 setattr(self, k, v)
 
+        # loop over additional input parameters, giving a warning if they will do nothing
+        for k,v in kwargs.items():
+            if k in self.allowed_if_continental and hasattr(self, k):
+                setattr(self, k, v)
+                if self.sztype == "oceanic":
+                    raise Warning("sztype is '{}' so setting '{}' will have no effect.".format(self.sztype, k))
+        
         # check required parameters are set
         for param in self.required_parameters:
             value = getattr(self, param)
@@ -812,13 +821,13 @@ class SubductionProblem(SubductionProblem):
          optional:
           * Ts   - surface temperature (deg C, corresponds to non-dim)
           * Tm   - mantle temperature (deg C, corresponds to non-dim)
-          * kc   - crustal thermal conductivity (non-dim)
+          * kc   - crustal thermal conductivity (non-dim) [only has an effect if sztype is 'continental']
           * km   - mantle thermal conductivity (non-dim)
-          * rhoc - crustal density (non-dim)
+          * rhoc - crustal density (non-dim) [only has an effect if sztype is 'continental']
           * rhom - mantle density (non-dim)
           * cp   - isobaric heat capacity (non-dim)
-          * H1   - upper crustal volumetric heat production (non-dim)
-          * H2   - lower crustal volumetric heat production (non-dim)
+          * H1   - upper crustal volumetric heat production (non-dim) [only has an effect if sztype is 'continental']
+          * H2   - lower crustal volumetric heat production (non-dim) [only has an effect if sztype is 'continental']
 
          optional (dislocation creep rheology):
           * etamax - maximum viscosity (Pas) [only relevant for dislocation creep rheologies]
@@ -1021,6 +1030,12 @@ class SubductionProblem(SubductionProblem):
         """
         # integration measures that know about the cell and facet tags
 
+        # set the crustal conductivity
+        kc   = self.kc
+        if self.sztype=='oceanic':
+            # if we are oceanic then we use the mantle value
+            kc   = self.km
+        
         # advection diffusion in the slab
         STs = (self.T_t*self.rhom*self.cp*ufl.inner(self.vs_i, ufl.grad(self.T_a)) + \
                ufl.inner(ufl.grad(self.T_a), self.km*ufl.grad(self.T_t)))*self.dx(self.slab_rids)
@@ -1028,7 +1043,7 @@ class SubductionProblem(SubductionProblem):
         STw = (self.T_t*self.rhom*self.cp*ufl.inner(self.vw_i, ufl.grad(self.T_a)) + \
                ufl.inner(ufl.grad(self.T_a), self.km*ufl.grad(self.T_t)))*self.dx(self.wedge_rids)
         # just diffusion in the crust
-        STc = ufl.inner(ufl.grad(self.T_a), self.kc*ufl.grad(self.T_t))*self.dx(self.crust_rids)
+        STc = ufl.inner(ufl.grad(self.T_a), kc*ufl.grad(self.T_t))*self.dx(self.crust_rids)
         # the complete bilinear form
         ST  = STs + STw + STc
         if self.sztype=='continental':
@@ -1666,6 +1681,14 @@ class SubductionProblem(SubductionProblem):
         """
         # integration measures that know about the cell and facet tags
 
+        # set the crustal conductivity and density
+        kc   = self.kc
+        rhoc = self.rhoc
+        if self.sztype=='oceanic':
+            # if we are oceanic then we use the mantle values
+            kc   = self.km
+            rhoc = self.rhom
+
         # advection diffusion in the slab
         STs = self.T_t*self.rhom*self.cp*(self.T_a+self.dt*self.theta*ufl.inner(self.vs_i, ufl.grad(self.T_a)))*self.dx(self.slab_rids) + \
                self.dt*self.km*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.slab_rids)
@@ -1675,8 +1698,8 @@ class SubductionProblem(SubductionProblem):
                self.dt*self.km*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.wedge_rids)
         
         # just diffusion in the crust
-        STc = self.T_t*self.rhoc*self.cp*(self.T_a)*self.dx(self.crust_rids) + \
-               self.dt*self.kc*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.crust_rids)
+        STc = self.T_t*rhoc*self.cp*(self.T_a)*self.dx(self.crust_rids) + \
+               self.dt*kc*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.crust_rids)
         
         # the complete bilinear form
         ST  = STs + STw + STc
@@ -1687,8 +1710,8 @@ class SubductionProblem(SubductionProblem):
         fTw = self.T_t*self.rhom*self.cp*(self.T_n-self.dt*(1-self.theta)*ufl.inner(self.vw_i, ufl.grad(self.T_n)))*self.dx(self.wedge_rids) - \
                 (1-self.theta)*self.dt*self.km*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.wedge_rids)
         
-        fTc = self.T_t*self.rhoc*self.cp*self.T_n*self.dx(self.crust_rids) - \
-                (1-self.theta)*self.dt*self.kc*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.crust_rids)
+        fTc = self.T_t*rhoc*self.cp*self.T_n*self.dx(self.crust_rids) - \
+                (1-self.theta)*self.dt*kc*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.crust_rids)
 
         if self.sztype=='continental':
             # if the sztype is 'continental' then put radiogenic heating in the rhs form
