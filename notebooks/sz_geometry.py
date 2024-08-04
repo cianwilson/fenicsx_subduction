@@ -71,7 +71,7 @@ def create_sz_geometry(slab, resscale, sztype, io_depth, extra_width,
       * extra_width    - extra width at the base of the domain
       * coast_distance - distance from trench to coast
       * lc_depth       - depth of lower crustal boundary ("Moho")
-      * uc_depth       - depth of upper crustal boundary
+      * uc_depth       - depth of upper crustal boundary [only has an effect if sztype is 'continental']
 
     Keyword Arguments:
      distances:

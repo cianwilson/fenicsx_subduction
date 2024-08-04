@@ -3,9 +3,7 @@
 
 # # Subduction Zone Setup
 # 
-# Authors: Kidus Teshome, Cian Wilson
-
-# ## Implementation
+# Authors: Cameron Seebeck, Kidus Teshome, Cian Wilson
 
 # Recalling our implementation strategy we are following a similar workflow to that seen repeatedly in the background examples section.
 # 
@@ -19,9 +17,7 @@
 # 
 # In the previous two notebooks we have only tackled step 1 so far.  The remaining steps 2-7 will be implemented in this notebook.  To do this we are going to build up a `SubductionProblem` python class that will take in the subduction zone geometry object we can now create using `create_sz_geometry` and use it to set up finite element function spaces and apply appropriate boundary conditions to the resulting finite element Functions (steps 2-4).  Once this is taken care of we will describe the mathematical problem we wish to solve and provide finite element forms to the class to solve (steps 5-6).  These will depend on the rheology we assume.  We will demonstrate our implementation we will use benchmark cases 1 & 2 from [Wilson & van Keken, PEPS, 2023 (II)](http://dx.doi.org/10.1186/s40645-023-00588-6), where case 1 uses a simple isoviscous rheology and case 2 uses a dislocation creep viscosity.
 
-# ## Implementation
-
-# ### Preamble
+# ## Preamble
 
 # Let's start by adding the path to the modules in the `python` folder to the system path (so we can find the our custom modules).
 
@@ -69,7 +65,7 @@ if __name__ == "__main__":
     output_folder.mkdir(exist_ok=True, parents=True)
 
 
-# ### `SubductionProblem` class
+# ## `SubductionProblem` class
 
 # To build the python class in an parseable way we will be using some python trickery, rederiving the class in each cell, which isn't really how this would be done outside of a Jupyter notebook but here it allows us to annotate what we are doing as we progress through steps 1-7.  We being by declaring the class and its members.  Those initialized to `None` need to be initialized in the class routines that we will describe in the following cells.  Others are initialized to appropriate default values.  Only the first few are intended to be modified and we will write functions to allow us to do this later.
 # 
@@ -98,13 +94,13 @@ class SubductionProblem:
         # non-dim parameters
         self.Ts      = 0.0       # surface temperature (non-dim, also deg C)
         self.Tm      = 1350.0    # mantle temperature (non-dim, also deg C)
-        self.kc      = 0.8064516 # crustal thermal conductivity (non-dim)
+        self.kc      = 0.8064516 # crustal thermal conductivity (non-dim) - continental only
         self.km      = 1.0       # mantle thermal conductivity (non-dim)
-        self.rhoc    = 0.8333333 # crustal density (non-dim)
+        self.rhoc    = 0.8333333 # crustal density (non-dim) - continental only
         self.rhom    = 1.0       # mantle density (non-dim)
         self.cp      = 1.0       # heat capacity (non-dim)
-        self.H1      = 0.419354  # upper crustal volumetric heat production (non-dim) 
-        self.H2      = 0.087097  # lower crustal volumetric heat production (non-dim)
+        self.H1      = 0.419354  # upper crustal volumetric heat production (non-dim) - continental only
+        self.H2      = 0.087097  # lower crustal volumetric heat production (non-dim) - continental only
     
         # dislocation creep parameters
         self.etamax = 1.0e25    # maximum viscosity (Pa s)
@@ -118,9 +114,10 @@ class SubductionProblem:
 
         # only allow these options to be set from the update and __init__ functions
         self.allowed_input_parameters = ['A', 'Vs', 'sztype', 'Ac', 'As', 'qs', \
-                                         'Ts', 'Tm', 'kc', 'km', 'rhoc', 'rhom', 'cp', 'H1', 'H2', \
+                                         'Ts', 'Tm', 'km', 'rhom', 'cp', \
                                          'etamax', 'nsigma', 'Aeta', 'E', \
                                          'p_p', 'p_T']
+        self.allowed_if_continental   = ['kc', 'rhoc', 'H1', 'H2']
     
         self.required_parameters     = ['A', 'Vs', 'sztype']
         self.required_if_continental = ['qs']
@@ -242,7 +239,7 @@ class SubductionProblem:
     
 
 
-# #### 1. Mesh
+# ### 1. Mesh
 # 
 # Just as in simpler problems our first step is to initialize the mesh.  We do this just as we did in the previous notebooks, through the geometry object that we assume is initialized by `create_sz_geometry` and is now available as a member of the class (we will initialize this later).
 # 
@@ -320,7 +317,7 @@ class SubductionProblem(SubductionProblem):
         self.slab_reverse_cell_map[self.slab_cell_map] = np.arange(len(self.slab_cell_map))
 
 
-# #### 2-3. Function spaces & functions
+# ### 2-3. Function spaces & functions
 # 
 # With a mesh in hand we can initialize the functionspaces and dolfinx `Function`s representing finite element functions that we will use to solve our problem.
 # 
@@ -463,7 +460,7 @@ class SubductionProblem(SubductionProblem):
         self.pw_i.interpolate(self.wedge_pw_i, cells=self.wedge_cell_map, cell_map=self.wedge_reverse_cell_map)
 
 
-# #### 4. Boundary conditions
+# ### 4. Boundary conditions
 # 
 # We now need to set up boundary conditions for our functions.
 
@@ -686,7 +683,7 @@ class SubductionProblem(SubductionProblem):
         self.update_v_functions()
 
 
-# #### 0. Parameter initialization
+# ### 0. Parameter initialization
 
 # This concludes the initial setup of our `SubductionProblem` class and is the first point where we can easily inspect what we've done and check it looks correct.  First though we need some routines that allow us to set the case-dependent parameters and initialize the class.  We do that by declaring an `update` function (that allows us to update the parameters whenever we wish) and an `__init__` function (that initializes the class when it is declared and simply calls the `update` function for the first time).
 # 
@@ -705,13 +702,13 @@ class SubductionProblem(SubductionProblem):
 # We also allow these non-dimensional parameters to be set    
 # * `Ts`     - surface temperature (non-dim, also deg C, $T_s$, default 0)
 # * `Tm`     - mantle temperature (non-dim, also deg C, $T_m$, default 1350)
-# * `kc`     - crustal thermal conductivity (non-dim, $k_c$, default 0.8064516)
+# * `kc`     - crustal thermal conductivity (non-dim, $k_c$, default 0.8064516) - continental only
 # * `km`     - mantle thermal conductivity (non-dim, $k_m$, default 1)
-# * `rhoc`   - crustal density (non-dim, $\rho_c$, default 0.833333)
+# * `rhoc`   - crustal density (non-dim, $\rho_c$, default 0.833333) - continental only
 # * `rhom`   - mantle density (non-dim, $\rho_m$, default 1)
 # * `cp`     - heat capacity (non-dim, $c_p$, default 1)
-# * `H1`     - upper crustal volumetric heat production (non-dim, $H_1$, default 0.419354) 
-# * `H2`     - lower crustal volumetric heat production (non-dim, $H_2$, default 0.087097)
+# * `H1`     - upper crustal volumetric heat production (non-dim, $H_1$, default 0.419354) - continental only
+# * `H2`     - lower crustal volumetric heat production (non-dim, $H_2$, default 0.087097) - continental only
 # 
 # As well as the dislocation creep parameters that we will need later:
 # * `etamax` - maximum viscosity (Pa s, $\eta_\text{max}$, default $10^{25}$)
@@ -735,10 +732,18 @@ class SubductionProblem(SubductionProblem):
         """
 
         # loop over the keyword arguments and apply any that are allowed as input parameters
+        # this loop happens before conditional loops to make sure sztype gets set
         for k,v in kwargs.items():
             if k in self.allowed_input_parameters and hasattr(self, k):
                 setattr(self, k, v)
 
+        # loop over additional input parameters, giving a warning if they will do nothing
+        for k,v in kwargs.items():
+            if k in self.allowed_if_continental and hasattr(self, k):
+                setattr(self, k, v)
+                if self.sztype == "oceanic":
+                    raise Warning("sztype is '{}' so setting '{}' will have no effect.".format(self.sztype, k))
+        
         # check required parameters are set
         for param in self.required_parameters:
             value = getattr(self, param)
@@ -816,13 +821,13 @@ class SubductionProblem(SubductionProblem):
          optional:
           * Ts   - surface temperature (deg C, corresponds to non-dim)
           * Tm   - mantle temperature (deg C, corresponds to non-dim)
-          * kc   - crustal thermal conductivity (non-dim)
+          * kc   - crustal thermal conductivity (non-dim) [only has an effect if sztype is 'continental']
           * km   - mantle thermal conductivity (non-dim)
-          * rhoc - crustal density (non-dim)
+          * rhoc - crustal density (non-dim) [only has an effect if sztype is 'continental']
           * rhom - mantle density (non-dim)
           * cp   - isobaric heat capacity (non-dim)
-          * H1   - upper crustal volumetric heat production (non-dim)
-          * H2   - lower crustal volumetric heat production (non-dim)
+          * H1   - upper crustal volumetric heat production (non-dim) [only has an effect if sztype is 'continental']
+          * H2   - lower crustal volumetric heat production (non-dim) [only has an effect if sztype is 'continental']
 
          optional (dislocation creep rheology):
           * etamax - maximum viscosity (Pas) [only relevant for dislocation creep rheologies]
@@ -834,7 +839,7 @@ class SubductionProblem(SubductionProblem):
         self.update(geom=geom, **kwargs)
 
 
-# ##### Demonstration - Benchmark
+# #### Demonstration - Benchmark
 
 # We demonstrate our initial setup using a low resolution, `resscale = 5.0`
 
@@ -896,7 +901,7 @@ if __name__ == "__main__":
     utils.plot_save(plotter_ic, output_folder / "sz_problem_case1_ics.png")
 
 
-# #### 5-6. Equations - isoviscous, steady-state
+# ### 5-6. Equations - isoviscous, steady-state
 
 # As the setup of our boundary and initial conditions looks correct we now wish to solve partial differential equations describing the thermal structure of a subduction zone in our domain.
 # 
@@ -1025,6 +1030,12 @@ class SubductionProblem(SubductionProblem):
         """
         # integration measures that know about the cell and facet tags
 
+        # set the crustal conductivity
+        kc   = self.kc
+        if self.sztype=='oceanic':
+            # if we are oceanic then we use the mantle value
+            kc   = self.km
+        
         # advection diffusion in the slab
         STs = (self.T_t*self.rhom*self.cp*ufl.inner(self.vs_i, ufl.grad(self.T_a)) + \
                ufl.inner(ufl.grad(self.T_a), self.km*ufl.grad(self.T_t)))*self.dx(self.slab_rids)
@@ -1032,7 +1043,7 @@ class SubductionProblem(SubductionProblem):
         STw = (self.T_t*self.rhom*self.cp*ufl.inner(self.vw_i, ufl.grad(self.T_a)) + \
                ufl.inner(ufl.grad(self.T_a), self.km*ufl.grad(self.T_t)))*self.dx(self.wedge_rids)
         # just diffusion in the crust
-        STc = ufl.inner(ufl.grad(self.T_a), self.kc*ufl.grad(self.T_t))*self.dx(self.crust_rids)
+        STc = ufl.inner(ufl.grad(self.T_a), kc*ufl.grad(self.T_t))*self.dx(self.crust_rids)
         # the complete bilinear form
         ST  = STs + STw + STc
         if self.sztype=='continental':
@@ -1048,7 +1059,7 @@ class SubductionProblem(SubductionProblem):
         return ST, fT
 
 
-# #### 7. Solution - isoviscous, steady-state
+# ### 7. Solution - isoviscous, steady-state
 
 # In the isoviscous case, $\eta$ = 1 (`eta = 1`), only the temperature depends on the velocity (and not vice-versa).  So to solve the full system of equations we only need to solve the two velocity-pressure systems once (in `solve_stokes_isoviscous`) before solving the temperature to get a fully converged solution for all variables (in `solve_steadystate_isoviscous`).
 
@@ -1111,7 +1122,7 @@ class SubductionProblem(SubductionProblem):
         self.update_p_functions()
 
 
-# ##### Demonstration - Benchmark case 1
+# #### Demonstration - Benchmark case 1
 
 # So now we have a full description of the isoviscous problem for an isoviscous steady-state problem but need some diagnostics to test it.
 # 
@@ -1318,7 +1329,7 @@ if __name__ == "__main__":
     fig.savefig(output_folder / "sz_problem_case1_slabTs.png")
 
 
-# #### 5-6. Equations - dislocation creep viscosity, steady-state
+# ### 5-6. Equations - dislocation creep viscosity, steady-state
 
 # For case 2 the viscosity is a function of temperature and 
 # strain rate following a simplified creep law for dislocation creep in dry olivine from [Karato & Wu, 1993](http://dx.doi.org/10.1126/science.260.5109.771)
@@ -1441,7 +1452,7 @@ class SubductionProblem(SubductionProblem):
     
 
 
-# #### 7. Solution - dislocation creep viscosity, steady-state
+# ### 7. Solution - dislocation creep viscosity, steady-state
 
 # Solving for the thermal state of the subduction zone is more complicated when using a dislocation creep viscosity than in the isoviscous rheology case due to the non-linearities introduced by having the viscosity depend on both temperature and velocity (through the strain rate).  These mean that we must iterate between the velocity and temperature solutions until a (hopefully) converged solution is achieved.  Due to the split nature of our submeshes we do this using a so-called Picard or fixed-point iteration.  These iterations are not guaranteed to converge but stand a much better chance with a good initial guess, so we start by solving the isoviscous problem again.
 # 
@@ -1551,7 +1562,7 @@ class SubductionProblem(SubductionProblem):
         self.update_p_functions()
 
 
-# ##### Demonstration - Benchmark case 2
+# #### Demonstration - Benchmark case 2
 # 
 # Our `SubductionProblem` class is now complete!
 # 
@@ -1653,30 +1664,13 @@ if __name__ == "__main__":
     fig.savefig(output_folder / "sz_problem_case2_slabTs.png")
 
 
-# ## Themes and variations
-
-# Some possible things to try next:
-# 
-# * Try using `plot_slab_temperatures` as a template to extract different temperatures around the domain.  Perhaps a vertical profile under a putative arc location.
-# * Note that at the default resolution in this notebook case 2 did not do as well as case 1 at matching the benchmark.  Try increasing the resolution to see if it improves the solution (if running on binder then it may not be possible to decrease `resscale` excessively).
-# * Try varying aspects of the geometry.  What happens at different slab dips or when `extra_width > 0`?
-# * Try varying some of the optional parameters, such as the coupling depth.  Note that when varying `partial_coupling_depth`, `full_coupling_depth` should also be varied to ensure it is deeper along the slab.
-# 
-# Even though this notebook set up the benchmark problem it should be valid for any of the global suite discussed in [van Keken & Wilson, 2023](http://dx.doi.org/10.1186/s40645-023-00589-5), which is itself built on the suite in [Syracuse et al., 2010](http://dx.doi.org/10.1016/j.pepi.2010.02.004), with the exception that here we have assumed a steady state.  Try running a steady-state version of one of those cases using the parameters in `allsz_params` (from `../data/all_sz.json`).
-
-# In[ ]:
-
-
-#####################################################################################################################
-
-
-# # Equations - Isoviscous, Time Dependent
+# ### 5-6. Equations - time-dependent
 
 # In[ ]:
 
 
 class SubductionProblem(SubductionProblem):
-    def temperature_forms_time(self):
+    def temperature_forms_timedependent(self):
         """
         Return the forms ST and fT for the matrix problem ST*T = fT for the time dependent
         temperature advection-diffusion problem.
@@ -1687,6 +1681,14 @@ class SubductionProblem(SubductionProblem):
         """
         # integration measures that know about the cell and facet tags
 
+        # set the crustal conductivity and density
+        kc   = self.kc
+        rhoc = self.rhoc
+        if self.sztype=='oceanic':
+            # if we are oceanic then we use the mantle values
+            kc   = self.km
+            rhoc = self.rhom
+
         # advection diffusion in the slab
         STs = self.T_t*self.rhom*self.cp*(self.T_a+self.dt*self.theta*ufl.inner(self.vs_i, ufl.grad(self.T_a)))*self.dx(self.slab_rids) + \
                self.dt*self.km*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.slab_rids)
@@ -1696,8 +1698,8 @@ class SubductionProblem(SubductionProblem):
                self.dt*self.km*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.wedge_rids)
         
         # just diffusion in the crust
-        STc = self.T_t*self.rhoc*self.cp*(self.T_a)*self.dx(self.crust_rids) + \
-               self.dt*self.kc*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.crust_rids)
+        STc = self.T_t*rhoc*self.cp*(self.T_a)*self.dx(self.crust_rids) + \
+               self.dt*kc*self.theta*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_a))*self.dx(self.crust_rids)
         
         # the complete bilinear form
         ST  = STs + STw + STc
@@ -1708,8 +1710,8 @@ class SubductionProblem(SubductionProblem):
         fTw = self.T_t*self.rhom*self.cp*(self.T_n-self.dt*(1-self.theta)*ufl.inner(self.vw_i, ufl.grad(self.T_n)))*self.dx(self.wedge_rids) - \
                 (1-self.theta)*self.dt*self.km*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.wedge_rids)
         
-        fTc = self.T_t*self.rhoc*self.cp*self.T_n*self.dx(self.crust_rids) - \
-                (1-self.theta)*self.dt*self.kc*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.crust_rids)
+        fTc = self.T_t*rhoc*self.cp*self.T_n*self.dx(self.crust_rids) - \
+                (1-self.theta)*self.dt*kc*ufl.inner(ufl.grad(self.T_t), ufl.grad(self.T_n))*self.dx(self.crust_rids)
 
         if self.sztype=='continental':
             # if the sztype is 'continental' then put radiogenic heating in the rhs form
@@ -1724,17 +1726,13 @@ class SubductionProblem(SubductionProblem):
         return ST, fT
 
 
-# In[ ]:
-
-
-##################################################################
-
+# ### 7. Solution - isoviscous, steady-state
 
 # In[ ]:
 
 
 class SubductionProblem(SubductionProblem):
-    def solve_time_isoviscous(self, tf, dt, theta=0.5, petsc_options=None):
+    def solve_timedependent_isoviscous(self, tf, dt, theta=0.5, verbosity=2, petsc_options=None):
         """
         Solve the coupled temperature-velocity-pressure problem assuming an isoviscous rheology with time dependency
 
@@ -1745,6 +1743,7 @@ class SubductionProblem(SubductionProblem):
         Keyword Arguments:
           * theta         - theta parameter for timestepping (0 <= theta <= 1, defaults to theta=0.5)
           * petsc_options - a dictionary of petsc options to pass to the solver (defaults to mumps)
+          * verbosity     - level of verbosity (<1=silent, >0=basic, >1=timestep, defaults to 2)
         """
         if petsc_options is None:
             petsc_options={"ksp_type": "preonly", 
@@ -1754,7 +1753,7 @@ class SubductionProblem(SubductionProblem):
         assert theta >= 0 and theta <= 1
         
         # set the timestepping options based on the arguments
-        # these need to be set before calling self.temperature_forms_time
+        # these need to be set before calling self.temperature_forms_timedependent
         self.dt = df.fem.Constant(self.mesh, df.default_scalar_type(dt/self.t0_Myr))
         self.theta = df.fem.Constant(self.mesh, df.default_scalar_type(theta))
 
@@ -1762,7 +1761,7 @@ class SubductionProblem(SubductionProblem):
         self.solve_stokes_isoviscous(petsc_options=petsc_options)
 
         # retrieve the temperature forms
-        ST, fT = self.temperature_forms_time()
+        ST, fT = self.temperature_forms_timedependent()
         problem_T = df.fem.petsc.LinearProblem(ST, fT, bcs=self.bcs_T, u=self.T_i,
                                                petsc_options=petsc_options)
 
@@ -1770,47 +1769,52 @@ class SubductionProblem(SubductionProblem):
         t = 0
         ti = 0
         tf_nd = tf/self.t0_Myr
-        print("\nSolving timeloop with {:d} timesteps".format(int(np.ceil(tf/dt)),))
-        while t < tf_nd:
+        if self.comm.rank == 0 and verbosity>0:
+            print("Entering timeloop with {:d} steps (dt = {:g} Myr, final time = {:g} Myr)".format(int(np.ceil(tf_nd/self.dt.value)), dt, tf,))
+        while t < tf_nd - 1e-9:
+            if self.comm.rank == 0 and verbosity>1:
+                print("Step: {:>6d}, Times: {:>9g} -> {:>9g} Myr".format(ti, t*self.t0_Myr, (t+self.dt.value)*self.t0_Myr))
             self.T_n.x.array[:] = self.T_i.x.array
             self.T_i = problem_T.solve()
             ti+=1
             t+=self.dt.value
-        print("Finished timeloop, t = {}".format(t*self.t0_Myr,))
+        if self.comm.rank == 0 and verbosity>0:
+            print("Finished timeloop after {:d} steps (final time = {:g} Myr)".format(ti, t*self.t0_Myr,))
 
         # only update the pressure at the end as it is not necessary earlier
         self.update_p_functions()
 
 
+# #### Demonstration - Benchmark case 1 (time-dependent)
+
 # In[ ]:
 
 
-# Visualization and diagnostics
+if __name__ == "__main__":
+    geom_case1td = create_sz_geometry(slab, resscale, sztype, io_depth_1, extra_width, 
+                              coast_distance, lc_depth, uc_depth)
+    sz_case1td = SubductionProblem(geom_case1td, A=A, Vs=Vs, sztype=sztype, qs=qs)
+    sz_case1td.solve_timedependent_isoviscous(25, 0.05, theta=0.5)
 
 
 # In[ ]:
 
 
 if __name__ == "__main__":
-    geom_case3 = create_sz_geometry(slab, resscale, sztype, io_depth_1, extra_width, 
-                              coast_distance, lc_depth, uc_depth)
-    sz_case3 = SubductionProblem(geom_case3, A=A, Vs=Vs, sztype=sztype, qs=qs)
-    sz_case3.solve_time_isoviscous(5, 1, theta=1.0)
-    
-    plotter_iso = utils.plot_scalar(sz_case3.T_i, scale=sz_case3.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
-    utils.plot_vector_glyphs(sz_case3.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
-    utils.plot_vector_glyphs(sz_case3.vs_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
-    utils.plot_show(plotter_iso)
+    plotter_isotd = utils.plot_scalar(sz_case1td.T_i, scale=sz_case1td.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    utils.plot_vector_glyphs(sz_case1td.vw_i, plotter=plotter_isotd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1td.v0))
+    utils.plot_vector_glyphs(sz_case1td.vs_i, plotter=plotter_isotd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1td.v0))
+    utils.plot_show(plotter_isotd)
 
 
-# # Equations, Dislocation Creep, Time Dependent
+# ### 7. Solution - dislocation creep, time-dependent
 
 # In[ ]:
 
 
 class SubductionProblem(SubductionProblem):
-    def solve_time_dislocationcreep(self, tf, dt, verbose=False, theta=0.5, rtol=5.e-6, atol=5.e-9, maxits=50,
-                                           petsc_options=None):
+    def solve_timedependent_dislocationcreep(self, tf, dt, theta=0.5, rtol=5.e-6, atol=5.e-9, maxits=50, verbosity=2, 
+                                             petsc_options=None):
         """
         Solve the coupled temperature-velocity-pressure problem assuming a dislocation creep rheology with time dependency
 
@@ -1820,7 +1824,11 @@ class SubductionProblem(SubductionProblem):
           
         Keyword Arguments:
           * theta         - theta parameter for timestepping (0 <= theta <= 1, defaults to theta=0.5)
-          * petsc_options - a dictionary of petsc options to pass to the solver (defaults to mumps)petsc_options - a dictionary of petsc options to pass to the solver (defaults to mumps)
+          * rtol          - nonlinear iteration relative tolerance
+          * atol          - nonlinear iteration absolute tolerance
+          * maxits        - maximum number of nonlinear iterations
+          * verbosity     - level of verbosity (<1=silent, >0=basic, >1=timestep, >2=nonlinear convergence, defaults to 2)
+          * petsc_options - a dictionary of petsc options to pass to the solver (defaults to mumps)
         """
         
         if petsc_options is None:
@@ -1831,7 +1839,7 @@ class SubductionProblem(SubductionProblem):
         assert theta >= 0 and theta <= 1
 
         # set the timestepping options based on the arguments
-        # these need to be set before calling self.temperature_forms_time
+        # these need to be set before calling self.temperature_forms_timedependent
         self.dt = df.fem.Constant(self.mesh, df.default_scalar_type(dt/self.t0_Myr))
         self.theta = df.fem.Constant(self.mesh, df.default_scalar_type(theta))
             
@@ -1839,7 +1847,7 @@ class SubductionProblem(SubductionProblem):
         self.solve_stokes_isoviscous(petsc_options=petsc_options)
 
         # retrieve the temperature forms
-        ST, fT = self.temperature_forms_time()
+        ST, fT = self.temperature_forms_timedependent()
         problem_T = df.fem.petsc.LinearProblem(ST, fT, bcs=self.bcs_T, u=self.T_i,
                                                petsc_options=petsc_options)
         
@@ -1882,20 +1890,23 @@ class SubductionProblem(SubductionProblem):
         ti = 0
         tf_nd = tf/self.t0_Myr
         # time loop
-        print("\nSolving timeloop with {:d} timesteps".format(int(np.ceil(tf/dt)),))
-        while t < tf_nd:
+        if self.comm.rank == 0 and verbosity>0:
+            print("Entering timeloop with {:d} steps (dt = {:g} Myr, final time = {:g} Myr)".format(int(np.ceil(tf_nd/self.dt.value)), dt, tf,))
+        while t < tf_nd - 1e-9:
+            if self.comm.rank == 0 and verbosity>1:
+                print("Step: {:>6d}, Times: {:>9g} -> {:>9g} Myr".format(ti, t*self.t0_Myr, (t+self.dt.value)*self.t0_Myr,))
             self.T_n.x.array[:] = self.T_i.x.array
             # calculate the initial residual
             r = calculate_residual()
             r0 = r
             rrel = r/r0  # 1
-            if self.comm.rank == 0:
-                if verbose:
-                    print("{:<11} {:<12} {:<17}".format('Iteration','Residual','Relative Residual'))
+            if self.comm.rank == 0 and verbosity>2:
+                    print("    {:<11} {:<12} {:<17}".format('Iteration','Residual','Relative Residual'))
                     print("-"*42)
 
             it = 0
             # Picard Iteration
+            if self.comm.rank == 0 and verbosity>2: print("    {:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
             while r > atol and rrel > rtol:
                  if it > maxits: break
                  self.T_i = problem_T.solve()
@@ -1907,10 +1918,9 @@ class SubductionProblem(SubductionProblem):
 
                  r = calculate_residual()
                  rrel = r/r0
-                 if self.comm.rank == 0 and verbose: print("{:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
-
                  # increment iterations
                  it+=1
+                 if self.comm.rank == 0 and verbosity>2: print("    {:<11} {:<12.6g} {:<12.6g}".format(it, r, rrel,))
             # check for convergence failures
             if it > maxits:
                 raise Exception("Nonlinear iteration failed to converge after {} iterations (maxits = {}), r = {} (atol = {}), rrel = {} (rtol = {}).".format(it, \
@@ -1922,48 +1932,45 @@ class SubductionProblem(SubductionProblem):
             # increment time
             ti+=1
             t+=self.dt.value
+        if self.comm.rank == 0 and verbosity>0:
+            print("Finished timeloop after {:d} steps (final time = {:g} Myr)".format(ti, t*self.t0_Myr,))
 
         # only update the pressure at the end as it is not necessary earlier
         self.update_p_functions()
 
 
-# In[ ]:
-
-
-# Visualization and diagnostics
-
+# #### Demonstration - Benchmark case 2 (time-dependent)
 
 # In[ ]:
 
 
 if __name__ == "__main__":
-    geom_case4 = create_sz_geometry(slab, resscale, sztype, io_depth_1, extra_width, 
+    geom_case2td = create_sz_geometry(slab, resscale, sztype, io_depth_2, extra_width, 
                               coast_distance, lc_depth, uc_depth)
-    sz_case4 = SubductionProblem(geom_case4, A=A, Vs=Vs, sztype=sztype, qs=qs)
-    sz_case4.solve_time_dislocationcreep(5, 1, theta=1.0)
-    
-    plotter_iso = utils.plot_scalar(sz_case4.T_i, scale=sz_case4.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
-    utils.plot_vector_glyphs(sz_case4.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
-    utils.plot_vector_glyphs(sz_case4.vs_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
-    utils.plot_show(plotter_iso)
-
-
-# In[ ]:
-
-
-# Difference and Analysis
+    sz_case2td = SubductionProblem(geom_case2td, A=A, Vs=Vs, sztype=sztype, qs=qs)
+    sz_case2td.solve_timedependent_dislocationcreep(10, 0.05, theta=0.5, rtol=1.e-3)
 
 
 # In[ ]:
 
 
 if __name__ == "__main__":
-    Tdiff = df.fem.Function(sz_case3.V_T)
-    Tdiff.x.array[:] = sz_case3.T_i.x.array - sz_case4.T_i.x.array
-    plotter_iso = utils.plot_scalar(Tdiff, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'difference'})
-    utils.plot_vector_glyphs(sz_case3.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case3.v0))
-    utils.plot_show(plotter_iso)
+    plotter_distd = utils.plot_scalar(sz_case2td.T_i, scale=sz_case2td.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    utils.plot_vector_glyphs(sz_case2td.vw_i, plotter=plotter_distd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2td.v0))
+    utils.plot_vector_glyphs(sz_case2td.vs_i, plotter=plotter_distd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2td.v0))
+    utils.plot_show(plotter_distd)
 
+
+# ## Themes and variations
+
+# Some possible things to try next:
+# 
+# * Try using `plot_slab_temperatures` as a template to extract different temperatures around the domain.  Perhaps a vertical profile under a putative arc location.
+# * Note that at the default resolution in this notebook case 2 did not do as well as case 1 at matching the benchmark.  Try increasing the resolution to see if it improves the solution (if running on binder then it may not be possible to decrease `resscale` excessively).
+# * Try varying aspects of the geometry.  What happens at different slab dips or when `extra_width > 0`?
+# * Try varying some of the optional parameters, such as the coupling depth.  Note that when varying `partial_coupling_depth`, `full_coupling_depth` should also be varied to ensure it is deeper along the slab.
+# 
+# Even though this notebook set up the benchmark problem it should be valid for any of the global suite discussed in [van Keken & Wilson, 2023](http://dx.doi.org/10.1186/s40645-023-00589-5), which is itself built on the suite in [Syracuse et al., 2010](http://dx.doi.org/10.1016/j.pepi.2010.02.004).  Try running a steady-state version of one of those cases using the parameters in `allsz_params` (from `sz_base`, which loaded the data in `../data/all_sz.json`).
 
 # ## Finish up
 
