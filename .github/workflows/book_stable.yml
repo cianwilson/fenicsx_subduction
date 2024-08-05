@@ -24,9 +24,16 @@ jobs:
       PYVISTA_TRAME_SERVER_PROXY_ENABLED: "True"
       PYVISTA_OFF_SCREEN: false
       PYVISTA_JUPYTER_BACKEND: "html"
+      BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
 
     steps:
       - uses: actions/checkout@v4
+
+      #- name: Cache executed notebooks
+      #  uses: actions/cache@v4
+      #  with:
+      #    path: _build/.jupyter_cache
+      #    key: jupyter-book-cache-${{ BRANCH_NAME }}
 
       - name: Build the book
         run: jupyter-book build . -W --keep-going
