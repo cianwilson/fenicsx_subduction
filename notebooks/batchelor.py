@@ -331,10 +331,10 @@ if __name__ == "__main__":
         fit = np.polyfit(np.log(hs), np.log(errors_l2_a),1)
         if v_i.function_space.mesh.comm.rank == 0:
             print("***********  order of accuracy p={}, order={}".format(p,fit[0]))
-
+        
         # log-log plot of the L2 error 
         ax.loglog(hs,errors_l2_a,'o-',label='p={}, order={:.2f}'.format(p,fit[0]))
-    
+        
         # Test if the order of convergence is as expected (first order)
         test_passes = test_passes and abs(fit[0]-1) < 0.1
 

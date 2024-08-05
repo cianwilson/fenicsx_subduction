@@ -3,9 +3,8 @@
 
 title: FEniCS SZ
 author: Cian Wilson
-logo: notebooks/images/fenicssz_logo.svg
 # Auto-exclude files not in the toc
-only_build_toc_files        : false
+only_build_toc_files : true
 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
@@ -33,7 +32,12 @@ sphinx:
   config:
     html_last_updated_fmt: "%b %d, %Y"
     suppress_warnings: ["mystnb.unknown_mime_type"]
+    html_theme_options:
+      logo:
+        image_light: notebooks/images/fenicssz_logo.svg
+        image_dark: notebooks/images/fenicssz_logo_grey.svg
     language: en
+
 parse:
   myst_enable_extensions:
     - "amsmath"
