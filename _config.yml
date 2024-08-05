@@ -36,6 +36,7 @@ sphinx:
       logo:
         image_light: notebooks/images/fenicssz_logo.svg
         image_dark: notebooks/images/fenicssz_logo_grey.svg
+    language: en
 
 parse:
   myst_enable_extensions:
@@ -66,4 +67,5 @@ html:
 #    </div>
 
 exclude_patterns: [readme.md, typos.md,
-                   notebooks/sz_suite_ss/template.ipynb]
+                   notebooks/sz_suite_ss/template.ipynb,
+                   notebooks/sz_suite_td/template.ipynb]

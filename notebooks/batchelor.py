@@ -107,7 +107,7 @@ def v_exact_batchelor(mesh, U=1):
 # 
 # This function follows much the same flow as described in previous examples
 # 1. we describe the unit square domain $\Omega = [0,1]\times[0,1]$ and discretize it into $2 \times$ `ne` $\times$ `ne` triangular elements or cells to make a `mesh`
-# 2. we declare finite elements for velocity and pressure using Lagrange polynomials of degree `p+1` and `p` respectively and use these to declare the **mixed function space**, `V` of the coupled problem and the **sub function spaces**, `V_v`, `V_v0`, `V_v1`, and `V_p`, for velocity, $x$ velocity, $y$ velocity, and pressure respectively
+# 2. we declare finite elements for velocity and pressure using Lagrange polynomials of degree `p+1` and `p` respectively and use these to declare the **mixed function space**, `V` of the coupled problem and the **sub function spaces**, `V_v`, `V_vx`, `V_vy`, and `V_p`, for velocity, $x$ velocity, $y$ velocity, and pressure respectively
 # 3. using the mixed function space we declare trial, `v_a` and `p_a`, and test, `v_t` and `p_t`, functions for the velocity and pressure respectively
 # 4. we define a list of Dirichlet boundary conditions, `bcs`, including velocity boundary conditions on all four sides and a constraint on the pressure in the lower left corner of the domain
 # 5. we describe the **discrete weak forms**, `S` and `f`, that will be used to assemble the matrix $\mathbf{S}$ and vector $\mathbf{f}$
@@ -143,8 +143,8 @@ def solve_batchelor(ne, p=1, U=1):
 
     # Define velocity and pressure sub function spaces
     V_v, _ = V.sub(0).collapse()
-    V_v0, _ = V_v.sub(0).collapse()
-    V_v1, _ = V_v.sub(1).collapse()
+    V_vx, _ = V_v.sub(0).collapse()
+    V_vy, _ = V_v.sub(1).collapse()
     V_p, _ = V.sub(1).collapse()
 
     # Define the trial functions for velocity and pressure
@@ -168,16 +168,16 @@ def solve_batchelor(ne, p=1, U=1):
     # for x velocity (0) and y velocity (1) separately
     def boundary_base(x):
         return np.isclose(x[1], 0)
-    dofs_v0_base = df.fem.locate_dofs_geometrical((V.sub(0).sub(0), V_v0), boundary_base)
-    dofs_v1_base = df.fem.locate_dofs_geometrical((V.sub(0).sub(1), V_v1), boundary_base)
+    dofs_vx_base = df.fem.locate_dofs_geometrical((V.sub(0).sub(0), V_vx), boundary_base)
+    dofs_vy_base = df.fem.locate_dofs_geometrical((V.sub(0).sub(1), V_vy), boundary_base)
     # Specify the value of the x component of velocity and define a Dirichlet boundary condition
-    U_v0 = df.fem.Function(V_v0)
-    U_v0.x.array[:] = U
-    bcs.append(df.fem.dirichletbc(U_v0, dofs_v0_base, V.sub(0).sub(0)))
+    U_vx = df.fem.Function(V_vx)
+    U_vx.x.array[:] = U
+    bcs.append(df.fem.dirichletbc(U_vx, dofs_vx_base, V.sub(0).sub(0)))
     # Specify the value of the y component of velocity and define a Dirichlet boundary condition
-    zero_v1 = df.fem.Function(V_v1)
-    zero_v1.x.array[:] = 0.0
-    bcs.append(df.fem.dirichletbc(zero_v1, dofs_v1_base, V.sub(0).sub(1)))
+    zero_vy = df.fem.Function(V_vy)
+    zero_vy.x.array[:] = 0.0
+    bcs.append(df.fem.dirichletbc(zero_vy, dofs_vy_base, V.sub(0).sub(1)))
 
     # Define the location of the right and top boundaries and find the velocity DOFs
     def boundary_rightandtop(x):
@@ -195,7 +195,7 @@ def solve_batchelor(ne, p=1, U=1):
     dofs_p_lowerleft = df.fem.locate_dofs_geometrical((V.sub(1), V_p), corner_lowerleft)
     # Specify the arbitrary pressure value and define a Dirichlet boundary condition
     zero_p = df.fem.Function(V_p)
-    zero_p.x.array[:] = 0
+    zero_p.x.array[:] = 0.0
     bcs.append(df.fem.dirichletbc(zero_p, dofs_p_lowerleft, V.sub(1)))
 
     # Define the integrals to be assembled into the stiffness matrix
@@ -207,10 +207,10 @@ def solve_batchelor(ne, p=1, U=1):
     # Define the integral to the assembled into the forcing vector
     # which in this case is just zero so arbitrarily use the pressure test function
     zero = df.fem.Constant(mesh, df.default_scalar_type(0.0))
-    L = zero*p_t*ufl.dx
+    f = zero*p_t*ufl.dx
 
-    # Compute the solution (given the boundary conditions, bc)
-    problem = df.fem.petsc.LinearProblem(S, L, bcs=bcs, \
+    # Compute the solution (given the boundary conditions, bcs)
+    problem = df.fem.petsc.LinearProblem(S, f, bcs=bcs, \
                                          petsc_options={"ksp_type": "preonly", \
                                                         "pc_type": "lu", \
                                                         "pc_factor_mat_solver_type": "mumps"})
