@@ -9,10 +9,13 @@ ENV PYVISTA_JUPYTER_BACKEND="static"
 
 WORKDIR /tmp/
 # Requirements for pyvista (gl1 and render1) and jupyterlab (nodejs and curl)
-RUN apt-get update && apt-get install -y libgl1-mesa-glx libxrender1 xvfb curl vim ack zip git-lfs
-RUN curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh && \
+RUN apt-get update && \
+    apt-get install -y libgl1-mesa-glx libxrender1 xvfb curl vim ack zip git-lfs && \
+    curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh && \
     bash nodesource_setup.sh && \
-    apt install nodejs
+    apt install nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Upgrade setuptools and pip
 RUN python3 -m pip install -U setuptools pip pkgconfig
