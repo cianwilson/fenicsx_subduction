@@ -33,6 +33,7 @@ sphinx:
   config:
     html_last_updated_fmt: "%b %d, %Y"
     suppress_warnings: ["mystnb.unknown_mime_type"]
+    language: en
 parse:
   myst_enable_extensions:
     - "amsmath"
@@ -62,4 +63,5 @@ html:
 #    </div>
 
 exclude_patterns: [readme.md, typos.md,
-                   notebooks/sz_suite_ss/template.ipynb]
+                   notebooks/sz_suite_ss/template.ipynb,
+                   notebooks/sz_suite_td/template.ipynb]

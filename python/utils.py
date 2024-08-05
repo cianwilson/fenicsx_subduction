@@ -3,6 +3,7 @@ import dolfinx as df
 import pyvista as pv
 import numpy as np
 import functools
+import vtk
 
 try:
     pv.start_xvfb()
@@ -10,6 +11,7 @@ except OSError:
     pass
 
 Myr_to_s = lambda a: a*1.e6*365.25*24*60*60
+s_to_Myr = lambda a: a/1.e6/365.25/24/60/60
 nondim_to_K = lambda T: T + 273.15
 mmpyr_to_mps = lambda v: v*1.0e-3/365.25/24/60/60
 mps_to_mmpyr = lambda v: v*1.0e3*365.25*24*60*60
@@ -216,18 +218,16 @@ def plot_mesh(mesh, tags=None, plotter=None, gather=False, **pv_kwargs):
 
     return plotter
 
-def plot_scalar(scalar, scale=1.0, plotter=None, gather=False, **pv_kwargs):
+def grids_scalar(scalar, scale=1.0, gather=False):
     """
-    Plot a dolfinx scalar Function using pyvista.
+    Return a list of pyvista grids for a scalar Function.
 
     Arguments:
-      * scalar      - the dolfinx scalar Function to plot
+      * scalar      - the dolfinx scalar Function to grid
 
     Keyword Arguments:
       * scale       - a scalar scale factor that the values are multipled by (default=1.0)
-      * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
       * gather      - gather plot to rank 0 (default=False)
-      * **pv_kwargs - kwargs for adding the mesh to the plotter
     """
     
     comm = scalar.function_space.mesh.comm
@@ -254,6 +254,24 @@ def plot_scalar(scalar, scale=1.0, plotter=None, gather=False, **pv_kwargs):
         else:
             grid.point_data[scalar.name] = values_g[r]
         grid.set_active_scalars(scalar.name)
+
+    return grids
+
+def plot_scalar(scalar, scale=1.0, plotter=None, gather=False, **pv_kwargs):
+    """
+    Plot a dolfinx scalar Function using pyvista.
+
+    Arguments:
+      * scalar      - the dolfinx scalar Function to plot
+
+    Keyword Arguments:
+      * scale       - a scalar scale factor that the values are multipled by (default=1.0)
+      * plotter     - a pyvista plotter, one will be created if none supplied (default=None)
+      * gather      - gather plot to rank 0 (default=False)
+      * **pv_kwargs - kwargs for adding the mesh to the plotter
+    """
+
+    grids = grids_scalar(scalar, scale=scale, gather=gather)
 
     if len(grids) > 0 and plotter is None: plotter = pv.Plotter()
 
@@ -439,3 +457,161 @@ def plot_save(plotter, filename):
     """
     if plotter is not None:
         figure = plotter.screenshot(filename)
+
+class PVGridProbe:
+    """
+    A class that probes a pyvista grid and given coordinates.
+    """
+    
+    def __init__(self, grid, xyz):
+        """
+        A class that probes a pyvista grid and given coordinates.
+
+        Arguments:
+          * grid - a pyvista grid
+          * xyz  - coordinates
+        """
+        # save the grid
+        self.grid = grid
+        
+        locator = vtk.vtkPointLocator()
+        locator.SetDataSet(grid)
+        locator.SetTolerance(10.0)
+        locator.Update()
+        
+        points = vtk.vtkPoints()
+        points.SetDataTypeToDouble()
+        ilen, jlen = xyz.shape
+        for i in range(ilen):
+            points.InsertNextPoint(xyz[i][0], xyz[i][1], xyz[i][2])
+        
+        polydata = vtk.vtkPolyData()
+        polydata.SetPoints(points)
+
+        # set up the probe
+        self.probe = vtk.vtkProbeFilter()
+        self.probe.SetInputData(polydata)
+        self.probe.SetSourceData(self.grid)
+        self.probe.Update()
+        
+        valid_ids = self.probe.GetValidPoints()
+        num_locs = valid_ids.GetNumberOfTuples()
+        valid_loc = 0
+        # save a list of invalid nodes not found by the probe
+        self.invalidNodes = []
+        for i in range(ilen):
+            if valid_loc < num_locs and valid_ids.GetTuple1(valid_loc) == i:
+                valid_loc += 1
+            else:
+                nearest = locator.FindClosestPoint([xyz[i][0], xyz[i][1], xyz[i][2]])
+                self.invalidNodes.append((i, nearest))
+        
+    def get_field(self, name):
+        """
+        Return a numpy array containing the named field at the saved coordinates.
+
+        Arguments:
+          * name - name of field to probe
+        """
+        probepointData = self.probe.GetOutput().GetPointData()
+        probevtkData = probepointData.GetArray(name)
+        nc = probevtkData.GetNumberOfComponents()
+        nt = probevtkData.GetNumberOfTuples()
+        array = np.asarray([probevtkData.GetValue(i) for i in range(nt * nc)])
+        
+        if len(self.invalidNodes) > 0:
+            field = self.grid.GetPointData().GetArray(name)
+            if field is None: field = self.grid.GetCellData().GetArray(name)
+            if field is None: 
+                raise Exception("ERROR: no point of cell data with name {}.".format(name,))
+            components = field.GetNumberOfComponents()
+            for invalidNode, nearest in self.invalidNodes:
+                for comp in range(nc):
+                    array[invalidNode * nc + comp] = field.GetValue(nearest * nc + comp)
+        
+        if nc==9:
+            array = array.reshape(nt, 3, 3)
+        elif nc==4:
+            array = array.reshape(nt, 2, 2)
+        elif nc==1:
+            array = array.reshape(nt,)
+        else:
+            array = array.reshape(nt, nc)
+        
+        return array
+
+def pvgrid_test_points(grid1, grid2, tol=1.e-6):
+    """
+    Test if two grids have the same point coordinates to the given tolerance.
+
+    Arguments:
+      * grid1 - first grid
+      * grid2 - second grid
+
+    Keyword Arguments:
+      * tol - tolerance (defaults to 1.e-6)
+    """
+    locs1 = grid1.points
+    locs2 = grid2.points
+    if not len(locs1) == len(locs2):
+        return False
+    for i in range(len(locs1)):
+        if not len(locs1[i]) == len(locs2[i]):
+            return False
+        for j in range(len(locs1[i])):
+            if np.abs(locs1[i][j] - locs2[i][j]) > tol:
+                return False
+    return True
+
+def pv_diff(grid1, grid2, field_name_map={}, pass_point_data=False, pass_cell_data=False):
+    """
+    Take the difference between the fields on two pyvista grids, grid1 - grid2.
+
+    This functionality overlaps with the pyvista sample filter but tries to handle coordinates
+    that aren't found better.
+
+    Arguments:
+      * grid1 - first grid
+      * grid2 - second grid
+      * field_name_map - map between names of the fields on the first grid to the names on the second grid
+      * pass_point_data - keep the original point data using the names _name_1 and _name_2
+      * pass_cell_data  - keep the original cell data using the names _name_1 and _name_2
+    """
+    outgrid = pv.UnstructuredGrid(grid1.cells, grid1.celltypes, grid1.points)
+
+    useprobe = not pvgrid_test_points(grid1, grid2)
+    if useprobe: probe = PVGridProbe(grid2, grid1.points)
+
+    pointnames1 = grid1.point_data.keys()
+    pointnames2 = grid2.point_data.keys()
+    for name1 in pointnames1:
+        name2 = field_name_map.get(name1, name1)
+        field1 = grid1.point_data[name1]
+        if name2 in pointnames2:
+            if useprobe:
+                field2 = probe.get_field(name2)
+            else:
+                field2 = grid2.point_data[name2]
+            outgrid.point_data[name1] = field1-field2
+            if pass_point_data: outgrid.point_data["_"+name1+"_2"] = field2
+        if pass_point_data: outgrid.point_data["_"+name1+"_1"] = field1
+
+    cellnames1 = grid1.cell_data.keys()
+    cellnames2 = grid2.cell_data.keys()
+    if useprobe:
+        for name1 in cellnames1:
+            name2 = field_name_map.get(name1, name1)
+            if pass_cell_data: 
+                outgrid.cell_data["_"+name1+"_1"] = grid1.point_data[name1]
+                if name2 in cellnames2: outgrid.cell_data["_"+name1+"_2"] = grid2.cell_data[name2]
+    else:
+        for name1 in cellnames1:
+            name2 = field_name_map.get(name1, name1)
+            field1 = grid1.cell_data(name1)
+            if name2 in cellnames2:
+                field2 = grid2.cell_data[name2]
+                outgrid.cell_data[name1] = field1 - field2
+                if pass_cell_data: outgrid.cell_data["_"+name1+"_2"] = field2
+            if pass_cell_data: outgrid.point_data["_"+name1+"_1"] = field1
+
+    return outgrid
