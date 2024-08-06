@@ -24,7 +24,10 @@ jobs:
       PYVISTA_TRAME_SERVER_PROXY_ENABLED: "True"
       PYVISTA_OFF_SCREEN: false
       PYVISTA_JUPYTER_BACKEND: "html"
-      BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
+      BASE_NAME: ${{ github.base_ref || github.ref_name }}
+      HEAD_NAME: ${{ github.head_ref || github.ref_name }}
+      BASE_KEY: jupyter-book-cache-${{ env.BASE_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
+      HEAD_KEY: jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
 
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +38,8 @@ jobs:
         if: env.BRANCH_NAME != 'release'
         with:
           path: _build/.jupyter_cache
-          key: jupyter-book-cache-${{ env.BRANCH_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
+          key: ${{ env.HEAD_KEY }}
+          restore-keys: ${{ env.BASE_KEY }}
 
       - name: Build the book
         run: jupyter-book build . -W --keep-going
@@ -53,12 +57,12 @@ jobs:
         continue-on-error: true
         run: |
           gh extension install actions/gh-actions-cache
-          gh actions-cache delete "${{ steps.restore-cache.outputs.cache-primary-key }}" --confirm
+          gh actions-cache delete ${{ env.HEAD_KEY }} --confirm
 
-      - name: Save cace
+      - name: Save cache
         uses: actions/cache/save@v4
         if: env.BRANCH_NAME != 'release'
         with:
           path: _build/.jupyter_cache
-          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
+          key: ${{ env.HEAD_KEY }}
 
