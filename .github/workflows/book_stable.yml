@@ -26,8 +26,8 @@ jobs:
       PYVISTA_JUPYTER_BACKEND: "html"
       BASE_NAME: ${{ github.base_ref || github.ref_name }}
       HEAD_NAME: ${{ github.head_ref || github.ref_name }}
-      BASE_KEY: jupyter-book-cache-${{ env.BASE_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
-      HEAD_KEY: jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
+      BASE_KEY: jupyter-book-cache-${{ BASE_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
+      HEAD_KEY: jupyter-book-cache-${{ HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
 
     steps:
       - uses: actions/checkout@v4
