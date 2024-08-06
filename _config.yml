@@ -16,26 +16,28 @@ execute:
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/cianwilson/fenicsx_subduction # Online location of your book
   path_to_book: . # Optional path to your book, relative to the repository root
-  branch: release # Which branch of the repository should be used when creating links (optional)
 
-# Add a bibtex file so that we can create citations
-bibtex_bibfiles:
-  - references.bib
-
-launch_buttons:
-  notebook_interface: "jupyterlab"
-  binderhub_url: "https://mybinder.org"
+## Add a bibtex file so that we can create citations
+#bibtex_bibfiles:
+#  - references.bib
 
 sphinx:
   config:
     html_last_updated_fmt: "%b %d, %Y"
     suppress_warnings: ["mystnb.unknown_mime_type"]
     html_theme_options:
+      repository_url: https://github.com/cianwilson/fenicsx_subduction
+      repository_branch: release
+      launch_buttons:
+        notebook_interface: "jupyterlab"
+        binderhub_url: "https://mybinder.org"
       logo:
         image_light: notebooks/images/fenicssz_logo.svg
         image_dark: notebooks/images/fenicssz_logo_grey.svg
+      use_issues_button: true
+      use_download_button: true
+      use_repository_button: true
     language: en
 
 parse:
@@ -51,12 +53,6 @@ parse:
     - "smartquotes"
     - "substitution"
 
-# Add GitHub buttons to your book
-# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
-html:
-  use_issues_button: true
-  use_repository_button: true
-  use_edit_page_button: true
 
 #  extra_footer: |
 #    <div>
