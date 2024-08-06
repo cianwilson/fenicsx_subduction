@@ -31,12 +31,12 @@ jobs:
         with:
           lfs: true
 
-      ## Caching doesn't work because it doesn't catch changes in non-code cells.
-      #- name: Cache executed notebooks
-      #  uses: actions/cache@v4
-      #  with:
-      #    path: _build/.jupyter_cache
-      #    key: jupyter-book-cache-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb') }}
+      - name: Cache executed notebooks
+        uses: actions/cache@v4
+        if: env.BRANCH_NAME != 'release'
+        with:
+          path: _build/.jupyter_cache
+          key: jupyter-book-cache-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
 
       - name: Build the book
         run: jupyter-book build . -W --keep-going
