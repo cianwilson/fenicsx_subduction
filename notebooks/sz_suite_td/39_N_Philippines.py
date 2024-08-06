@@ -39,6 +39,9 @@ if __name__ == "__main__" and "__file__" in globals():
 import pathlib
 output_folder = pathlib.Path(os.path.join(basedir, "output"))
 output_folder.mkdir(exist_ok=True, parents=True)
+import hashlib
+import zipfile
+import requests
 
 
 # ### Parameters
@@ -158,16 +161,37 @@ if __name__ == "__main__" and "__file__" not in globals():
 # ## Comparison
 
 # Compare to the published result from [Wilson & van Keken, PEPS, 2023 (II)](http://dx.doi.org/10.1186/s40645-023-00588-6) and [van Keken & Wilson, PEPS, 2023 (III)](https://doi.org/10.1186/s40645-023-00589-5).  The original models used in these papers are also available as open-source repositories on [github](https://github.com/cianwilson/vankeken_wilson_peps_2023) and [zenodo](https://doi.org/10.5281/zenodo.7843967).
+# 
+# First download the minimal necessary data from zenodo and check it is the right version.
+
+# In[ ]:
+
+
+zipfilename = pathlib.Path(os.path.join(basedir, os.path.pardir, os.path.pardir, "data", "vankeken_wilson_peps_2023_TF_lowres_minimal.zip"))
+if not zipfilename.is_file():
+    zipfileurl = 'https://zenodo.org/records/13234021/files/vankeken_wilson_peps_2023_TF_lowres_minimal.zip'
+    r = requests.get(zipfileurl, allow_redirects=True)
+    open(zipfilename, 'wb').write(r.content)
+assert hashlib.md5(open(zipfilename, 'rb').read()).hexdigest() == 'a8eca6220f9bee091e41a680d502fe0d'
+
+
+# In[ ]:
+
+
+tffilename = os.path.join('vankeken_wilson_peps_2023_TF_lowres_minimal', 'sz_suite_td', szdict['dirname']+'_minres_2.00_cfl_2.00.vtu')
+tffilepath = os.path.join(os.pardir, os.pardir, 'data')
+with zipfile.ZipFile(zipfilename, 'r') as z:
+    z.extract(tffilename, path=tffilepath)
+
 
 # In[ ]:
 
 
 fxgrid = utils.grids_scalar(sz.T_i)[0]
 
-tffilename = os.path.join(os.pardir, os.pardir, 'data', 'sz_suite_td', szdict['dirname']+'_resscale_2.00_cfl_2.00.vtu')
-tfgrid = pv.get_reader(tffilename).read()
+tfgrid = pv.get_reader(os.path.join(tffilepath, tffilename)).read()
 
-diffgrid = utils.pv_diff(fxgrid, tfgrid, field_name_map={'T':"Temperature::PotentialTemperature"}, pass_point_data=True)
+diffgrid = utils.pv_diff(fxgrid, tfgrid, field_name_map={'T':'Temperature::PotentialTemperature'}, pass_point_data=True)
 
 
 # In[ ]:
