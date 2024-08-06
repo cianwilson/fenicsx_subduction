@@ -33,7 +33,7 @@ sphinx:
         binderhub_url: "https://mybinder.org"
       logo:
         image_light: notebooks/images/fenicssz_logo.svg
-        image_dark: notebooks/images/fenicssz_logo_grey.svg
+        image_dark:  notebooks/images/fenicssz_logo_grey.svg
       use_issues_button: true
       use_download_button: true
       use_repository_button: true
