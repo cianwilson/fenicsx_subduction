@@ -62,6 +62,7 @@ jobs:
         run: |
           apt update 
           apt install gh
+          git config --global --add safe.directory /__w/fenicsx_subduction/fenicsx_subduction
           gh extension install actions/gh-actions-cache
           gh actions-cache delete jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }} --confirm
         env:
