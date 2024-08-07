@@ -8,6 +8,10 @@ on:
   push:
     branches: ["main"] # this also gets called by deploy on push into release
 
+permissions:
+  contents: read
+  actions: write
+
 env:
   HDF5_MPI: "ON"
   HDF5_DIR: "/usr/local/"
@@ -54,6 +58,8 @@ jobs:
         if: env.BRANCH_NAME != 'release' && steps.cache-restore.outputs.cache-hit
         continue-on-error: true
         run: |
+          apt update 
+          apt install gh
           gh extension install actions/gh-actions-cache
           gh actions-cache delete jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }} --confirm
 
