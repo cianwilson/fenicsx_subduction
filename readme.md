@@ -104,5 +104,5 @@ Installation instructions for FEniCSx are available on the [FEniCS project homep
 
 ## Acknowledgments
 
-This Jupyter Book is based on the [FEniCSx Tutorial](https://jsdokken.com/dolfinx-tutorial/) by [Jørgen S. Dokken](https://jsdokken.com/). 
+This Jupyter Book is based on the [FEniCSx Tutorial](https://jsdokken.com/dolfinx-tutorial/) by [Jørgen S. Dokken](https://jsdokken.com/).
 

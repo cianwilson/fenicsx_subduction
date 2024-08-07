@@ -8,6 +8,10 @@ on:
   push:
     branches: ["main"] # this also gets called by deploy on push into release
 
+permissions:
+  contents: read
+  actions: write
+
 env:
   HDF5_MPI: "ON"
   HDF5_DIR: "/usr/local/"
@@ -24,21 +28,27 @@ jobs:
       PYVISTA_TRAME_SERVER_PROXY_ENABLED: "True"
       PYVISTA_OFF_SCREEN: false
       PYVISTA_JUPYTER_BACKEND: "html"
-      BRANCH_NAME: ${{ github.base_ref || github.ref_name }}
+      BASE_NAME: ${{ github.base_ref || github.ref_name }}
+      HEAD_NAME: ${{ github.head_ref || github.ref_name }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache executed notebooks
-        uses: actions/cache@v4
+      # Restore the cache, either from this branch or, as a backup, use the base branch
+      - name: Restore cache
+        id: cache-restore
+        uses: actions/cache/restore@v4
         if: env.BRANCH_NAME != 'release'
         with:
           path: _build/.jupyter_cache
-          key: jupyter-book-cache-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
+          key: jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
+          restore-keys: jupyter-book-cache-${{ env.BASE_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
 
+      # Build the book
       - name: Build the book
         run: jupyter-book build . -W --keep-going
 
+      # Upload the book html
       - uses: actions/upload-artifact@v4
         if : always()
         with:
@@ -46,3 +56,27 @@ jobs:
           path: ./_build/html
           retention-days: 2
           if-no-files-found: error
+
+      # Delete the previous cache so we can upload a new one
+      # This is currently unsupported by the cache action so we have to
+      # do it using the gh command
+      # Based on https://github.com/azu/github-actions-overwrite-cache-example
+      - name: Delete previous cache
+        if: env.BRANCH_NAME != 'release' && steps.cache-restore.outputs.cache-hit
+        continue-on-error: true
+        run: |
+          git config --global --add safe.directory /__w/fenicsx_subduction/fenicsx_subduction
+          gh extension install actions/gh-actions-cache
+          gh actions-cache delete jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }} --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this isn't publicly visible
+
+      # Save our cache
+      - name: Save cache
+        uses: actions/cache/save@v4
+        if: env.BRANCH_NAME != 'release'
+        continue-on-error: true
+        with:
+          path: _build/.jupyter_cache
+          key: jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
+
