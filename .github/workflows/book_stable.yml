@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Restore the cache, either from this branch or the base branch
+      # Restore the cache, either from this branch or, as a backup, use the base branch
       - name: Restore cache
         id: cache-restore
         uses: actions/cache/restore@v4
@@ -59,13 +59,12 @@ jobs:
 
       # Delete the previous cache so we can upload a new one
       # This is currently unsupported by the cache action so we have to
-      # fiddle our way around it using the gh command
+      # do it using the gh command
+      # Based on https://github.com/azu/github-actions-overwrite-cache-example
       - name: Delete previous cache
         if: env.BRANCH_NAME != 'release' && steps.cache-restore.outputs.cache-hit
         continue-on-error: true
         run: |
-          apt update 
-          apt install gh
           git config --global --add safe.directory /__w/fenicsx_subduction/fenicsx_subduction
           gh extension install actions/gh-actions-cache
           gh actions-cache delete jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }} --confirm
