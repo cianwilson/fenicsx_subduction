@@ -125,7 +125,7 @@ sz = SubductionProblem(geom, **szdict)
 
 fps = 5
 plotter = pv.Plotter(notebook=False, off_screen=True)
-utils.plot_scalar(sz.T_i, plotter=plotter, scale=sz.T0, gather=True, cmap='coolwarm', clim=[0.0, sz.Tm*sz.T0])
+utils.plot_scalar(sz.T_i, plotter=plotter, scale=sz.T0, gather=True, cmap='coolwarm', clim=[0.0, sz.Tm*sz.T0], scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
 utils.plot_geometry(geom, plotter=plotter, color='green', width=2)
 utils.plot_couplingdepth(slab, plotter=plotter, render_points_as_spheres=True, point_size=10.0, color='green')
 plotter.open_gif( str(output_folder / "{}_td_solution_resscale_{:.2f}_cfl_{:.2f}.gif".format(name, resscale, cfl,)), fps=fps)

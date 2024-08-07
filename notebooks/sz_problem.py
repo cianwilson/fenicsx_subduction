@@ -1655,7 +1655,7 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     eta_i = sz_case2.project_dislocationcreep_viscosity()
-    plotter_eta = utils.plot_scalar(eta_i, scale=sz_case2.eta0, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa) [log scale]'})
+    plotter_eta = utils.plot_scalar(eta_i, scale=sz_case2.eta0, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa) [log scale]', 'bold':True})
     utils.plot_geometry(sz_case2.geom, plotter=plotter_eta, color='green', width=2)
     utils.plot_couplingdepth(sz_case2.geom.slab_spline, plotter=plotter_eta, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_eta)
@@ -1815,7 +1815,7 @@ if __name__ == "__main__":
 
     fps = 5
     plotter_gif = pv.Plotter(notebook=False, off_screen=True)
-    utils.plot_scalar(sz_case1td.T_i, plotter=plotter_gif, scale=sz_case1td.T0, gather=True, cmap='coolwarm', clim=[0.0, sz_case1td.Tm*sz_case1td.T0])
+    utils.plot_scalar(sz_case1td.T_i, plotter=plotter_gif, scale=sz_case1td.T0, gather=True, cmap='coolwarm', clim=[0.0, sz_case1td.Tm*sz_case1td.T0], scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
     utils.plot_geometry(sz_case1td.geom, plotter=plotter_gif, color='green', width=2)
     utils.plot_couplingdepth(sz_case1td.geom.slab_spline, plotter=plotter_gif, render_points_as_spheres=True, point_size=10.0, color='green')
     plotter_gif.open_gif( str(output_folder / "sz_problem_case1td_solution.gif"), fps=fps)
@@ -1990,7 +1990,7 @@ if __name__ == "__main__":
     
     fps = 5
     plotter_gif2 = pv.Plotter(notebook=False, off_screen=True)
-    utils.plot_scalar(sz_case2td.T_i, plotter=plotter_gif2, scale=sz_case2td.T0, gather=True, cmap='coolwarm', clim=[0.0, sz_case2td.Tm*sz_case2td.T0])
+    utils.plot_scalar(sz_case2td.T_i, plotter=plotter_gif2, scale=sz_case2td.T0, gather=True, cmap='coolwarm', clim=[0.0, sz_case2td.Tm*sz_case2td.T0], scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
     utils.plot_geometry(sz_case2td.geom, plotter=plotter_gif2, color='green', width=2)
     utils.plot_couplingdepth(sz_case2td.geom.slab_spline, plotter=plotter_gif2, render_points_as_spheres=True, point_size=10.0, color='green')
     plotter_gif2.open_gif( str(output_folder / "sz_problem_case2td_solution.gif"), fps=fps)
