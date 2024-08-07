@@ -101,9 +101,11 @@ print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscal
 # In[ ]:
 
 
-plotter_case1_resscale2 = utils.plot_scalar(sz_case1_resscale2.T_i, scale=sz_case1_resscale2.T0, gather=True, cmap='coolwarm')
+plotter_case1_resscale2 = utils.plot_scalar(sz_case1_resscale2.T_i, scale=sz_case1_resscale2.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
 utils.plot_vector_glyphs(sz_case1_resscale2.vw_i, plotter=plotter_case1_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
 utils.plot_vector_glyphs(sz_case1_resscale2.vs_i, plotter=plotter_case1_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case1_resscale2.v0))
+utils.plot_geometry(sz_case1_resscale2.geom, plotter=plotter_case1_resscale2, color='green', width=2)
+utils.plot_couplingdepth(sz_case1_resscale2.geom.slab_spline, plotter=plotter_case1_resscale2, render_points_as_spheres=True, point_size=10.0, color='green')
 utils.plot_show(plotter_case1_resscale2)
 utils.plot_save(plotter_case1_resscale2, output_folder / "sz_tests_case1_resscale2_solution.png")
 
@@ -147,9 +149,11 @@ print('{:<12.4g} {:<12d} {:<12.4f} {:<12.4f} {:<12.4f} {:<12.4f}'.format(resscal
 # In[ ]:
 
 
-plotter_case2_resscale2 = utils.plot_scalar(sz_case2_resscale2.T_i, scale=sz_case2_resscale2.T0, gather=True, cmap='coolwarm')
+plotter_case2_resscale2 = utils.plot_scalar(sz_case2_resscale2.T_i, scale=sz_case2_resscale2.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
 utils.plot_vector_glyphs(sz_case2_resscale2.vw_i, plotter=plotter_case2_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
 utils.plot_vector_glyphs(sz_case2_resscale2.vs_i, plotter=plotter_case2_resscale2, gather=True, factor=0.05, color='k', scale=utils.mps_to_mmpyr(sz_case2_resscale2.v0))
+utils.plot_geometry(sz_case2_resscale2.geom, plotter=plotter_case2_resscale2, color='green', width=2)
+utils.plot_couplingdepth(sz_case2_resscale2.geom.slab_spline, plotter=plotter_case2_resscale2, render_points_as_spheres=True, point_size=10.0, color='green')
 utils.plot_show(plotter_case2_resscale2)
 utils.plot_save(plotter_case2_resscale2, output_folder / "sz_tests_case2_resscale2_solution.png")
 
@@ -179,9 +183,11 @@ sz_ak.solve_steadystate_dislocationcreep()
 # In[ ]:
 
 
-plotter_ak = utils.plot_scalar(sz_ak.T_i, scale=sz_ak.T0, gather=True, cmap='coolwarm')
+plotter_ak = utils.plot_scalar(sz_ak.T_i, scale=sz_ak.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
 utils.plot_vector_glyphs(sz_ak.vw_i, plotter=plotter_ak, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
 utils.plot_vector_glyphs(sz_ak.vs_i, plotter=plotter_ak, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_ak.v0))
+utils.plot_geometry(sz_ak.geom, plotter=plotter_ak, color='green', width=2)
+utils.plot_couplingdepth(sz_ak.geom.slab_spline, plotter=plotter_ak, render_points_as_spheres=True, point_size=10.0, color='green')
 utils.plot_show(plotter_ak)
 utils.plot_save(plotter_ak, output_folder / "sz_tests_ak_solution.png")
 
@@ -190,7 +196,9 @@ utils.plot_save(plotter_ak, output_folder / "sz_tests_ak_solution.png")
 
 
 eta_ak = sz_ak.project_dislocationcreep_viscosity()
-plotter_eta_ak = utils.plot_scalar(eta_ak, scale=sz_ak.eta0, gather=True, log_scale=True, show_edges=True)
+plotter_eta_ak = utils.plot_scalar(eta_ak, scale=sz_ak.eta0, gather=True, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa s)', 'bold':True})
+utils.plot_geometry(sz_ak.geom, plotter=plotter_eta_ak, color='green', width=2)
+utils.plot_couplingdepth(sz_ak.geom.slab_spline, plotter=plotter_eta_ak, render_points_as_spheres=True, point_size=10.0, color='green')
 utils.plot_show(plotter_eta_ak)
 utils.plot_save(plotter_eta_ak, output_folder / "sz_tests_ak_eta.png")
 
@@ -218,9 +226,11 @@ sz_ant.solve_steadystate_dislocationcreep()
 # In[ ]:
 
 
-plotter_ant = utils.plot_scalar(sz_ant.T_i, scale=sz_ant.T0, gather=True, cmap='coolwarm')
+plotter_ant = utils.plot_scalar(sz_ant.T_i, scale=sz_ant.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
 utils.plot_vector_glyphs(sz_ant.vw_i, plotter=plotter_ant, gather=True, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
 utils.plot_vector_glyphs(sz_ant.vs_i, plotter=plotter_ant, gather=True, factor=0.25, color='k', scale=utils.mps_to_mmpyr(sz_ant.v0))
+utils.plot_geometry(sz_ant.geom, plotter=plotter_ant, color='green', width=2)
+utils.plot_couplingdepth(sz_ant.geom.slab_spline, plotter=plotter_ant, render_points_as_spheres=True, point_size=10.0, color='green')
 utils.plot_show(plotter_ant)
 utils.plot_save(plotter_ant, output_folder / "sz_tests_ant_solution.png")
 
@@ -229,7 +239,9 @@ utils.plot_save(plotter_ant, output_folder / "sz_tests_ant_solution.png")
 
 
 eta_ant = sz_ant.project_dislocationcreep_viscosity()
-plotter_eta_ant = utils.plot_scalar(eta_ant, scale=sz_ant.eta0, gather=True, log_scale=True, show_edges=True)
+plotter_eta_ant = utils.plot_scalar(eta_ant, scale=sz_ant.eta0, gather=True, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa s)', 'bold':True})
+utils.plot_geometry(sz_ant.geom, plotter=plotter_eta_ant, color='green', width=2)
+utils.plot_couplingdepth(sz_ant.geom.slab_spline, plotter=plotter_eta_ant, render_points_as_spheres=True, point_size=10.0, color='green')
 utils.plot_show(plotter_eta_ant)
 utils.plot_save(plotter_eta_ant, output_folder / "sz_tests_ant_eta.png")
 
