@@ -35,10 +35,11 @@ jobs:
       - uses: actions/checkout@v4
 
       # Restore the cache, either from this branch or, as a backup, use the base branch
+      # We don't use the cache on pushes or deployment calls to the release branch
       - name: Restore cache
         id: cache-restore
         uses: actions/cache/restore@v4
-        if: env.BRANCH_NAME != 'release'
+        if: env.BASE_NAME != 'release' || github.event_name == 'pull_request'
         with:
           path: _build/.jupyter_cache
           key: jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
@@ -62,7 +63,7 @@ jobs:
       # do it using the gh command
       # Based on https://github.com/azu/github-actions-overwrite-cache-example
       - name: Delete previous cache
-        if: env.BRANCH_NAME != 'release' && steps.cache-restore.outputs.cache-hit
+        if: env.BASE_NAME != 'release' || github.event_name == 'pull_request'
         continue-on-error: true
         run: |
           git config --global --add safe.directory /__w/fenicsx_subduction/fenicsx_subduction
@@ -74,7 +75,7 @@ jobs:
       # Save our cache
       - name: Save cache
         uses: actions/cache/save@v4
-        if: env.BRANCH_NAME != 'release'
+        if: env.BASE_NAME != 'release' || github.event_name == 'pull_request'
         continue-on-error: true
         with:
           path: _build/.jupyter_cache
