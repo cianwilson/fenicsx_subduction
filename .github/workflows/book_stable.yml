@@ -62,6 +62,8 @@ jobs:
           apt install gh
           gh extension install actions/gh-actions-cache
           gh actions-cache delete jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }} --confirm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Save cache
         uses: actions/cache/save@v4
