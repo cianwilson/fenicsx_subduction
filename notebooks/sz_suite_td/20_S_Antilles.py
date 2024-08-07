@@ -118,6 +118,19 @@ sz = SubductionProblem(geom, **szdict)
 
 # ### Solve
 
+# Let's first set up a gif of the temperature.
+
+# In[ ]:
+
+
+fps = 5
+plotter = pv.Plotter(notebook=False, off_screen=True)
+utils.plot_scalar(sz.T_i, plotter=plotter, scale=sz.T0, gather=True, cmap='coolwarm', clim=[0.0, sz.Tm*sz.T0])
+utils.plot_geometry(geom, plotter=plotter, color='green', width=2)
+utils.plot_couplingdepth(slab, plotter=plotter, render_points_as_spheres=True, point_size=10.0, color='green')
+plotter.open_gif( str(output_folder / "{}_td_solution_resscale_{:.2f}_cfl_{:.2f}.gif".format(name, resscale, cfl,)), fps=fps)
+
+
 # Solve using a dislocation creep rheology.
 
 # In[ ]:
@@ -127,7 +140,8 @@ sz = SubductionProblem(geom, **szdict)
 dt = cfl*resscale/szdict['Vs']
 # Reduce the timestep to get an integer number of timesteps
 dt = szdict['As']/np.ceil(szdict['As']/dt)
-sz.solve_timedependent_dislocationcreep(szdict['As'], dt, theta=0.5, rtol=1.e-1, verbosity=1)
+sz.solve_timedependent_dislocationcreep(szdict['As'], dt, theta=0.5, rtol=1.e-1, verbosity=1, plotter=plotter)
+plotter.close()
 
 
 # ### Plot
@@ -137,9 +151,12 @@ sz.solve_timedependent_dislocationcreep(szdict['As'], dt, theta=0.5, rtol=1.e-1,
 # In[ ]:
 
 
-plotter = utils.plot_scalar(sz.T_i, scale=sz.T0, gather=True, cmap='coolwarm')
+plotter = pv.Plotter()
+utils.plot_scalar(sz.T_i, plotter=plotter, scale=sz.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
 utils.plot_vector_glyphs(sz.vw_i, plotter=plotter, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz.v0))
 utils.plot_vector_glyphs(sz.vs_i, plotter=plotter, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz.v0))
+utils.plot_geometry(geom, plotter=plotter, color='green', width=2)
+utils.plot_couplingdepth(slab, plotter=plotter, render_points_as_spheres=True, point_size=10.0, color='green')
 utils.plot_show(plotter)
 utils.plot_save(plotter, output_folder / "{}_td_solution_resscale_{:.2f}_cfl_{:.2f}.png".format(name, resscale, cfl,))
 
@@ -200,7 +217,9 @@ diffgrid = utils.pv_diff(fxgrid, tfgrid, field_name_map={'T':'Temperature::Poten
 diffgrid.set_active_scalars('T')
 plotter_diff = pv.Plotter()
 clim = None
-plotter_diff.add_mesh(diffgrid, cmap='coolwarm', clim=clim)
+plotter_diff.add_mesh(diffgrid, cmap='coolwarm', clim=clim, scalar_bar_args={'title': 'Temperature Difference (deg C)', 'bold':True})
+utils.plot_geometry(geom, plotter=plotter_diff, color='green', width=2)
+utils.plot_couplingdepth(slab, plotter=plotter_diff, render_points_as_spheres=True, point_size=5.0, color='green')
 plotter_diff.enable_parallel_projection()
 plotter_diff.view_xy()
 plotter_diff.show()

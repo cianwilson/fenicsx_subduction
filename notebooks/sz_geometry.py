@@ -306,6 +306,8 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     plotter_mesh = utils.plot_mesh(mesh, tags=cell_tags, gather=True, show_edges=True, line_width=1)
+    utils.plot_geometry(geom, plotter=plotter_mesh, color='green', width=2)
+    utils.plot_couplingdepth(slab, plotter=plotter_mesh, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_mesh)
     utils.plot_save(plotter_mesh, output_folder / "sz_geometry_benchmark_mesh.png")
 
@@ -376,6 +378,8 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     plotter_mesh_ak = utils.plot_mesh(mesh_ak, tags=cell_tags_ak, gather=True, show_edges=True, line_width=1)
+    utils.plot_geometry(geom_ak, plotter=plotter_mesh_ak, color='green', width=2)
+    utils.plot_couplingdepth(slab_ak, plotter=plotter_mesh_ak, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_mesh_ak)
     utils.plot_save(plotter_mesh_ak, output_folder / "sz_geometry_ak_mesh.png")
 
@@ -443,6 +447,8 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     plotter_mesh_ant = utils.plot_mesh(mesh_ant, tags=cell_tags_ant, gather=True, show_edges=True, line_width=1)
+    utils.plot_geometry(geom_ant, plotter=plotter_mesh_ant, color='green', width=2)
+    utils.plot_couplingdepth(slab_ant, plotter=plotter_mesh_ant, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_mesh_ant)
     utils.plot_save(plotter_mesh_ant, output_folder / "sz_geometry_ant_mesh.png")
 
