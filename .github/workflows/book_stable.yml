@@ -33,9 +33,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          set-safe-directory: true
 
+      # Restore the cache, either from this branch or the base branch
       - name: Restore cache
         id: cache-restore
         uses: actions/cache/restore@v4
@@ -45,9 +44,11 @@ jobs:
           key: jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
           restore-keys: jupyter-book-cache-${{ env.BASE_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
 
+      # Build the book
       - name: Build the book
         run: jupyter-book build . -W --keep-going
 
+      # Upload the book html
       - uses: actions/upload-artifact@v4
         if : always()
         with:
@@ -56,6 +57,9 @@ jobs:
           retention-days: 2
           if-no-files-found: error
 
+      # Delete the previous cache so we can upload a new one
+      # This is currently unsupported by the cache action so we have to
+      # fiddle our way around it using the gh command
       - name: Delete previous cache
         if: env.BRANCH_NAME != 'release' && steps.cache-restore.outputs.cache-hit
         continue-on-error: true
@@ -66,11 +70,13 @@ jobs:
           gh extension install actions/gh-actions-cache
           gh actions-cache delete jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }} --confirm
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this isn't publicly visible
 
+      # Save our cache
       - name: Save cache
         uses: actions/cache/save@v4
         if: env.BRANCH_NAME != 'release'
+        continue-on-error: true
         with:
           path: _build/.jupyter_cache
           key: jupyter-book-cache-${{ env.HEAD_NAME }}-${{ hashFiles('notebooks/sz_base.ipynb', 'notebooks/sz_slab.ipynb', 'notebooks/sz_geometry.ipynb', 'notebooks/sz_problem.ipynb', 'python/geometry.py', 'python/utils.py') }}
