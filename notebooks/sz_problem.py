@@ -677,6 +677,8 @@ class SubductionProblem(SubductionProblem):
         self.update_T_functions()
 
         # just set the boundary conditions on the boundaries for the velocities
+        self.wedge_vpw_i.x.array[:] = 0.0
+        self.slab_vps_i.x.array[:] = 0.0
         df.fem.set_bc(self.wedge_vpw_i.x.array, self.bcs_vpw)
         df.fem.set_bc(self.slab_vps_i.x.array, self.bcs_vps)
         # and update the interpolated v functions for consistency
@@ -895,8 +897,10 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    plotter_ic = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    plotter_ic = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
     utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_ic, gather=True, factor=0.1, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
+    utils.plot_geometry(sz_case1.geom, plotter=plotter_ic, color='green', width=2)
+    utils.plot_couplingdepth(sz_case1.geom.slab_spline, plotter=plotter_ic, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_ic)
     utils.plot_save(plotter_ic, output_folder / "sz_problem_case1_ics.png")
 
@@ -1263,9 +1267,11 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    plotter_iso = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    plotter_iso = utils.plot_scalar(sz_case1.T_i, scale=sz_case1.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
     utils.plot_vector_glyphs(sz_case1.vw_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
     utils.plot_vector_glyphs(sz_case1.vs_i, plotter=plotter_iso, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1.v0))
+    utils.plot_geometry(sz_case1.geom, plotter=plotter_iso, color='green', width=2)
+    utils.plot_couplingdepth(sz_case1.geom.slab_spline, plotter=plotter_iso, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_iso)
     utils.plot_save(plotter_iso, output_folder / "sz_problem_case1_solution.png")
 
@@ -1616,9 +1622,11 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":
-    plotter_dis = utils.plot_scalar(sz_case2.T_i, scale=sz_case2.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    plotter_dis = utils.plot_scalar(sz_case2.T_i, scale=sz_case2.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
     utils.plot_vector_glyphs(sz_case2.vw_i, plotter=plotter_dis, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
     utils.plot_vector_glyphs(sz_case2.vs_i, plotter=plotter_dis, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2.v0))
+    utils.plot_geometry(sz_case2.geom, plotter=plotter_dis, color='green', width=2)
+    utils.plot_couplingdepth(sz_case2.geom.slab_spline, plotter=plotter_dis, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_dis)
     utils.plot_save(plotter_dis, output_folder / "sz_problem_case2_solution.png")
 
@@ -1647,7 +1655,9 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     eta_i = sz_case2.project_dislocationcreep_viscosity()
-    plotter_eta = utils.plot_scalar(eta_i, scale=sz_case2.eta0, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa) [log scale]'})
+    plotter_eta = utils.plot_scalar(eta_i, scale=sz_case2.eta0, log_scale=True, show_edges=True, scalar_bar_args={'title': 'Viscosity (Pa) [log scale]', 'bold':True})
+    utils.plot_geometry(sz_case2.geom, plotter=plotter_eta, color='green', width=2)
+    utils.plot_couplingdepth(sz_case2.geom.slab_spline, plotter=plotter_eta, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_eta)
     utils.plot_save(plotter_eta, output_folder / "sz_problem_case2_eta.png")
 
@@ -1732,7 +1742,7 @@ class SubductionProblem(SubductionProblem):
 
 
 class SubductionProblem(SubductionProblem):
-    def solve_timedependent_isoviscous(self, tf, dt, theta=0.5, verbosity=2, petsc_options=None):
+    def solve_timedependent_isoviscous(self, tf, dt, theta=0.5, verbosity=2, petsc_options=None, plotter=None):
         """
         Solve the coupled temperature-velocity-pressure problem assuming an isoviscous rheology with time dependency
 
@@ -1757,6 +1767,9 @@ class SubductionProblem(SubductionProblem):
         self.dt = df.fem.Constant(self.mesh, df.default_scalar_type(dt/self.t0_Myr))
         self.theta = df.fem.Constant(self.mesh, df.default_scalar_type(theta))
 
+        # reset the initial conditions
+        self.setup_boundaryconditions()
+        
         # first solve both Stokes systems
         self.solve_stokes_isoviscous(petsc_options=petsc_options)
 
@@ -1774,6 +1787,11 @@ class SubductionProblem(SubductionProblem):
         while t < tf_nd - 1e-9:
             if self.comm.rank == 0 and verbosity>1:
                 print("Step: {:>6d}, Times: {:>9g} -> {:>9g} Myr".format(ti, t*self.t0_Myr, (t+self.dt.value)*self.t0_Myr))
+            if plotter is not None:
+                for mesh in plotter.meshes:
+                    if self.T_i.name in mesh.point_data:
+                        mesh.point_data[self.T_i.name][:] = self.T_i.x.array
+                plotter.write_frame()
             self.T_n.x.array[:] = self.T_i.x.array
             self.T_i = problem_T.solve()
             ti+=1
@@ -1794,17 +1812,30 @@ if __name__ == "__main__":
     geom_case1td = create_sz_geometry(slab, resscale, sztype, io_depth_1, extra_width, 
                               coast_distance, lc_depth, uc_depth)
     sz_case1td = SubductionProblem(geom_case1td, A=A, Vs=Vs, sztype=sztype, qs=qs)
-    sz_case1td.solve_timedependent_isoviscous(25, 0.05, theta=0.5)
+
+    fps = 5
+    plotter_gif = pv.Plotter(notebook=False, off_screen=True)
+    utils.plot_scalar(sz_case1td.T_i, plotter=plotter_gif, scale=sz_case1td.T0, gather=True, cmap='coolwarm', clim=[0.0, sz_case1td.Tm*sz_case1td.T0], scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
+    utils.plot_geometry(sz_case1td.geom, plotter=plotter_gif, color='green', width=2)
+    utils.plot_couplingdepth(sz_case1td.geom.slab_spline, plotter=plotter_gif, render_points_as_spheres=True, point_size=10.0, color='green')
+    plotter_gif.open_gif( str(output_folder / "sz_problem_case1td_solution.gif"), fps=fps)
+    
+    sz_case1td.solve_timedependent_isoviscous(25, 0.05, theta=0.5, plotter=plotter_gif)
+    
+    plotter_gif.close()
 
 
 # In[ ]:
 
 
 if __name__ == "__main__":
-    plotter_isotd = utils.plot_scalar(sz_case1td.T_i, scale=sz_case1td.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    plotter_isotd = utils.plot_scalar(sz_case1td.T_i, scale=sz_case1td.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
     utils.plot_vector_glyphs(sz_case1td.vw_i, plotter=plotter_isotd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1td.v0))
     utils.plot_vector_glyphs(sz_case1td.vs_i, plotter=plotter_isotd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case1td.v0))
+    utils.plot_geometry(sz_case1td.geom, plotter=plotter_isotd, color='green', width=2)
+    utils.plot_couplingdepth(sz_case1td.geom.slab_spline, plotter=plotter_isotd, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_isotd)
+    utils.plot_save(plotter_isotd, output_folder / "sz_problem_case1td_solution.png")
 
 
 # ### 7. Solution - dislocation creep, time-dependent
@@ -1814,7 +1845,7 @@ if __name__ == "__main__":
 
 class SubductionProblem(SubductionProblem):
     def solve_timedependent_dislocationcreep(self, tf, dt, theta=0.5, rtol=5.e-6, atol=5.e-9, maxits=50, verbosity=2, 
-                                             petsc_options=None):
+                                             petsc_options=None, plotter=None):
         """
         Solve the coupled temperature-velocity-pressure problem assuming a dislocation creep rheology with time dependency
 
@@ -1843,6 +1874,9 @@ class SubductionProblem(SubductionProblem):
         self.dt = df.fem.Constant(self.mesh, df.default_scalar_type(dt/self.t0_Myr))
         self.theta = df.fem.Constant(self.mesh, df.default_scalar_type(theta))
             
+        # reset the initial conditions
+        self.setup_boundaryconditions()
+        
         # first solve the isoviscous problem
         self.solve_stokes_isoviscous(petsc_options=petsc_options)
 
@@ -1895,6 +1929,11 @@ class SubductionProblem(SubductionProblem):
         while t < tf_nd - 1e-9:
             if self.comm.rank == 0 and verbosity>1:
                 print("Step: {:>6d}, Times: {:>9g} -> {:>9g} Myr".format(ti, t*self.t0_Myr, (t+self.dt.value)*self.t0_Myr,))
+            if plotter is not None:
+                for mesh in plotter.meshes:
+                    if self.T_i.name in mesh.point_data:
+                        mesh.point_data[self.T_i.name][:] = self.T_i.x.array
+                plotter.write_frame()
             self.T_n.x.array[:] = self.T_i.x.array
             # calculate the initial residual
             r = calculate_residual()
@@ -1948,17 +1987,30 @@ if __name__ == "__main__":
     geom_case2td = create_sz_geometry(slab, resscale, sztype, io_depth_2, extra_width, 
                               coast_distance, lc_depth, uc_depth)
     sz_case2td = SubductionProblem(geom_case2td, A=A, Vs=Vs, sztype=sztype, qs=qs)
-    sz_case2td.solve_timedependent_dislocationcreep(10, 0.05, theta=0.5, rtol=1.e-3)
+    
+    fps = 5
+    plotter_gif2 = pv.Plotter(notebook=False, off_screen=True)
+    utils.plot_scalar(sz_case2td.T_i, plotter=plotter_gif2, scale=sz_case2td.T0, gather=True, cmap='coolwarm', clim=[0.0, sz_case2td.Tm*sz_case2td.T0], scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
+    utils.plot_geometry(sz_case2td.geom, plotter=plotter_gif2, color='green', width=2)
+    utils.plot_couplingdepth(sz_case2td.geom.slab_spline, plotter=plotter_gif2, render_points_as_spheres=True, point_size=10.0, color='green')
+    plotter_gif2.open_gif( str(output_folder / "sz_problem_case2td_solution.gif"), fps=fps)
+    
+    sz_case2td.solve_timedependent_dislocationcreep(10, 0.05, theta=0.5, rtol=1.e-3, plotter=plotter_gif2)
+
+    plotter_gif2.close()
 
 
 # In[ ]:
 
 
 if __name__ == "__main__":
-    plotter_distd = utils.plot_scalar(sz_case2td.T_i, scale=sz_case2td.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)'})
+    plotter_distd = utils.plot_scalar(sz_case2td.T_i, scale=sz_case2td.T0, gather=True, cmap='coolwarm', scalar_bar_args={'title': 'Temperature (deg C)', 'bold':True})
     utils.plot_vector_glyphs(sz_case2td.vw_i, plotter=plotter_distd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2td.v0))
     utils.plot_vector_glyphs(sz_case2td.vs_i, plotter=plotter_distd, factor=0.1, gather=True, color='k', scale=utils.mps_to_mmpyr(sz_case2td.v0))
+    utils.plot_geometry(sz_case1td.geom, plotter=plotter_distd, color='green', width=2)
+    utils.plot_couplingdepth(sz_case1td.geom.slab_spline, plotter=plotter_distd, render_points_as_spheres=True, point_size=10.0, color='green')
     utils.plot_show(plotter_distd)
+    utils.plot_save(plotter_distd, output_folder / "sz_problem_case2td_solution.png")
 
 
 # ## Themes and variations
