@@ -501,7 +501,7 @@ def plot_couplingdepth(slab, plotter=None, **pv_kwargs):
         plotter.add_points(np.asarray([point.x, point.y, 0.0]), **pv_kwargs)
     return plotter
 
-def plot_show(plotter):
+def plot_show(plotter, **pv_kwargs):
     """
     Display a pyvista plotter.
 
@@ -509,9 +509,9 @@ def plot_show(plotter):
       * plotter  - the pyvista plotter
     """    
     if plotter is not None and not pv.OFF_SCREEN:
-        plotter.show()
+        plotter.show(**pv_kwargs)
 
-def plot_save(plotter, filename):
+def plot_save(plotter, filename, **pv_kwargs):
     """
     Display a pyvista plotter.
 
@@ -520,7 +520,7 @@ def plot_save(plotter, filename):
       * filename - filename to save image to
     """
     if plotter is not None:
-        figure = plotter.screenshot(filename)
+        figure = plotter.screenshot(filename, **pv_kwargs)
 
 class PVGridProbe:
     """
