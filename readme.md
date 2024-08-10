@@ -2,7 +2,7 @@
 
 Authors: Cian Wilson, Cameron Seebeck, Kidus Teshome, Nathan Sime, Peter van Keken
 
-Welcome to the [_FEniCS Subduction Zone_ Jupyter Book](https://cianwilson.github.io/fenicsx_subduction), an online resource for modeling subduction zones!
+Welcome to the [_FEniCS Subduction Zone_ Jupyter Book](https://cianwilson.github.io/fenics-sz), an online resource for modeling subduction zones!
 
 This repository was developed by undergraduate interns Kidus Teshome and Cameron Seebeck at the [Carnegie Science Earth & Planets Laboratory](https://epl.carnegiescience.edu).  It is based on [Wilson & van Keken, PEPS, 2023 (II)](http://dx.doi.org/10.1186/s40645-023-00588-6), which is part II of a three part introductory review of the thermal structure of subduction zones by Peter van Keken and Cian Wilson.
 
@@ -14,7 +14,7 @@ The notebooks in this repository can all be run interactively in a web browser, 
 
 ## Online
 
-The [website](https://cianwilson.github.io/fenicsx_subduction) is published as a [Jupyter Book](https://jupyterbook.org/). Each page
+The [website](https://cianwilson.github.io/fenics-sz) is published as a [Jupyter Book](https://jupyterbook.org/). Each page
 is a Jupyter notebook that can be run interactively in the browser.  To start such an interactive session using
 [binder](https://mybinder.org/) click the ![Binder symbol](notebooks/images/binder.png)-symbol in the top right corner of the relevant page.  Note that [binder](https://mybinder.org/) may take some time to start.
 
@@ -34,7 +34,7 @@ To run the notebooks locally, outside of [binder](https://mybinder.org/), an ins
 
 Docker is software that uses _images_ and _containers_ to supply virtualized installations of software across different kinds of operating systems (Linux, Mac, Windows).  The first step is to install docker, following the instructions at their [webpage](https://docs.docker.com/get-started/).
 
-Once docker is installed we provide compatible docker images using [github packages](https://github.com/users/cianwilson/packages/container/package/fenicsx_subduction).
+Once docker is installed we provide compatible docker images using [github packages](https://github.com/users/cianwilson/packages/container/package/fenics-sz).
 
 ```{admonition} Computational Resources
 On non-linux operating systems docker limits the computational resources available to the virtualized docker container, which may limit the size of simulations it is possible to run locally.  Modify the docker settings to change these settings and make more resources available.
@@ -42,8 +42,8 @@ On non-linux operating systems docker limits the computational resources availab
 
 To use these images with this book on a local machine, first (using a terminal) clone the repository and change into that directory:
 ```bash
-  git clone -b release https://github.com/cianwilson/fenicsx_subduction.git
-  cd fenicsx_subduction
+  git clone -b release https://github.com/cianwilson/fenics-sz.git
+  cd fenics-sz
 ```
 
 #### Browser
@@ -51,14 +51,14 @@ To use these images with this book on a local machine, first (using a terminal) 
 If running the book in a browser then run the following docker command:
 
 ```bash
-  docker run --init --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared ghcr.io/cianwilson/fenicsx_subduction:release
+  docker run --init --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared ghcr.io/cianwilson/fenics-sz:release
 ```
 The first time this is run it will automatically download the docker image and start Jupyter lab in the docker container on the local machine.  To view the notebooks and modify them locally, copy and paste the URL printed in the terminal into a web-browser.
 
 ```{admonition} Updates
 `docker run` will only download the docker image the first time it is called.  To get updates to the images run:
 
-   docker pull ghcr.io/cianwilson/fenicsx_subduction:release
+   docker pull ghcr.io/cianwilson/fenics-sz:release
 
 before calling `docker run`.
 ```
@@ -68,7 +68,7 @@ before calling `docker run`.
 Alternatively, the image can be used through an interactive terminal by running:
 
 ```bash
-  docker run -it --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenicsx_subduction:release
+  docker run -it --rm -p 8888:8888 --workdir /root/shared -v "$(pwd)":/root/shared  --entrypoint="/bin/bash" ghcr.io/cianwilson/fenics-sz:release
 ```
 
 This allows the python scripts based on the notebooks to be run, e.g.:
