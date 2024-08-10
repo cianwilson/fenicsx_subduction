@@ -75,12 +75,12 @@ fi
 
 echo "Building:"
 echo "  Dockerfile"
-echo "  with tag ghcr.io/cianwilson/fenicsx_subduction:$TAG"
+echo "  with tag ghcr.io/cianwilson/fenics-sz:$TAG"
 if [ "$PLATFORMS" ]; then
   echo "  with $PLATFORMS"
 fi
 
 cd $script_path
 docker buildx build --file Dockerfile \
-                    --tag ghcr.io/cianwilson/fenicsx_subduction:$TAG $PLATFORMS --push .
+                    --tag ghcr.io/cianwilson/fenics-sz:$TAG $PLATFORMS --push .
 

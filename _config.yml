@@ -26,7 +26,7 @@ sphinx:
     html_last_updated_fmt: "%b %d, %Y"
     suppress_warnings: ["mystnb.unknown_mime_type"]
     html_theme_options:
-      repository_url: https://github.com/cianwilson/fenicsx_subduction
+      repository_url: https://github.com/cianwilson/fenics-sz
       repository_branch: release
       launch_buttons:
         notebook_interface: "jupyterlab"
